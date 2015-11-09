@@ -1,2 +1,6 @@
 /target/
 /bin/
+/coach.log
+/.classpath
+/db/
+/.settings/
