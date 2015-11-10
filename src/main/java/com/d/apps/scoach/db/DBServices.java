@@ -17,4 +17,6 @@ public interface DBServices {
     public void setActiveProfile(int id);
     public void deactivateAllProfiles();
     public Profile getActiveProfile();
+    
+    public void incrementSmokedCount(int pid);
 }

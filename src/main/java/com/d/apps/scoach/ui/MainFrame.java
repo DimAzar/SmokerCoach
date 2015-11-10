@@ -123,19 +123,26 @@ public class MainFrame extends JFrame {
 	    	LOG.error(x.getMessage());
 	    }
 	}
-}
-
-class ToolbarPanel extends JPanel {
-	private static final long serialVersionUID = -6013670095226879299L;
-
-	private JButton smokeButt = new JButton("Just had a smoke");
-	public ToolbarPanel() {
-		super();
-		
-		add(smokeButt);
-	}
 	
-	public void toggleActionBar(boolean enable) {
-		smokeButt.setEnabled(enable);
-	}
-}
+	class ToolbarPanel extends JPanel {
+		private static final long serialVersionUID = 1L;
+
+		private JButton smokeButt = new JButton("Just had a smoke");
+		public ToolbarPanel() {
+			super();
+			
+			add(smokeButt);
+			
+			smokeButt.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					SmokerCoach.DBServices.incrementSmokedCount(activeProfile.getId());
+				}
+			});
+		}
+		
+		public void toggleActionBar(boolean enable) {
+			smokeButt.setEnabled(enable);
+		}
+	}}
+
