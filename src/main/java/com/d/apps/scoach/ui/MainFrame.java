@@ -41,14 +41,9 @@ public class MainFrame extends JFrame {
 		
 		initGrcs();
 		
-		activeProfile = DBManager.getActiveProfile();
-		if (activeProfile == null) {
-			actionPanel.toggleActionBar(false);
-			showIFrame(new ManageProfilesIFrame(appProperties));
-		}
+		activeProfileChanged();
 
 		setSize(400, 400);
-		setTitle("Smoker Coach Application - Active Profile :"+activeProfile.getFirstName());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
 
@@ -59,9 +54,17 @@ public class MainFrame extends JFrame {
 		}
 	}
 	
-	public void profileChanged(int pid) {
-		activeProfile = DBManager.findProfile(pid); 
-		setTitle("Smoker Coach Application - Active Profile :"+activeProfile.getFirstName());
+	public void activeProfileChanged() {
+		activeProfile = DBManager.getActiveProfile();
+		if (activeProfile != null) {
+			setTitle("Smoker Coach Application - Active Profile :"+activeProfile.getFirstName());
+			actionPanel.toggleActionBar(true);
+		} else {
+			setTitle("Smoker Coach Application - Active Profile :N/A");
+			showIFrame(new ManageProfilesIFrame(appProperties));
+			actionPanel.toggleActionBar(false);
+		}
+		
 	}
 	
 	private void initGrcs() {

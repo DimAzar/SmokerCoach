@@ -109,23 +109,35 @@ public class ManageProfilesIFrame extends JInternalFrame {
 				}
 				int pid = Integer.parseInt(profilesTable.getValueAt(row, 0).toString());
 				DBManager.setActiveProfile(pid);
-				updateUIProfileChanged(pid);
+				updateUIProfileChanged();
 			}
 		});
 		
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int row = profilesTable.getSelectedRow();
-				int pid = Integer.parseInt(profilesTable.getValueAt(row, 0).toString());
-				DBManager.deleteProfile(pid);
-				updateUIProfileChanged(pid);
+				rmenu.setVisible(false);
+				if (JOptionPane.showConfirmDialog(null, "Delete Profile ?") == JOptionPane.OK_OPTION) {
+					int row = profilesTable.getSelectedRow();
+					int pid = Integer.parseInt(profilesTable.getValueAt(row, 0).toString());
+					
+					boolean isActive = Boolean.parseBoolean(profilesTable.getValueAt(row, 2).toString());
+					if (isActive) {
+						if (JOptionPane.showConfirmDialog(null, "Profile is the active profile\nDelete Profile ?") == JOptionPane.OK_OPTION) {
+							DBManager.deleteProfile(pid);
+							updateUIProfileChanged();
+						}
+					} else {
+						DBManager.deleteProfile(pid);
+						updateUIProfileChanged();
+					}
+				}
 			}
 		});
 	}
 	
-	private void updateUIProfileChanged(int pid) {
-		((MainFrame)getTopLevelAncestor()).profileChanged(pid);
+	private void updateUIProfileChanged() {
+		((MainFrame)getTopLevelAncestor()).activeProfileChanged();
 		((CustomTableModel)profilesTable.getModel()).refresh();
 		rmenu.setVisible(false);
 	}
@@ -166,7 +178,7 @@ public class ManageProfilesIFrame extends JInternalFrame {
 						activeval = true;
 					}
 					DBManager.createProfile(nameval , activeval );
-					((CustomTableModel)profilesTable.getModel()).refresh();
+					updateUIProfileChanged();
 				}
 			});
 		}
