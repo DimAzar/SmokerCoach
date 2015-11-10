@@ -19,12 +19,12 @@ public class SmokerCoach {
 	private final MainFrame mainFrame; 
 	private Properties appProperties;
 
-	private DBServices dbservices = new DBServicesImpl();
+	public static DBServices DBServices = new DBServicesImpl();
 	
 	public SmokerCoach() {
 		LOG.debug("Starting Coach ");
 		appProperties = Utilities.loadApplicationProperties(propertiesName);
-		mainFrame = new MainFrame(appProperties, dbservices);
+		mainFrame = new MainFrame(appProperties);
 		mainFrame.setVisible(true);
 		LOG.debug("Coach started");
 	}

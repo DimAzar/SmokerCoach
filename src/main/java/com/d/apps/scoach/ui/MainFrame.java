@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.db.DBServices;
+import com.d.apps.scoach.SmokerCoach;
 import com.d.apps.scoach.db.model.Profile;
 
 public class MainFrame extends JFrame {
@@ -29,7 +29,6 @@ public class MainFrame extends JFrame {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MainFrame.class);
 	private Properties appProperties = null; 
-	private DBServices dbServices = null;
 	
 	private Profile activeProfile = null;
 	
@@ -37,9 +36,8 @@ public class MainFrame extends JFrame {
 	private JDesktopPane desktopPane = new JDesktopPane();
 	private ToolbarPanel actionPanel = new ToolbarPanel();
 	
-	public MainFrame(Properties properties, DBServices dbServices) {
+	public MainFrame(Properties properties) {
 		appProperties = properties;
-		this.dbServices = dbServices;
 		
 		initGrcs();
 		
@@ -57,13 +55,13 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void activeProfileChanged() {
-		activeProfile = dbServices.getActiveProfile();
+		activeProfile = SmokerCoach.DBServices.getActiveProfile();
 		if (activeProfile != null) {
 			setTitle("Smoker Coach Application - Active Profile :"+activeProfile.getFirstName());
 			actionPanel.toggleActionBar(true);
 		} else {
 			setTitle("Smoker Coach Application - Active Profile :N/A");
-			showIFrame(new ManageProfilesIFrame(appProperties, dbServices));
+			showIFrame(new ManageProfilesIFrame(appProperties));
 			actionPanel.toggleActionBar(false);
 		}
 	}
@@ -111,7 +109,7 @@ public class MainFrame extends JFrame {
 		users.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showIFrame(new ManageProfilesIFrame(appProperties, dbServices));
+				showIFrame(new ManageProfilesIFrame(appProperties));
 			}
 		});
 	}
