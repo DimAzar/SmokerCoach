@@ -3,11 +3,22 @@ package com.d.apps.scoach.db.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
-@Entity
-public class Profile {
+import com.d.apps.scoach.db.model.base.DBEntity;
 
-    @Id
+@Entity 
+@Table (name="Profile")
+@NamedQueries({
+	@NamedQuery(name="profile.getAllProfiles", query = "SELECT p FROM Profile p"),
+})
+
+public class Profile implements DBEntity {
+	private static final long serialVersionUID = 1321240600648558754L;
+	
+	@Id
     @GeneratedValue
     private Integer id;
     private String firstName;

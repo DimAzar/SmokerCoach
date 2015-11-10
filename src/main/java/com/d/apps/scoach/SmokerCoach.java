@@ -8,17 +8,23 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.db.DBServices;
+import com.d.apps.scoach.db.DBServicesImpl;
 import com.d.apps.scoach.ui.MainFrame;
 
 public class SmokerCoach {
 	private static final Logger LOG = LoggerFactory.getLogger(SmokerCoach.class);
 	private static final String propertiesName = "app.properties";
 	
-	private Properties appProperties = Utilities.loadApplicationProperties(propertiesName);
-	private final MainFrame mainFrame = new MainFrame(appProperties); 
+	private final MainFrame mainFrame; 
+	private Properties appProperties;
+
+	private DBServices dbservices = new DBServicesImpl();
 	
 	public SmokerCoach() {
 		LOG.debug("Starting Coach ");
+		appProperties = Utilities.loadApplicationProperties(propertiesName);
+		mainFrame = new MainFrame(appProperties, dbservices);
 		mainFrame.setVisible(true);
 		LOG.debug("Coach started");
 	}

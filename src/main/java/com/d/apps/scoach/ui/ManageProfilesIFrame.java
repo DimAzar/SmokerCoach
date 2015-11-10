@@ -28,7 +28,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import com.d.apps.scoach.db.DBManager;
+import com.d.apps.scoach.db.DBServices;
 import com.d.apps.scoach.db.model.Profile;
 
 public class ManageProfilesIFrame extends JInternalFrame {
@@ -37,10 +37,12 @@ public class ManageProfilesIFrame extends JInternalFrame {
 	private String version = null;
 	private JTable profilesTable = null;
 	private JPopupMenu rmenu = new JPopupMenu();
+	private DBServices dbServices;
 	
-	public ManageProfilesIFrame(Properties properties) {
+	public ManageProfilesIFrame(Properties properties, DBServices dbServices) {
 		super();
 		version = properties.getProperty("app.version");
+		this.dbServices = dbServices;
 		
 		initGrcs();
 		setupListeners();
@@ -78,7 +80,7 @@ public class ManageProfilesIFrame extends JInternalFrame {
 		JPanel parent = (JPanel) getContentPane();
 		parent.setLayout(new BorderLayout());
 		
-		AbstractTableModel dtm = new CustomTableModel();
+		AbstractTableModel dtm = new CustomTableModel(dbServices);
 		profilesTable = new JTable(dtm);
 		parent.add(new JScrollPane(profilesTable), BorderLayout.CENTER);
 		parent.add(new CreateProfilePanel(), BorderLayout.SOUTH);
@@ -108,7 +110,7 @@ public class ManageProfilesIFrame extends JInternalFrame {
 					return;
 				}
 				int pid = Integer.parseInt(profilesTable.getValueAt(row, 0).toString());
-				DBManager.setActiveProfile(pid);
+				dbServices.setActiveProfile(pid);
 				updateUIProfileChanged();
 			}
 		});
@@ -124,11 +126,11 @@ public class ManageProfilesIFrame extends JInternalFrame {
 					boolean isActive = Boolean.parseBoolean(profilesTable.getValueAt(row, 2).toString());
 					if (isActive) {
 						if (JOptionPane.showConfirmDialog(null, "Profile is the active profile\nDelete Profile ?") == JOptionPane.OK_OPTION) {
-							DBManager.deleteProfile(pid);
+							dbServices.deleteProfile(pid);
 							updateUIProfileChanged();
 						}
 					} else {
-						DBManager.deleteProfile(pid);
+						dbServices.deleteProfile(pid);
 						updateUIProfileChanged();
 					}
 				}
@@ -170,14 +172,14 @@ public class ManageProfilesIFrame extends JInternalFrame {
 						return;
 					}
 					if (activeval) {
-						DBManager.deactivateAllProfiles();
+						dbServices.deactivateAllProfiles();
 					}
 					
-					if (DBManager.getProfilesCount() <= 0) {
+					if (dbServices.getProfilesCount() <= 0) {
 						JOptionPane.showMessageDialog(null, "No other profiles, setting as active profile!");
 						activeval = true;
 					}
-					DBManager.createProfile(nameval , activeval );
+					dbServices.createProfile(nameval , activeval );
 					updateUIProfileChanged();
 				}
 			});
@@ -232,14 +234,17 @@ class CustomRenderer implements TableCellRenderer {
 class CustomTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	private List<Profile> profiles = new ArrayList<Profile>();
+	private DBServices dbServices;
 	
-	public CustomTableModel() {
+	public CustomTableModel(DBServices dbServices) {
 		super();
+		this.dbServices = dbServices;
+		
 		refresh();
 	}
 	
 	public void refresh() {
-		this.profiles = DBManager.getProfiles();
+		this.profiles = dbServices.getProfiles();
 		fireTableDataChanged();
 	}
 	@Override
