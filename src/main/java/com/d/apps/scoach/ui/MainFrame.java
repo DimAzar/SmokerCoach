@@ -21,23 +21,34 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.db.DBManager;
+import com.d.apps.scoach.db.model.Profile;
+
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -7859383450590563738L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MainFrame.class);
 	private Properties appProperties = null; 
 
+	private Profile activeProfile = null;
+	
 	//SWING
 	private JDesktopPane desktopPane = new JDesktopPane();
-	private JPanel actionPanel = new ToolbarPanel();
+	private ToolbarPanel actionPanel = new ToolbarPanel();
 	
 	public MainFrame(Properties properties) {
 		appProperties = properties;
 		
 		initGrcs();
 		
-		setSize(1024, 800);
-		setTitle("Smoker Coach Application");
+		activeProfile = DBManager.getActiveProfile();
+		if (activeProfile == null) {
+			actionPanel.toggleActionBar(false);
+			showIFrame(new ManageProfilesIFrame(appProperties));
+		}
+
+		setSize(400, 400);
+		setTitle("Smoker Coach Application - Active Profile :"+activeProfile.getFirstName());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
 
@@ -46,6 +57,11 @@ public class MainFrame extends JFrame {
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
 		}
+	}
+	
+	public void profileChanged(int pid) {
+		activeProfile = DBManager.findProfile(pid); 
+		setTitle("Smoker Coach Application - Active Profile :"+activeProfile.getFirstName());
 	}
 	
 	private void initGrcs() {
@@ -85,18 +101,18 @@ public class MainFrame extends JFrame {
 		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addIFrame(new AboutIFrame(appProperties));
+				showIFrame(new AboutIFrame(appProperties));
 			}
 		});
 		users.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addIFrame(new ManageProfilesIFrame(appProperties));
+				showIFrame(new ManageProfilesIFrame(appProperties));
 			}
 		});
 	}
 	
-	private void addIFrame(JInternalFrame frame) {
+	private void showIFrame(JInternalFrame frame) {
 		desktopPane.add(frame);
 	    try {
 	        frame.setSelected(true);
@@ -115,5 +131,9 @@ class ToolbarPanel extends JPanel {
 		super();
 		
 		add(smokeButt);
+	}
+	
+	public void toggleActionBar(boolean enable) {
+		smokeButt.setEnabled(enable);
 	}
 }
