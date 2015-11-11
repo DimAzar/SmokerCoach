@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.SmokerCoach;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.util.Utilities;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -7859383450590563738L;
@@ -33,15 +35,15 @@ public class MainFrame extends JFrame {
 	private Profile activeProfile = null;
 	
 	//SWING
-	private JDesktopPane desktopPane = new JDesktopPane();
-	private ToolbarPanel actionPanel = new ToolbarPanel();
+	private JDesktopPane desktopPane = null;
+	private ToolbarPanel actionPanel = null;
 	
 	public MainFrame(Properties properties) {
 		appProperties = properties;
 		
 		initGrcs();
-		
 		activeProfileChanged();
+		
 
 		setSize(400, 400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -72,6 +74,9 @@ public class MainFrame extends JFrame {
 
 		parent.setLayout(new BorderLayout());
 		
+		desktopPane = new JDesktopPane();
+		actionPanel = new ToolbarPanel();
+
 		parent.add(desktopPane, BorderLayout.CENTER);
 		parent.add(actionPanel, BorderLayout.SOUTH);
 		
@@ -126,17 +131,19 @@ public class MainFrame extends JFrame {
 	
 	class ToolbarPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
-
+		private int smokeCount = activeProfile.getSmokeCount(Utilities.createDateStringRep());
 		private JButton smokeButt = new JButton("Just had a smoke");
+		private JLabel smokeCountLbl = new JLabel("Smoked today :"+smokeCount);
 		public ToolbarPanel() {
 			super();
 			
 			add(smokeButt);
-			
+			add(smokeCountLbl);
 			smokeButt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					SmokerCoach.DBServices.incrementSmokedCount(activeProfile.getId());
+					smokeCount = SmokerCoach.DBServices.incrementSmokedCount(activeProfile.getId());
+					smokeCountLbl.setText("Smoked today :"+smokeCount);
 				}
 			});
 		}

@@ -2,6 +2,7 @@ package com.d.apps.scoach.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -49,4 +50,13 @@ public class Utilities {
 		}
 		return null;
 	}
+	
+	public static String createDateStringRep() {
+		String ans = String.format("%s/%s/%s", 
+				Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+				Calendar.getInstance().get(Calendar.MONTH)+1,
+				Calendar.getInstance().get(Calendar.YEAR));
+		return ans;
+	}
+
 }

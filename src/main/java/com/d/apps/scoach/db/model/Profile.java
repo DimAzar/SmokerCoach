@@ -37,6 +37,16 @@ public class Profile implements DBEntity {
 		return cigaretteTrackEntry;
 	}
 
+    public int getSmokeCount(String dateString) {
+    	for (CigaretteTrackEntry cigaretteTrackEntry2 : cigaretteTrackEntry) {
+			if (cigaretteTrackEntry2.getDateString().equals(dateString)) {
+				return cigaretteTrackEntry2.getCigaretteCount();
+			}
+		}
+    	//TODO MAYBE -1 for special treatment ?
+    	return 0;
+    }
+    
     public void addTrackEntry(CigaretteTrackEntry e) {
     	cigaretteTrackEntry.add(e);
     }

@@ -34,9 +34,9 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public void incrementSmokedCount(int pid) {
+	public int incrementSmokedCount(int pid) {
 		Profile p = findProfile(pid);
-		String key = createDateStringRep();
+		String key = Utilities.createDateStringRep();
 		
 		CigaretteTrackEntry entry = Utilities.getCalendarEntry(p, key);
 		if (entry == null) {
@@ -52,6 +52,7 @@ public class DBServicesImpl implements DBServices {
 			LOG.debug("incremented "+p.getFirstName()+" ->"+entry.getDateString()+":"+entry.getCigaretteCount());
 		}
     	pselector.updateProfile(p);
+    	return entry.getCigaretteCount();
 	}
 	
 	@Override
@@ -104,11 +105,4 @@ public class DBServicesImpl implements DBServices {
 		pselector.updateProfile(p);
 	}
 	
-	private static String createDateStringRep() {
-		String ans = String.format("%s/%s/%s", 
-				Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
-				Calendar.getInstance().get(Calendar.MONTH)+1,
-				Calendar.getInstance().get(Calendar.YEAR));
-		return ans;
-	}
 }
