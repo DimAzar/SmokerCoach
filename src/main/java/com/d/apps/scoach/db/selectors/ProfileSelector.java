@@ -11,24 +11,11 @@ import com.d.apps.scoach.db.selectors.base.BaseSelector;
 public class ProfileSelector extends BaseSelector {
 	private static final Logger LOG = LoggerFactory.getLogger(ProfileSelector.class);
 	
-	public  int getProfilesCount() {
-    	return entityManager.createNamedQuery("profile.getAllProfiles", Profile.class)
-    				.getResultList().size();
-	}
-
-	public  List<Profile> getProfiles() {
-    	return entityManager.createNamedQuery("profile.getAllProfiles", Profile.class)
-    				.getResultList();
-	}
-    
-    public  Profile findProfile(int pid) {
-    	return entityManager
-    				.find(Profile.class, pid);
-    }
-    
     public  void deleteProfile(int id) {
     	entityManager.getTransaction().begin();
+    	
     	entityManager.remove(entityManager.find(Profile.class, id));
+    	
     	entityManager.getTransaction().commit();
     }
     
@@ -45,7 +32,9 @@ public class ProfileSelector extends BaseSelector {
 
     public  void updateProfile(Profile p) {
     	entityManager.getTransaction().begin();
+    	
     	entityManager.merge(p);
+    	
     	entityManager.getTransaction().commit();
     }
 
@@ -53,6 +42,21 @@ public class ProfileSelector extends BaseSelector {
     	createProfile(name, false);
     }
 
+	public  int getProfilesCount() {
+    	return entityManager.createNamedQuery("profile.getAllProfiles", Profile.class)
+    				.getResultList().size();
+	}
+
+	public  List<Profile> getProfiles() {
+    	return entityManager.createNamedQuery("profile.getAllProfiles", Profile.class)
+    				.getResultList();
+	}
+    
+    public  Profile findProfile(int pid) {
+    	return entityManager
+    				.find(Profile.class, pid);
+    }
+    
     public  void setActiveProfile(int id) {
     	List<Profile> profiles = entityManager.createNamedQuery("profile.getAllProfiles", Profile.class).getResultList(); 
     	for (Profile profile : profiles) {

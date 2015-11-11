@@ -1,20 +1,16 @@
 package com.d.apps.scoach.db.model;
 
-import java.io.Serializable;
-import java.sql.Date;
-
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
 @Table (name="CigaretteTrackEntry")
@@ -22,7 +18,7 @@ import javax.persistence.Table;
 	@NamedQuery(name="cTrackEntry.getAllEntries", query = "SELECT cte FROM CigaretteTrackEntry cte"),
 })
 
-public class CigaretteTrackEntry implements Serializable {
+public class CigaretteTrackEntry implements DBEntity {
 	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue
@@ -32,7 +28,47 @@ public class CigaretteTrackEntry implements Serializable {
 	@JoinColumn(name="id", nullable= false)
 	private Profile profile;
 	
-	public void setProfile(Profile p) {
-		profile = p;
+	@Column(nullable=false)
+	private String dateString;
+
+	@Column(nullable=false)
+	private Integer cigaretteCount;
+	
+	@Override
+	public Integer getId() {
+		return pkey;
+	}
+
+	@Override
+	public void setId(Integer pkey) {
+		this.pkey = pkey;
+	}
+
+	public Profile getProfile() {
+		return profile;
+	}
+
+	public void setProfile(Profile profile) {
+		this.profile = profile;
+	}
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
+	}
+
+	public Integer getCigaretteCount() {
+		return cigaretteCount;
+	}
+
+	public void setCigaretteCount(Integer cigaretteCount) {
+		this.cigaretteCount = cigaretteCount;
+	}
+	
+	public void incrementCigaretteCount() {
+		cigaretteCount++;
 	}
 }

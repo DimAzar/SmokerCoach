@@ -1,7 +1,6 @@
 package com.d.apps.scoach.db;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -10,6 +9,7 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.CigaretteTrackEntry;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.selectors.CigaretteTrackSelector;
@@ -34,13 +34,23 @@ public class DBServicesImpl implements DBServices {
 
 	@Override
 	public void incrementSmokedCount(int pid) {
-		
 		Profile p = findProfile(pid);
-		List<CigaretteTrackEntry> entries = p.getCigaretteTrack();
 		String key = createDateStringRep();
 		
-		entries = cteselector.getAllEntries();
-		cteselector.createCigaretteTrackEntry(p.getId(), key);
+		CigaretteTrackEntry entry = Utilities.getCalendarEntry(p, key);
+		if (entry == null) {
+	    	entry = new CigaretteTrackEntry();
+	    	entry.setProfile(p);
+	    	entry.setDateString(key);
+	    	entry.setCigaretteCount(1);
+	    	
+	    	p.addTrackEntry(entry);
+	    	LOG.debug("First entry "+p.getFirstName()+" ->"+entry.getDateString()+":"+entry.getCigaretteCount());
+		} else {
+			entry.incrementCigaretteCount();
+			LOG.debug("incremented "+p.getFirstName()+" ->"+entry.getDateString()+":"+entry.getCigaretteCount());
+		}
+    	pselector.updateProfile(p);
 	}
 	
 	@Override

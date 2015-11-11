@@ -7,6 +7,9 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.db.model.CigaretteTrackEntry;
+import com.d.apps.scoach.db.model.Profile;
+
 public class Utilities {
 	private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
 	
@@ -37,4 +40,12 @@ public class Utilities {
 		return ans;
 	}
 
+	public static CigaretteTrackEntry getCalendarEntry (Profile p , String key) {
+		for (CigaretteTrackEntry entry : p.getCigaretteTrack()) {
+			if (entry.getDateString().equals(key)) {
+				return entry;
+			}
+		}
+		return null;
+	}
 }
