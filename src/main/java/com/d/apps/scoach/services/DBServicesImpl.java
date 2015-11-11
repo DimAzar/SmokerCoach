@@ -1,4 +1,4 @@
-package com.d.apps.scoach.db;
+package com.d.apps.scoach.services;
 
 import java.util.Calendar;
 import java.util.List;
@@ -9,11 +9,12 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.CigaretteTrackEntry;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.selectors.CigaretteTrackSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
+import com.d.apps.scoach.services.interfaces.DBServices;
+import com.d.apps.scoach.util.Utilities;
 
 public class DBServicesImpl implements DBServices {
 	private static final String PERSISTENCE_UNIT = "SmokerCoach";

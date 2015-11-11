@@ -8,9 +8,10 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.db.DBServices;
-import com.d.apps.scoach.db.DBServicesImpl;
+import com.d.apps.scoach.services.DBServicesImpl;
+import com.d.apps.scoach.services.interfaces.DBServices;
 import com.d.apps.scoach.ui.MainFrame;
+import com.d.apps.scoach.util.Utilities;
 
 public class SmokerCoach {
 	private static final Logger LOG = LoggerFactory.getLogger(SmokerCoach.class);

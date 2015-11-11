@@ -1,4 +1,4 @@
-package com.d.apps.scoach.db;
+package com.d.apps.scoach.services.interfaces;
 
 import java.util.List;
 

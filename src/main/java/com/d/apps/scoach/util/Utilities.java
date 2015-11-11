@@ -1,4 +1,4 @@
-package com.d.apps.scoach;
+package com.d.apps.scoach.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.SmokerCoach;
 import com.d.apps.scoach.db.model.CigaretteTrackEntry;
 import com.d.apps.scoach.db.model.Profile;
 
