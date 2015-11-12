@@ -41,7 +41,7 @@ public class DBServicesImpl implements DBServices {
 		cteselector.setEntityManager(factory.createEntityManager());
 		coachesSelector.setEntityManager(factory.createEntityManager());
 		profileCoachSelector.setEntityManager(factory.createEntityManager());
-		//createDBLists();
+		createDBLists();
 		LOG.debug("DBServices started");
 	}
 

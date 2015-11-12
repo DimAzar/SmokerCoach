@@ -37,6 +37,7 @@ public class ProfileCoach implements DBEntity {
 	private Profile profile;
 
 	@ManyToOne(targetEntity=ProfileCoaches.class)
+	@JoinColumn(nullable= false)
     @Getter @Setter
 	private ProfileCoaches coach;
 	
