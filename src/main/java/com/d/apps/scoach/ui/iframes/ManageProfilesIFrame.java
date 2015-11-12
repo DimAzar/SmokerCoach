@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui;
+package com.d.apps.scoach.ui.iframes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -9,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -28,26 +27,27 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import com.d.apps.scoach.SmokerCoach;
+import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.ui.MainFrame;
 
 public class ManageProfilesIFrame extends JInternalFrame {
 	private static final long serialVersionUID = -892682552079556150L;
 	
-	private String version = null;
 	private JTable profilesTable = null;
 	private JPopupMenu rmenu = new JPopupMenu();
 	
-	public ManageProfilesIFrame(Properties properties) {
+	public ManageProfilesIFrame() {
 		super();
-		version = properties.getProperty("app.version");
 		
 		initGrcs();
 		setupListeners();
 		
-		setTitle("Manage System Profiles "+version);
+		setTitle("Manage System Profiles ");
+		setName("Manage Profiles IFrame");
 		setSize(400, 200);
 		setLocation(10,10);
+		setClosable(true);
 		setResizable(true);
 	}
 	
@@ -108,7 +108,7 @@ public class ManageProfilesIFrame extends JInternalFrame {
 					return;
 				}
 				int pid = Integer.parseInt(profilesTable.getValueAt(row, 0).toString());
-				SmokerCoach.DBServices.setActiveProfile(pid);
+				CounterApp.DBServices.setActiveProfile(pid);
 				updateUIProfileChanged();
 			}
 		});
@@ -124,11 +124,11 @@ public class ManageProfilesIFrame extends JInternalFrame {
 					boolean isActive = Boolean.parseBoolean(profilesTable.getValueAt(row, 2).toString());
 					if (isActive) {
 						if (JOptionPane.showConfirmDialog(null, "Profile is the active profile\nDelete Profile ?") == JOptionPane.OK_OPTION) {
-							SmokerCoach.DBServices.deleteProfile(pid);
+							CounterApp.DBServices.deleteProfile(pid);
 							updateUIProfileChanged();
 						}
 					} else {
-						SmokerCoach.DBServices.deleteProfile(pid);
+						CounterApp.DBServices.deleteProfile(pid);
 						updateUIProfileChanged();
 					}
 				}
@@ -170,14 +170,15 @@ public class ManageProfilesIFrame extends JInternalFrame {
 						return;
 					}
 					if (activeval) {
-						SmokerCoach.DBServices.deactivateAllProfiles();
+						CounterApp.DBServices.deactivateAllProfiles();
 					}
 					
-					if (SmokerCoach.DBServices.getProfilesCount() <= 0) {
+					if (CounterApp.DBServices.getProfilesCount() <= 0) {
 						JOptionPane.showMessageDialog(null, "No other profiles, setting as active profile!");
 						activeval = true;
 					}
-					SmokerCoach.DBServices.createProfile(nameval , activeval );
+					Profile p = CounterApp.DBServices.createProfile(nameval , activeval);
+					CounterApp.DBServices.enableCoach("Smoker Coach", p);
 					updateUIProfileChanged();
 				}
 			});
@@ -239,7 +240,7 @@ class CustomTableModel extends AbstractTableModel {
 	}
 	
 	public void refresh() {
-		this.profiles = SmokerCoach.DBServices.getProfiles();
+		this.profiles = CounterApp.DBServices.getProfiles();
 		fireTableDataChanged();
 	}
 	@Override

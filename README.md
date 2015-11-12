@@ -1,2 +1,2 @@
-# SmokerCoach
-Keeping statistics while trying to quit smoking
+# Counter Application
+Keeping counter and statistics on one's life!

@@ -13,19 +13,19 @@ import com.d.apps.scoach.services.interfaces.DBServices;
 import com.d.apps.scoach.ui.MainFrame;
 import com.d.apps.scoach.util.Utilities;
 
-public class SmokerCoach {
-	private static final Logger LOG = LoggerFactory.getLogger(SmokerCoach.class);
+public class CounterApp {
+	private static final Logger LOG = LoggerFactory.getLogger(CounterApp.class);
 	private static final String propertiesName = "app.properties";
 	
 	private final MainFrame mainFrame; 
-	private Properties appProperties;
+	public static Properties appProperties;
 
 	public static DBServices DBServices = new DBServicesImpl();
 	
-	public SmokerCoach() {
+	public CounterApp() {
 		LOG.debug("Starting Coach ");
 		appProperties = Utilities.loadApplicationProperties(propertiesName);
-		mainFrame = new MainFrame(appProperties);
+		mainFrame = new MainFrame();
 		mainFrame.setVisible(true);
 		LOG.debug("Coach started");
 	}
@@ -42,7 +42,7 @@ public class SmokerCoach {
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
-		new SmokerCoach();
+		new CounterApp();
 		LOG.debug("Coach stopped");
 	}
 }

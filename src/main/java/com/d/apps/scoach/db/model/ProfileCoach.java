@@ -1,5 +1,7 @@
 package com.d.apps.scoach.db.model;
 
+import java.sql.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,32 +18,27 @@ import lombok.Setter;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
-@Table (name="CigaretteTrackEntry")
+@Table (name="ProfileCoach")
 @NamedQueries({
-	@NamedQuery(name="cTrackEntry.getAllEntries", query = "SELECT cte FROM CigaretteTrackEntry cte"),
+	@NamedQuery(name="profileCoach.getProfileCoaches", query = "SELECT pc FROM ProfileCoach pc where pc.profile.id = :pid"),
 })
-
-public class CigaretteTrackEntry implements DBEntity {
+public class ProfileCoach implements DBEntity {
 	private static final long serialVersionUID = 1L;
+	
 	@Id
+    @Getter @Setter
     @GeneratedValue
-    @Getter @Setter
     Integer id;
-	
-	@ManyToOne
-	@JoinColumn(nullable= false)
-    @Getter @Setter
-    private Profile profile;
-	
-	@Column(nullable=false)
-    @Getter @Setter
-    private String dateString;
 
-	@Column(nullable=false)
-    @Getter @Setter
-    private Integer cigaretteCount;
+	@Getter @Setter
+	@ManyToOne(targetEntity=Profile.class)
+	@JoinColumn(nullable= false)
+	private Profile profile;
+
+	@Getter @Setter
+	private Integer coachId;
 	
-	public void incrementCigaretteCount() {
-		cigaretteCount++;
-	}
+	@Getter @Setter
+	@Column(nullable=false, updatable=false)
+	private Date dateActivated;
 }

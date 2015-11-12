@@ -1,8 +1,11 @@
 package com.d.apps.scoach.services;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -11,25 +14,34 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.db.model.CigaretteTrackEntry;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.db.model.ProfileCoach;
+import com.d.apps.scoach.db.model.ProfileCoaches;
 import com.d.apps.scoach.db.selectors.CigaretteTrackSelector;
+import com.d.apps.scoach.db.selectors.ProfileCoachSelector;
+import com.d.apps.scoach.db.selectors.ProfileCoachesSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 import com.d.apps.scoach.services.interfaces.DBServices;
 import com.d.apps.scoach.util.Utilities;
 
 public class DBServicesImpl implements DBServices {
-	private static final String PERSISTENCE_UNIT = "SmokerCoach";
+	private static final String PERSISTENCE_UNIT = "CounterApp";
 	private static final Logger LOG = LoggerFactory.getLogger(DBServicesImpl.class);
 	
 	private EntityManagerFactory factory ;
 
 	private ProfileSelector pselector = new ProfileSelector();
 	private CigaretteTrackSelector cteselector = new CigaretteTrackSelector();
+	private ProfileCoachesSelector coachesSelector = new ProfileCoachesSelector();
+	private ProfileCoachSelector profileCoachSelector = new ProfileCoachSelector();
 	
 	public DBServicesImpl() {
 		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
 		
 		pselector.setEntityManager(factory.createEntityManager());
 		cteselector.setEntityManager(factory.createEntityManager());
+		coachesSelector.setEntityManager(factory.createEntityManager());
+		profileCoachSelector.setEntityManager(factory.createEntityManager());
+		createDBLists();
 		LOG.debug("DBServices started");
 	}
 
@@ -41,7 +53,6 @@ public class DBServicesImpl implements DBServices {
 		CigaretteTrackEntry entry = Utilities.getCalendarEntry(p, key);
 		if (entry == null) {
 	    	entry = new CigaretteTrackEntry();
-	    	entry.setProfile(p);
 	    	entry.setDateString(key);
 	    	entry.setCigaretteCount(1);
 	    	
@@ -91,13 +102,13 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public void createProfile(String name) {
-		pselector.createProfile(name);
+	public Profile createProfile(String name) {
+		return createProfile(name, false);
 	}
 
 	@Override
-	public void createProfile(String name, boolean active) {
-		pselector.createProfile(name, active);
+	public Profile createProfile(String name, boolean active) {
+		return pselector.createProfile(name, active);
 	}
 
 	@Override
@@ -105,4 +116,32 @@ public class DBServicesImpl implements DBServices {
 		pselector.updateProfile(p);
 	}
 	
+	private void createDBLists() {
+		ArrayList<ProfileCoaches> coaches = new ArrayList<ProfileCoaches>();
+		
+		ProfileCoaches coach = new ProfileCoaches();
+		coach.setName("Smoker Coach");
+		coaches.add(coach);
+		
+		EntityManager em =  factory.createEntityManager();
+		for (ProfileCoaches c : coaches) {
+			em.getTransaction().begin();
+			em.persist(c);
+			em.getTransaction().commit();
+		}
+	}
+
+	@Override
+	public void enableCoach(String coachName, Profile p) {
+		ProfileCoach coach = new ProfileCoach();
+		coach.setDateActivated(new Date(Calendar.getInstance().getTimeInMillis()));
+		coach.setCoachId(coachesSelector.getCoachIDByName(coachName));
+		p.addCoach(coach);
+		
+	}
+
+	@Override
+	public List<ProfileCoach> getProfileCoaches(int pid) {
+		return profileCoachSelector.getProfileCoaches(pid);
+	}
 }

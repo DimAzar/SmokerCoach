@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.SmokerCoach;
+import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.CigaretteTrackEntry;
 import com.d.apps.scoach.db.model.Profile;
 
@@ -20,7 +20,7 @@ public class Utilities {
 		InputStream input = null;
 
 		try {
-			input = SmokerCoach.class.getClassLoader().getResourceAsStream(propertiesName);
+			input = CounterApp.class.getClassLoader().getResourceAsStream(propertiesName);
     		if (input==null) {
 	            LOG.error("Sorry, unable to find " + input);
     		    return null;
@@ -43,7 +43,7 @@ public class Utilities {
 	}
 
 	public static CigaretteTrackEntry getCalendarEntry (Profile p , String key) {
-		for (CigaretteTrackEntry entry : p.getCigaretteTrack()) {
+		for (CigaretteTrackEntry entry : p.getCigaretteTrackEntry()) {
 			if (entry.getDateString().equals(key)) {
 				return entry;
 			}

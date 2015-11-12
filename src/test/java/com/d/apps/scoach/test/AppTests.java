@@ -13,7 +13,7 @@ import com.d.apps.scoach.db.model.Profile;
 public class AppTests {
 	 @Test
 	 public void test2(){
-		 EntityManagerFactory factory = Persistence.createEntityManagerFactory("SmokerCoach");
+		 EntityManagerFactory factory = Persistence.createEntityManagerFactory("CounterApp");
 		 EntityManager theManager = factory.createEntityManager();
 		 assertNotNull(theManager);
 

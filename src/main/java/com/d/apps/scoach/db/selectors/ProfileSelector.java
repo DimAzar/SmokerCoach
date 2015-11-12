@@ -19,7 +19,7 @@ public class ProfileSelector extends BaseSelector {
     	entityManager.getTransaction().commit();
     }
     
-    public  void createProfile(String name, boolean active) {
+    public Profile createProfile(String name, boolean active) {
     	entityManager.getTransaction().begin();
     	
     	Profile u = new Profile();
@@ -28,6 +28,8 @@ public class ProfileSelector extends BaseSelector {
     	entityManager.persist(u);
     	
     	entityManager.getTransaction().commit();
+    	
+    	return u;
     }
 
     public  void updateProfile(Profile p) {
@@ -36,10 +38,6 @@ public class ProfileSelector extends BaseSelector {
     	entityManager.merge(p);
     	
     	entityManager.getTransaction().commit();
-    }
-
-    public  void createProfile(String name) {
-    	createProfile(name, false);
     }
 
 	public  int getProfilesCount() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import com.d.apps.scoach.db.model.base.DBEntity;
 
@@ -26,16 +30,24 @@ public class Profile implements DBEntity {
 	
 	@Id
     @GeneratedValue
+    @Getter @Setter
     private Integer id;
-    private String firstName;
-    private boolean active = false;
+	
+	@Column(nullable=false)
+	@Getter @Setter	
+	private String firstName;
     
+	@Column(nullable=false)
+	@Getter @Setter
+	private boolean isActive = false;
+
+	@Getter
     @OneToMany(targetEntity=CigaretteTrackEntry.class, mappedBy="profile",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private List<CigaretteTrackEntry> cigaretteTrackEntry = new ArrayList<CigaretteTrackEntry>();
 
-    public List<CigaretteTrackEntry> getCigaretteTrack() {
-		return cigaretteTrackEntry;
-	}
+    @Getter
+    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="profile",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<ProfileCoach> profileCoaches = new ArrayList<ProfileCoach>();
 
     public int getSmokeCount(String dateString) {
     	for (CigaretteTrackEntry cigaretteTrackEntry2 : cigaretteTrackEntry) {
@@ -47,32 +59,13 @@ public class Profile implements DBEntity {
     	return 0;
     }
     
-    public void addTrackEntry(CigaretteTrackEntry e) {
-    	cigaretteTrackEntry.add(e);
+    public void addTrackEntry(CigaretteTrackEntry entry) {
+    	entry.setProfile(this);
+    	cigaretteTrackEntry.add(entry);
     }
     
-	public Integer getId() {
-        return id;
+    public void addCoach(ProfileCoach profileCoach) {
+    	profileCoach.setProfile(this);
+    	profileCoaches.add(profileCoach);
     }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
 }

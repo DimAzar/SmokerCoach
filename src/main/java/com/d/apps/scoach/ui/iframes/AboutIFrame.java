@@ -1,26 +1,29 @@
-package com.d.apps.scoach.ui;
+package com.d.apps.scoach.ui.iframes;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Properties;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.d.apps.scoach.CounterApp;
+
 public class AboutIFrame extends JInternalFrame {
 	private static final long serialVersionUID = -892682552079556150L;
 	String version = null;
 	
-	public AboutIFrame(Properties properties) {
+	public AboutIFrame() {
 		super();
-		version = properties.getProperty("app.version");
+		version = CounterApp.appProperties.getProperty("app.version");
 		
 		initGrcs();
 
-		setTitle("About SmokerCoach");
+		setClosable(true);
+		setTitle("About Counter");
 		setSize(100, 100);
+		setName("About IFrame");
 	}
 	
 	
