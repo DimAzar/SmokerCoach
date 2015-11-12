@@ -32,12 +32,13 @@ public class ProfileSelector extends BaseSelector {
     	return u;
     }
 
-    public  void updateProfile(Profile p) {
+    public Profile updateProfile(Profile p) {
     	entityManager.getTransaction().begin();
     	
     	entityManager.merge(p);
-    	
     	entityManager.getTransaction().commit();
+    	
+    	return p;
     }
 
 	public  int getProfilesCount() {

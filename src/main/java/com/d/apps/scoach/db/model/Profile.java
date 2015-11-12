@@ -68,4 +68,19 @@ public class Profile implements DBEntity {
     	profileCoach.setProfile(this);
     	profileCoaches.add(profileCoach);
     }
+    
+    public void removeCoach(ProfileCoach profileCoach) {
+    	if (profileCoaches.contains(profileCoach)) {
+    		profileCoaches.remove(profileCoach);
+    	};
+    }
+    
+    public void removeCoach(String name) {
+    	for (ProfileCoach profileCoach : profileCoaches) {
+			if (profileCoach.getCoach().getName().equals(name)) {
+				profileCoaches.remove(profileCoach);
+				return;
+			}
+		}
+    }
 }

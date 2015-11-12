@@ -21,6 +21,7 @@ import com.d.apps.scoach.db.model.base.DBEntity;
 @Table (name="ProfileCoach")
 @NamedQueries({
 	@NamedQuery(name="profileCoach.getProfileCoaches", query = "SELECT pc FROM ProfileCoach pc where pc.profile.id = :pid"),
+	@NamedQuery(name="profileCoach.getAllProfileCoaches", query = "SELECT pc FROM ProfileCoach pc"),
 })
 public class ProfileCoach implements DBEntity {
 	private static final long serialVersionUID = 1L;
@@ -35,8 +36,9 @@ public class ProfileCoach implements DBEntity {
 	@JoinColumn(nullable= false)
 	private Profile profile;
 
-	@Getter @Setter
-	private Integer coachId;
+	@ManyToOne(targetEntity=ProfileCoaches.class)
+    @Getter @Setter
+	private ProfileCoaches coach;
 	
 	@Getter @Setter
 	@Column(nullable=false, updatable=false)

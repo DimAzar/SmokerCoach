@@ -41,7 +41,7 @@ public class DBServicesImpl implements DBServices {
 		cteselector.setEntityManager(factory.createEntityManager());
 		coachesSelector.setEntityManager(factory.createEntityManager());
 		profileCoachSelector.setEntityManager(factory.createEntityManager());
-		createDBLists();
+		//createDBLists();
 		LOG.debug("DBServices started");
 	}
 
@@ -135,13 +135,26 @@ public class DBServicesImpl implements DBServices {
 	public void enableCoach(String coachName, Profile p) {
 		ProfileCoach coach = new ProfileCoach();
 		coach.setDateActivated(new Date(Calendar.getInstance().getTimeInMillis()));
-		coach.setCoachId(coachesSelector.getCoachIDByName(coachName));
+		coach.setCoach(coachesSelector.getCoachByName(coachName));
 		p.addCoach(coach);
 		
+		pselector.updateProfile(p);
+	}
+
+
+	@Override
+	public void disableCoach(String coachName, Profile p) {
+		p.removeCoach(coachName);
+		pselector.updateProfile(p);
 	}
 
 	@Override
 	public List<ProfileCoach> getProfileCoaches(int pid) {
 		return profileCoachSelector.getProfileCoaches(pid);
+	}
+
+	@Override
+	public List<ProfileCoaches> getAllCoaches() {
+		return coachesSelector.getAllCoaches();
 	}
 }

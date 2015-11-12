@@ -3,6 +3,7 @@ package com.d.apps.scoach.ui.iframes;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -30,6 +31,7 @@ import javax.swing.table.TableCellRenderer;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
+import com.d.apps.scoach.ui.ProfileCoachesDialog;
 
 public class ManageProfilesIFrame extends JInternalFrame {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -100,6 +102,9 @@ public class ManageProfilesIFrame extends JInternalFrame {
 		JMenuItem setActive = new JMenuItem("Set Active");
 		rmenu.add(setActive);
 		
+		JMenuItem coaches = new JMenuItem("Coaches");
+		rmenu.add(coaches);
+
 		setActive.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -113,6 +118,19 @@ public class ManageProfilesIFrame extends JInternalFrame {
 			}
 		});
 		
+		coaches.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int pid = ((MainFrame)getTopLevelAncestor()).getActiveProfile().getId();
+				ProfileCoachesDialog d = new ProfileCoachesDialog((MainFrame)getTopLevelAncestor(), CounterApp.DBServices.getProfileCoaches(pid));
+				rmenu.setVisible(false);
+				Point p = getLocationOnScreen();
+				p.translate(10, 10);
+				d.setLocation(p);
+				d.setVisible(true);
+			}
+		});
+
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -177,8 +195,9 @@ public class ManageProfilesIFrame extends JInternalFrame {
 						JOptionPane.showMessageDialog(null, "No other profiles, setting as active profile!");
 						activeval = true;
 					}
-					Profile p = CounterApp.DBServices.createProfile(nameval , activeval);
-					CounterApp.DBServices.enableCoach("Smoker Coach", p);
+					CounterApp.DBServices.createProfile(nameval , activeval);
+//					Profile p = CounterApp.DBServices.createProfile(nameval , activeval);
+//					CounterApp.DBServices.enableCoach("Smoker Coach", p);
 					updateUIProfileChanged();
 				}
 			});

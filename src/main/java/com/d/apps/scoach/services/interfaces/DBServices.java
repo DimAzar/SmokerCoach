@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
+import com.d.apps.scoach.db.model.ProfileCoaches;
 
 public interface DBServices {
 	//PROFILES
@@ -21,5 +22,7 @@ public interface DBServices {
     
     public int incrementSmokedCount(int pid);
     public void enableCoach(String coachName, Profile p);
+    public void disableCoach(String coachName, Profile p);
     public List<ProfileCoach> getProfileCoaches(int pid);
+    public List<ProfileCoaches> getAllCoaches();
 }

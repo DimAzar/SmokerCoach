@@ -6,6 +6,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -26,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.db.model.ProfileCoach;
 import com.d.apps.scoach.ui.iframes.AboutIFrame;
 import com.d.apps.scoach.ui.iframes.ManageProfilesIFrame;
 import com.d.apps.scoach.ui.iframes.SmokerCoachIFrame;
@@ -45,7 +48,7 @@ public class MainFrame extends JFrame {
 		initGrcs();
 		activeProfileChanged();
 
-		setSize(800, 800);
+		setSize(300, 300);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
 
@@ -57,6 +60,10 @@ public class MainFrame extends JFrame {
 	}
 
 	//INTERFACE
+	public Profile getActiveProfile() {
+		return activeProfile;
+	}
+	
 	public void actionInvoked(String actionName) {
 		if (actionName.equals("Smoked")) {
 			int count = CounterApp.DBServices.incrementSmokedCount(activeProfile.getId());
@@ -72,7 +79,7 @@ public class MainFrame extends JFrame {
 		activeProfile = CounterApp.DBServices.getActiveProfile();
 		if (activeProfile != null) {
 			setTitle("Counter Application - Active Profile : "+activeProfile.getFirstName());
-			CounterApp.DBServices.getProfileCoaches(activeProfile.getId());
+			updateProfileRelatedUI(activeProfile.getProfileCoaches());
 		} else {
 			setTitle("Counter Application - Active Profile : N/A");
 			showIFrame(new ManageProfilesIFrame());
@@ -87,6 +94,30 @@ public class MainFrame extends JFrame {
 	}
 
 	//PRIVATE
+	private void updateProfileRelatedUI(List<ProfileCoach> activeCoaches) {
+		createMenu();
+		for (ProfileCoach profileCoach : activeCoaches) {
+			if (profileCoach.getCoach().getName().equals("Smoker Coach")) {
+				JMenu health = new JMenu("Health");
+				JMenuItem smoker = new JMenuItem("Smoker"); 
+				health.add(smoker);
+				
+				getJMenuBar().add(health);
+				smoker.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						SmokerCoachIFrame f = new SmokerCoachIFrame();
+						f.setSmokeCount(activeProfile.getSmokeCount(Utilities.createDateStringRep()));
+						showIFrame(f);
+					}
+				});
+				
+				actionPanel.addActionButton(new ToolbarAction("Smoked", new ImageIcon(MainFrame.class.getClassLoader().getResource("images/cig.jpg")), "Increment smoked count", 's', false));
+				actionPanel.recreateBar();
+			}
+		}
+	}
+	
 	private void initGrcs() {
 		Container parent = new JPanel();
 		setContentPane(parent);
@@ -98,7 +129,6 @@ public class MainFrame extends JFrame {
 
 		parent.add(desktopPane, BorderLayout.CENTER);
 		parent.add(actionPanel, BorderLayout.SOUTH);
-		
 		createMenu();
 	}
 
@@ -107,17 +137,12 @@ public class MainFrame extends JFrame {
 		JMenuItem about = new JMenuItem("About"); 
 		help.add(about);
 		
-		JMenu health = new JMenu("Health");
-		JMenuItem smoker = new JMenuItem("Smoker"); 
-		health.add(smoker);
-		
 		JMenu file = new JMenu("File");
 		JMenuItem users = new JMenuItem("Manage Profiles"); 
 		file.add(users);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(file);
-		menuBar.add(health);
 		menuBar.add(help);
 		
 		setJMenuBar(menuBar);
@@ -135,14 +160,6 @@ public class MainFrame extends JFrame {
 				showIFrame(new ManageProfilesIFrame());
 			}
 		});
-		smoker.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SmokerCoachIFrame f = new SmokerCoachIFrame();
-				f.setSmokeCount(activeProfile.getSmokeCount(Utilities.createDateStringRep()));
-				showIFrame(f);
-			}
-		});
 	}
 	
 	public void showIFrame(JInternalFrame frame) {
@@ -158,23 +175,28 @@ public class MainFrame extends JFrame {
 	/* TOOLBAR AND TOOLBAR ACTIONS */
 	class ToolbarPanel extends JToolBar {
 		private static final long serialVersionUID = 1L;
-		private AbstractAction[] actionButtons = new AbstractAction[8];
+		private ArrayList<AbstractAction> actionButtons = new ArrayList<AbstractAction>();
 		
 		public ToolbarPanel() {
 			super();
-			
-			actionButtons[0] = new ToolbarAction("Smoked", new ImageIcon(MainFrame.class.getClassLoader().getResource("images/cig.jpg")), "Increment smoked count", 's', false); 
-			for (AbstractAction toolbarAction : actionButtons) {
-				if (toolbarAction != null) {
-					add(toolbarAction);
-				}
-			}
 		}
 		
 		public void toggleActionBar(boolean enable) {
 			for (AbstractAction toolbarAction : actionButtons) {
 				if (toolbarAction != null) {
 					toolbarAction.setEnabled(enable);
+				}
+			}
+		}
+		
+		public void addActionButton(ToolbarAction action) {
+			actionButtons.add(action);
+		}
+		
+		public void recreateBar () {
+			for (AbstractAction toolbarAction : actionButtons) {
+				if (toolbarAction != null) {
+					add(toolbarAction);
 				}
 			}
 		}
