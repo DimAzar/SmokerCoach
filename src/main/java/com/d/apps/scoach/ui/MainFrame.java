@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
+import com.d.apps.scoach.db.model.coaches.CoachDefinition;
 import com.d.apps.scoach.ui.iframes.AboutIFrame;
 import com.d.apps.scoach.ui.iframes.ManageProfilesIFrame;
 import com.d.apps.scoach.ui.iframes.SmokerCoachIFrame;
@@ -100,6 +101,8 @@ public class MainFrame extends JFrame {
 		
 		for (ProfileCoach profileCoach : activeCoaches) {
 			if (profileCoach.getCoach().getName().equals("Smoker Coach")) {
+				CoachDefinition coachdef = profileCoach.getCoach();
+				
 				JMenu health = new JMenu("Health");
 				JMenuItem smoker = new JMenuItem("Smoker"); 
 				health.add(smoker);
@@ -114,7 +117,11 @@ public class MainFrame extends JFrame {
 					}
 				});
 				
-				actionPanel.addActionButton(new ToolbarAction("Smoked", new ImageIcon(MainFrame.class.getClassLoader().getResource("images/cig.jpg")), "Increment smoked count", 's', false));
+				actionPanel.addActionButton(new ToolbarAction(coachdef.getText(), 
+									new ImageIcon(MainFrame.class.getClassLoader().getResource(coachdef.getImageName())), 
+									coachdef.getDescription(), 
+									coachdef.getAccelerator(), 
+									false));
 				actionPanel.recreateBar();
 			}
 		}

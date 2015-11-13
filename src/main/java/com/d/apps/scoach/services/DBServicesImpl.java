@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.coaches.Coaches;
+import com.d.apps.scoach.db.model.coaches.CoachDefinition;
 import com.d.apps.scoach.db.model.coaches.smoker.CigaretteTrackEntry;
 import com.d.apps.scoach.db.selectors.CigaretteTrackSelector;
 import com.d.apps.scoach.db.selectors.ProfileCoachSelector;
@@ -117,14 +117,19 @@ public class DBServicesImpl implements DBServices {
 	}
 	
 	private void createDBLists() {
-		ArrayList<Coaches> coaches = new ArrayList<Coaches>();
+		ArrayList<CoachDefinition> coaches = new ArrayList<CoachDefinition>();
 		
-		Coaches coach = new Coaches();
+		CoachDefinition coach = new CoachDefinition();
 		coach.setName("Smoker Coach");
+		coach.setDescription("Increment smoked count");
+		coach.setAccelerator('s');
+		coach.setImageName("images/cig.jpg");
+		coach.setText("Smoked");
 		coaches.add(coach);
 		
+		
 		EntityManager em =  factory.createEntityManager();
-		for (Coaches c : coaches) {
+		for (CoachDefinition c : coaches) {
 			em.getTransaction().begin();
 			em.persist(c);
 			em.getTransaction().commit();
@@ -135,7 +140,7 @@ public class DBServicesImpl implements DBServices {
 	public Profile enableCoach(String coachName, Profile p) {
 		ProfileCoach coach = new ProfileCoach();
 		coach.setDateActivated(new Date(Calendar.getInstance().getTimeInMillis()));
-		coach.setCoach(coachesSelector.getCoachByName(coachName));
+		coach.setCoach(getCoachDefinitionByName(coachName));
 		p.addCoach(coach);
 		
 		updateProfile(p);
@@ -157,7 +162,12 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public List<Coaches> getAllCoaches() {
+	public List<CoachDefinition> getAllCoaches() {
 		return coachesSelector.getAllCoaches();
+	}
+
+	@Override
+	public CoachDefinition getCoachDefinitionByName(String name) {
+		return coachesSelector.getCoachByName(name);
 	}
 }

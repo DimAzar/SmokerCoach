@@ -30,18 +30,18 @@ public class CigaretteTrackEntry implements DBEntity {
     Integer id;
 	
 	@ManyToOne
-	@JoinColumn(nullable= false)
+	@JoinColumn(nullable = false)
     @Getter @Setter
     private Profile profile;
 	
 	@Column(nullable=false)
     @Getter @Setter
-    private String dateString;
-
-	@Column(nullable=false)
-    @Getter @Setter
     private Integer cigaretteCount;
 	
+	@Column(nullable=false)
+    @Getter @Setter
+    private String dateString;
+
 	public void incrementCigaretteCount() {
 		cigaretteCount++;
 	}

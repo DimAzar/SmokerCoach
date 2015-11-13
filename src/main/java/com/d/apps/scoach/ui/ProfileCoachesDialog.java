@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.coaches.Coaches;
+import com.d.apps.scoach.db.model.coaches.CoachDefinition;
 
 public class ProfileCoachesDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -71,7 +71,7 @@ public class ProfileCoachesDialog extends JDialog {
 		gridBagLayout.columnWidths = new int[]	{7, 7, };
 		gridBagLayout.columnWeights = new double[]	{.5 , .5};
 
-		List<Coaches> allCoaches = CounterApp.DBServices.getAllCoaches();
+		List<CoachDefinition> allCoaches = CounterApp.DBServices.getAllCoaches();
 		double[] da = new double[allCoaches.size()+1];
 		int[] ia = new int[allCoaches.size()+1];
 		for (int i = 0; i < allCoaches.size()+1; i++) {
@@ -86,7 +86,7 @@ public class ProfileCoachesDialog extends JDialog {
 
 		int rowcnt = 0;
 
-		for (Coaches coachEntry : allCoaches) {
+		for (CoachDefinition coachEntry : allCoaches) {
 			JLabel l = new JLabel(coachEntry.getName());
 			JCheckBox chkb = new JCheckBox("enable", isCoachEnabledInProfile(coachEntry.getId()));
 			chkb.setName(coachEntry.getName());

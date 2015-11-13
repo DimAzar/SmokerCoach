@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.coaches.Coaches;
+import com.d.apps.scoach.db.model.coaches.CoachDefinition;
 
 public interface DBServices {
 	//PROFILES
@@ -24,5 +24,6 @@ public interface DBServices {
     public Profile enableCoach(String coachName, Profile p);
     public Profile disableCoachFromProfile(String coachName, Profile p);
     public List<ProfileCoach> getProfileCoaches(int pid);
-    public List<Coaches> getAllCoaches();
+    public List<CoachDefinition> getAllCoaches();
+    public CoachDefinition getCoachDefinitionByName(String name);
 }
