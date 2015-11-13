@@ -22,6 +22,7 @@ import com.d.apps.scoach.db.model.base.DBEntity;
 @NamedQueries({
 	@NamedQuery(name="profileCoach.getProfileCoaches", query = "SELECT pc FROM ProfileCoach pc where pc.profile.id = :pid"),
 	@NamedQuery(name="profileCoach.getAllProfileCoaches", query = "SELECT pc FROM ProfileCoach pc"),
+	@NamedQuery(name="profileCoach.getProfileCoachById", query = "SELECT pc FROM ProfileCoach pc where pc.id = :cid"),
 })
 public class ProfileCoach implements DBEntity {
 	private static final long serialVersionUID = 1L;

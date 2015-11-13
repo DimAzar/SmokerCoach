@@ -112,8 +112,8 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public void updateProfile(Profile p) {
-		pselector.updateProfile(p);
+	public Profile updateProfile(Profile p) {
+		return pselector.updateProfile(p);
 	}
 	
 	private void createDBLists() {
@@ -141,9 +141,9 @@ public class DBServicesImpl implements DBServices {
 		updateProfile(p);
 	}
 
-
+	
 	@Override
-	public void disableCoach(String coachName, Profile p) {
+	public void disableCoachFromProfile(String coachName, Profile p) {
 		updateProfile(p);
 
 		EntityManager em = factory.createEntityManager();

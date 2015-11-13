@@ -11,7 +11,7 @@ public interface DBServices {
     public Profile findProfile(int pid);
 	public List<Profile> getProfiles();
     public Profile createProfile(String name, boolean active);
-    public void updateProfile(Profile p);
+    public Profile updateProfile(Profile p) ;
     public void deleteProfile(int id);
     
 	public int getProfilesCount();
@@ -22,7 +22,7 @@ public interface DBServices {
     
     public int incrementSmokedCount(int pid);
     public void enableCoach(String coachName, Profile p);
-    public void disableCoach(String coachName, Profile p);
+    public void disableCoachFromProfile(String coachName, Profile p);
     public List<ProfileCoach> getProfileCoaches(int pid);
     public List<ProfileCoaches> getAllCoaches();
 }

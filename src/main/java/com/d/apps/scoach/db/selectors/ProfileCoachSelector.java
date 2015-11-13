@@ -15,4 +15,11 @@ public class ProfileCoachSelector extends BaseSelector {
     	return entityManager.createNamedQuery("profileCoach.getAllProfileCoaches", ProfileCoach.class)
     				.getResultList();
 	}
+	
+	public  ProfileCoach getProfileCoachById (int cid) {
+    	return entityManager.createNamedQuery("profileCoach.getProfileCoachById", ProfileCoach.class)
+    				.setParameter("cid", cid)
+    				.getSingleResult();
+	}
+	
 }

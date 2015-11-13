@@ -53,7 +53,7 @@ public class ProfileCoachesDialog extends JDialog {
 						controller.activeProfileChanged();
 					} else
 					if (!box.isSelected() && isCoachEnabledInProfile(box.getName())) {
-						CounterApp.DBServices.disableCoach(box.getName(), controller.getActiveProfile());
+						CounterApp.DBServices.disableCoachFromProfile(box.getName(), controller.getActiveProfile());
 						controller.activeProfileChanged();
 					}
 				}

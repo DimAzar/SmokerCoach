@@ -46,7 +46,7 @@ public class Profile implements DBEntity {
     private List<CigaretteTrackEntry> cigaretteTrackEntry = new ArrayList<CigaretteTrackEntry>();
 
     @Getter
-    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="profile",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="coach", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ProfileCoach> profileCoaches = new ArrayList<ProfileCoach>();
 
     public int getSmokeCount(String dateString) {
