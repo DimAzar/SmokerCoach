@@ -1,4 +1,4 @@
-package com.d.apps.scoach.db.model;
+package com.d.apps.scoach.db.model.coaches.smoker;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 

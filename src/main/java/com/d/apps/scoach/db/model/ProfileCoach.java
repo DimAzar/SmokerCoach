@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.d.apps.scoach.db.model.base.DBEntity;
+import com.d.apps.scoach.db.model.coaches.Coaches;
 
 @Entity 
 @Table (name="ProfileCoach")
@@ -37,10 +38,10 @@ public class ProfileCoach implements DBEntity {
 	@JoinColumn(nullable= false)
 	private Profile profile;
 
-	@ManyToOne(targetEntity=ProfileCoaches.class)
+	@ManyToOne(targetEntity=Coaches.class)
 	@JoinColumn(nullable= false)
     @Getter @Setter
-	private ProfileCoaches coach;
+	private Coaches coach;
 	
 	@Getter @Setter
 	@Column(nullable=false, updatable=false)

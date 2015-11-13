@@ -4,8 +4,8 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
         <class>com.d.apps.scoach.db.model.Profile</class>
-        <class>com.d.apps.scoach.db.model.CigaretteTrackEntry</class>
-        <class>com.d.apps.scoach.db.model.ProfileCoaches</class>
+        <class>com.d.apps.scoach.db.model.coaches.smoker.CigaretteTrackEntry</class>
+        <class>com.d.apps.scoach.db.model.coaches.Coaches</class>
         <class>com.d.apps.scoach.db.model.ProfileCoach</class>
 
         <properties>
@@ -13,7 +13,7 @@
             <property name="hibernate.connection.url" value="jdbc:h2:file:./db/counterApp"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
-            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.show_sql" value="true" />
             <property name="javax.persistence.jdbc.user" value="admin"/>
             <property name="javax.persistence.jdbc.password" value="sausages"/>
         </properties>   

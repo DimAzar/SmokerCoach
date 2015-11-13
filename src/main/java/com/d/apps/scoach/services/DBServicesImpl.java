@@ -12,13 +12,13 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.db.model.CigaretteTrackEntry;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.ProfileCoaches;
+import com.d.apps.scoach.db.model.coaches.Coaches;
+import com.d.apps.scoach.db.model.coaches.smoker.CigaretteTrackEntry;
 import com.d.apps.scoach.db.selectors.CigaretteTrackSelector;
 import com.d.apps.scoach.db.selectors.ProfileCoachSelector;
-import com.d.apps.scoach.db.selectors.ProfileCoachesSelector;
+import com.d.apps.scoach.db.selectors.CoachesSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 import com.d.apps.scoach.services.interfaces.DBServices;
 import com.d.apps.scoach.util.Utilities;
@@ -31,7 +31,7 @@ public class DBServicesImpl implements DBServices {
 
 	private ProfileSelector pselector = new ProfileSelector();
 	private CigaretteTrackSelector cteselector = new CigaretteTrackSelector();
-	private ProfileCoachesSelector coachesSelector = new ProfileCoachesSelector();
+	private CoachesSelector coachesSelector = new CoachesSelector();
 	private ProfileCoachSelector profileCoachSelector = new ProfileCoachSelector();
 	
 	public DBServicesImpl() {
@@ -117,14 +117,14 @@ public class DBServicesImpl implements DBServices {
 	}
 	
 	private void createDBLists() {
-		ArrayList<ProfileCoaches> coaches = new ArrayList<ProfileCoaches>();
+		ArrayList<Coaches> coaches = new ArrayList<Coaches>();
 		
-		ProfileCoaches coach = new ProfileCoaches();
+		Coaches coach = new Coaches();
 		coach.setName("Smoker Coach");
 		coaches.add(coach);
 		
 		EntityManager em =  factory.createEntityManager();
-		for (ProfileCoaches c : coaches) {
+		for (Coaches c : coaches) {
 			em.getTransaction().begin();
 			em.persist(c);
 			em.getTransaction().commit();
@@ -132,25 +132,23 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public void enableCoach(String coachName, Profile p) {
+	public Profile enableCoach(String coachName, Profile p) {
 		ProfileCoach coach = new ProfileCoach();
 		coach.setDateActivated(new Date(Calendar.getInstance().getTimeInMillis()));
 		coach.setCoach(coachesSelector.getCoachByName(coachName));
 		p.addCoach(coach);
 		
 		updateProfile(p);
+		return p;
 	}
 
 	
 	@Override
-	public void disableCoachFromProfile(String coachName, Profile p) {
+	public Profile disableCoachFromProfile(String coachName, Profile p) {
+		p.removeCoach(coachName);
 		updateProfile(p);
-
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		int toBeRemoved = p.removeCoach(coachName);
-		em.remove(em.find(ProfileCoach.class, toBeRemoved));
-		em.getTransaction().commit();
+		
+		return p;
 	}
 
 	@Override
@@ -159,7 +157,7 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public List<ProfileCoaches> getAllCoaches() {
+	public List<Coaches> getAllCoaches() {
 		return coachesSelector.getAllCoaches();
 	}
 }

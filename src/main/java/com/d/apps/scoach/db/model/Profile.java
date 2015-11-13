@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.d.apps.scoach.db.model.base.DBEntity;
+import com.d.apps.scoach.db.model.coaches.smoker.CigaretteTrackEntry;
 
 @Entity 
 @Table (name="Profile")
@@ -42,11 +43,11 @@ public class Profile implements DBEntity {
 	private boolean isActive = false;
 
 	@Getter
-    @OneToMany(targetEntity=CigaretteTrackEntry.class, mappedBy="profile",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity=CigaretteTrackEntry.class, mappedBy="profile",fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     private List<CigaretteTrackEntry> cigaretteTrackEntry = new ArrayList<CigaretteTrackEntry>();
 
     @Getter
-    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="coach", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="profile", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<ProfileCoach> profileCoaches = new ArrayList<ProfileCoach>();
 
     public int getSmokeCount(String dateString) {

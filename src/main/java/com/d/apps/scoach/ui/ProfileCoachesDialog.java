@@ -18,8 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.d.apps.scoach.CounterApp;
+import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.ProfileCoaches;
+import com.d.apps.scoach.db.model.coaches.Coaches;
 
 public class ProfileCoachesDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -49,11 +50,13 @@ public class ProfileCoachesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				for (JCheckBox box : options) {
 					if (box.isSelected() && !isCoachEnabledInProfile(box.getName())) {
-						CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
+						Profile p = CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
+						currentProfileCoaches = p.getProfileCoaches();
 						controller.activeProfileChanged();
 					} else
 					if (!box.isSelected() && isCoachEnabledInProfile(box.getName())) {
-						CounterApp.DBServices.disableCoachFromProfile(box.getName(), controller.getActiveProfile());
+						Profile p = CounterApp.DBServices.disableCoachFromProfile(box.getName(), controller.getActiveProfile());
+						currentProfileCoaches = p.getProfileCoaches();
 						controller.activeProfileChanged();
 					}
 				}
@@ -68,7 +71,7 @@ public class ProfileCoachesDialog extends JDialog {
 		gridBagLayout.columnWidths = new int[]	{7, 7, };
 		gridBagLayout.columnWeights = new double[]	{.5 , .5};
 
-		List<ProfileCoaches> allCoaches = CounterApp.DBServices.getAllCoaches();
+		List<Coaches> allCoaches = CounterApp.DBServices.getAllCoaches();
 		double[] da = new double[allCoaches.size()+1];
 		int[] ia = new int[allCoaches.size()+1];
 		for (int i = 0; i < allCoaches.size()+1; i++) {
@@ -83,7 +86,7 @@ public class ProfileCoachesDialog extends JDialog {
 
 		int rowcnt = 0;
 
-		for (ProfileCoaches coachEntry : allCoaches) {
+		for (Coaches coachEntry : allCoaches) {
 			JLabel l = new JLabel(coachEntry.getName());
 			JCheckBox chkb = new JCheckBox("enable", isCoachEnabledInProfile(coachEntry.getId()));
 			chkb.setName(coachEntry.getName());

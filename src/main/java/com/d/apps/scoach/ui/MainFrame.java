@@ -48,7 +48,7 @@ public class MainFrame extends JFrame {
 		initGrcs();
 		activeProfileChanged();
 
-		setSize(300, 300);
+		setSize(800, 600);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
 
@@ -95,7 +95,9 @@ public class MainFrame extends JFrame {
 
 	//PRIVATE
 	private void updateProfileRelatedUI(List<ProfileCoach> activeCoaches) {
-		createMenu();
+		createBasicMenu();
+		actionPanel.cleanBar();
+		
 		for (ProfileCoach profileCoach : activeCoaches) {
 			if (profileCoach.getCoach().getName().equals("Smoker Coach")) {
 				JMenu health = new JMenu("Health");
@@ -129,10 +131,10 @@ public class MainFrame extends JFrame {
 
 		parent.add(desktopPane, BorderLayout.CENTER);
 		parent.add(actionPanel, BorderLayout.SOUTH);
-		createMenu();
+		createBasicMenu();
 	}
 
-	private void createMenu() {
+	private void createBasicMenu() {
 		JMenu help = new JMenu("Help");
 		JMenuItem about = new JMenuItem("About"); 
 		help.add(about);
@@ -191,6 +193,11 @@ public class MainFrame extends JFrame {
 		
 		public void addActionButton(ToolbarAction action) {
 			actionButtons.add(action);
+		}
+		
+		public void cleanBar() {
+			removeAll();
+			actionButtons.clear();
 		}
 		
 		public void recreateBar () {

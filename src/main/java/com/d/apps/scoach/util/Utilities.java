@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.db.model.CigaretteTrackEntry;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.db.model.coaches.smoker.CigaretteTrackEntry;
 
 public class Utilities {
 	private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);

@@ -36,8 +36,8 @@ public class ProfileSelector extends BaseSelector {
     	entityManager.getTransaction().begin();
     	
     	entityManager.merge(p);
+    	entityManager.flush();
     	entityManager.getTransaction().commit();
-    	
     	return p;
     }
 
