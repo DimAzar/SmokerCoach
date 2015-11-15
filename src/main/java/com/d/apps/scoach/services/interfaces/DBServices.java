@@ -2,9 +2,8 @@ package com.d.apps.scoach.services.interfaces;
 
 import java.util.List;
 
+import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.coaches.CoachDefinition;
 
 public interface DBServices {
 	//PROFILES
@@ -20,10 +19,6 @@ public interface DBServices {
     public void deactivateAllProfiles();
     public Profile getActiveProfile();
     
-    public int incrementSmokedCount(int pid);
-    public Profile enableCoach(String coachName, Profile p);
-    public Profile disableCoachFromProfile(String coachName, Profile p);
-    public List<ProfileCoach> getProfileCoaches(int pid);
-    public List<CoachDefinition> getAllCoaches();
-    public CoachDefinition getCoachDefinitionByName(String name);
+    public List<CoachTemplate> getCoachTemplates();
+    public void deleteCoach(int cid);
 }

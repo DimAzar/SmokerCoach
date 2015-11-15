@@ -121,8 +121,8 @@ public class ManageProfilesIFrame extends JInternalFrame {
 		coaches.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int pid = ((MainFrame)getTopLevelAncestor()).getActiveProfile().getId();
-				ProfileCoachesDialog d = new ProfileCoachesDialog((MainFrame)getTopLevelAncestor(), CounterApp.DBServices.getProfileCoaches(pid));
+				Profile activeProfile = ((MainFrame)getTopLevelAncestor()).getActiveProfile();
+				ProfileCoachesDialog d = new ProfileCoachesDialog((MainFrame)getTopLevelAncestor(), activeProfile.getProfileCoaches());
 				rmenu.setVisible(false);
 				Point p = getLocationOnScreen();
 				p.translate(10, 10);

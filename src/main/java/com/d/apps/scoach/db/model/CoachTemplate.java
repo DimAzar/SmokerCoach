@@ -1,5 +1,6 @@
-package com.d.apps.scoach.db.model.coaches.smoker;
+package com.d.apps.scoach.db.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,24 +14,19 @@ import lombok.Setter;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
-@Table (name="SmokerBasicCounters")
+@Table (name="CoachTemplate")
 @NamedQueries({
-	@NamedQuery(name="smokerBasicCounters.getCounters", query = "SELECT cnt FROM SmokerBasicCounters cnt"),
+	@NamedQuery(name="coachTemplate.getAllCoaches", query = "SELECT ct FROM CoachTemplate ct "),
 })
-
-public class SmokerBasicCounters implements DBEntity {
+public class CoachTemplate implements DBEntity {
 	private static final long serialVersionUID = 1L;
-	@Id
-    @GeneratedValue
-    @Getter @Setter
-    Integer id;
 	
+	@Id
     @Getter @Setter
-    private double packPrice;
-    
-    @Getter @Setter
-    private int cigsInPack;
-    
-    
-    
+    @GeneratedValue
+    private Integer id;
+
+	@Getter @Setter
+	@Column(unique=true, updatable=false)
+	private String name;
 }

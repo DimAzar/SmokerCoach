@@ -12,7 +12,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -29,11 +28,9 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.coaches.CoachDefinition;
 import com.d.apps.scoach.ui.iframes.AboutIFrame;
+import com.d.apps.scoach.ui.iframes.ManageCoachesIFrame;
 import com.d.apps.scoach.ui.iframes.ManageProfilesIFrame;
-import com.d.apps.scoach.ui.iframes.SmokerCoachIFrame;
-import com.d.apps.scoach.util.Utilities;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -7859383450590563738L;
@@ -66,14 +63,6 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void actionInvoked(String actionName) {
-		if (actionName.equals("Smoked")) {
-			int count = CounterApp.DBServices.incrementSmokedCount(activeProfile.getId());
-			for (JInternalFrame frame : desktopPane.getAllFrames()) {
-				if (frame instanceof SmokerCoachIFrame && frame.isVisible()) {
-					((SmokerCoachIFrame)frame).setSmokeCount(count);
-				}
-			}
-		}
 	}
 	
 	public void activeProfileChanged() {
@@ -87,11 +76,6 @@ public class MainFrame extends JFrame {
 		}
 		actionPanel.toggleActionBar(activeProfile != null);
 		
-		for (JInternalFrame frame : desktopPane.getAllFrames()) {
-			if (frame instanceof SmokerCoachIFrame && frame.isVisible()) {
-				((SmokerCoachIFrame)frame).setSmokeCount(activeProfile.getSmokeCount(Utilities.createDateStringRep()));
-			}
-		}
 	}
 
 	//PRIVATE
@@ -100,30 +84,6 @@ public class MainFrame extends JFrame {
 		actionPanel.cleanBar();
 		
 		for (ProfileCoach profileCoach : activeCoaches) {
-			if (profileCoach.getCoach().getName().equals("Smoker Coach")) {
-				CoachDefinition coachdef = profileCoach.getCoach();
-				
-				JMenu health = new JMenu("Health");
-				JMenuItem smoker = new JMenuItem("Smoker"); 
-				health.add(smoker);
-				
-				getJMenuBar().add(health);
-				smoker.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						SmokerCoachIFrame f = new SmokerCoachIFrame();
-						f.setSmokeCount(activeProfile.getSmokeCount(Utilities.createDateStringRep()));
-						showIFrame(f);
-					}
-				});
-				
-				actionPanel.addActionButton(new ToolbarAction(coachdef.getText(), 
-									new ImageIcon(MainFrame.class.getClassLoader().getResource(coachdef.getImageName())), 
-									coachdef.getDescription(), 
-									coachdef.getAccelerator(), 
-									false));
-				actionPanel.recreateBar();
-			}
 		}
 	}
 	
@@ -147,8 +107,10 @@ public class MainFrame extends JFrame {
 		help.add(about);
 		
 		JMenu file = new JMenu("File");
-		JMenuItem users = new JMenuItem("Manage Profiles"); 
-		file.add(users);
+		JMenuItem profiles = new JMenuItem("Manage Profiles"); 
+		JMenuItem coaches = new JMenuItem("Manage Coaches");
+		file.add(profiles);
+		file.add(coaches);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(file);
@@ -163,10 +125,16 @@ public class MainFrame extends JFrame {
 				showIFrame(new AboutIFrame());
 			}
 		});
-		users.addActionListener(new ActionListener() {
+		profiles.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showIFrame(new ManageProfilesIFrame());
+			}
+		});
+		coaches.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showIFrame(new ManageCoachesIFrame());
 			}
 		});
 	}

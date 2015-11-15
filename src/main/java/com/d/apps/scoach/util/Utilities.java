@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.model.coaches.smoker.CigaretteTrackEntry;
 
 public class Utilities {
 	private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
@@ -42,15 +40,6 @@ public class Utilities {
 		return ans;
 	}
 
-	public static CigaretteTrackEntry getCalendarEntry (Profile p , String key) {
-		for (CigaretteTrackEntry entry : p.getCigaretteTrackEntry()) {
-			if (entry.getDateString().equals(key)) {
-				return entry;
-			}
-		}
-		return null;
-	}
-	
 	public static String createDateStringRep() {
 		String ans = String.format("%s/%s/%s", 
 				Calendar.getInstance().get(Calendar.DAY_OF_MONTH),

@@ -11,14 +11,6 @@ import com.d.apps.scoach.db.selectors.base.BaseSelector;
 public class ProfileSelector extends BaseSelector {
 	private static final Logger LOG = LoggerFactory.getLogger(ProfileSelector.class);
 	
-    public  void deleteProfile(int id) {
-    	entityManager.getTransaction().begin();
-    	
-    	entityManager.remove(entityManager.find(Profile.class, id));
-    	
-    	entityManager.getTransaction().commit();
-    }
-    
     public Profile createProfile(String name, boolean active) {
     	entityManager.getTransaction().begin();
     	
@@ -30,15 +22,6 @@ public class ProfileSelector extends BaseSelector {
     	entityManager.getTransaction().commit();
     	
     	return u;
-    }
-
-    public Profile updateProfile(Profile p) {
-    	entityManager.getTransaction().begin();
-    	
-    	entityManager.merge(p);
-    	entityManager.flush();
-    	entityManager.getTransaction().commit();
-    	return p;
     }
 
 	public  int getProfilesCount() {
@@ -64,7 +47,7 @@ public class ProfileSelector extends BaseSelector {
 			} else {
 				profile.setActive(false);
 			}
-			updateProfile(profile);
+			updateEntity(profile);
 		}    	
     }
     
@@ -73,7 +56,7 @@ public class ProfileSelector extends BaseSelector {
     	for (Profile profile : profiles) {
 			if (profile.isActive()) {
 				profile.setActive(false);
-				updateProfile(profile);
+				updateEntity(profile);
 			}
 		}    	
     }

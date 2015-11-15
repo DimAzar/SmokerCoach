@@ -18,9 +18,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.d.apps.scoach.CounterApp;
+import com.d.apps.scoach.db.model.CoachInstance;
+import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
-import com.d.apps.scoach.db.model.coaches.CoachDefinition;
 
 public class ProfileCoachesDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -36,7 +37,7 @@ public class ProfileCoachesDialog extends JDialog {
 		
 		initGrcs();
 		
-		setSize(350, 600);
+		setSize(350, 300);
 		setModal(true);
 	}
 	
@@ -50,14 +51,14 @@ public class ProfileCoachesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				for (JCheckBox box : options) {
 					if (box.isSelected() && !isCoachEnabledInProfile(box.getName())) {
-						Profile p = CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
-						currentProfileCoaches = p.getProfileCoaches();
-						controller.activeProfileChanged();
+//						Profile p = CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
+//						currentProfileCoaches = p.getProfileCoaches();
+//						controller.activeProfileChanged();
 					} else
 					if (!box.isSelected() && isCoachEnabledInProfile(box.getName())) {
-						Profile p = CounterApp.DBServices.disableCoachFromProfile(box.getName(), controller.getActiveProfile());
-						currentProfileCoaches = p.getProfileCoaches();
-						controller.activeProfileChanged();
+//						Profile p = CounterApp.DBServices.disableCoachFromProfile(box.getName(), controller.getActiveProfile());
+//						currentProfileCoaches = p.getProfileCoaches();
+//						controller.activeProfileChanged();
 					}
 				}
 			}
@@ -71,7 +72,7 @@ public class ProfileCoachesDialog extends JDialog {
 		gridBagLayout.columnWidths = new int[]	{7, 7, };
 		gridBagLayout.columnWeights = new double[]	{.5 , .5};
 
-		List<CoachDefinition> allCoaches = CounterApp.DBServices.getAllCoaches();
+		List<CoachTemplate> allCoaches = CounterApp.DBServices.getCoachTemplates();
 		double[] da = new double[allCoaches.size()+1];
 		int[] ia = new int[allCoaches.size()+1];
 		for (int i = 0; i < allCoaches.size()+1; i++) {
@@ -86,7 +87,7 @@ public class ProfileCoachesDialog extends JDialog {
 
 		int rowcnt = 0;
 
-		for (CoachDefinition coachEntry : allCoaches) {
+		for (CoachTemplate coachEntry : allCoaches) {
 			JLabel l = new JLabel(coachEntry.getName());
 			JCheckBox chkb = new JCheckBox("enable", isCoachEnabledInProfile(coachEntry.getId()));
 			chkb.setName(coachEntry.getName());
