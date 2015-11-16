@@ -42,7 +42,7 @@ public class CoachInstance implements DBEntity {
 	private CoachTemplate template;
 	
 	@Getter
-    @OneToMany(targetEntity=CoachCounter.class, fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity=CoachCounter.class, mappedBy="counter", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<CoachCounter> counters = new ArrayList<CoachCounter>();
 	
 	//TODO move to counter, action table

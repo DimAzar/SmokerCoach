@@ -31,10 +31,6 @@ public class CounterInstance implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
-	@OneToOne(mappedBy="counter")
-	private CoachCounter coach;
-	
-	@Getter @Setter
 	@OneToOne
 	@JoinColumn(name="template_id") 
 	private CounterTemplate template;

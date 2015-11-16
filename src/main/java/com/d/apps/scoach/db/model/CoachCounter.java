@@ -30,8 +30,8 @@ public class CoachCounter implements DBEntity {
     Integer id;
 
 	@Getter @Setter
-	@OneToOne
-	@JoinColumn(name="counter_id") 
+	@ManyToOne(targetEntity=CounterInstance.class)
+	@JoinColumn(nullable=false)
 	private CounterInstance counter;
 
     @Getter @Setter
