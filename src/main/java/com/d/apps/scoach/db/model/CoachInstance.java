@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -37,14 +38,18 @@ public class CoachInstance implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
-	@OneToOne
-	@JoinColumn(name="template_id") 
+	@ManyToOne(targetEntity=Profile.class)
+	@JoinColumn(nullable=false, name="template_id") 
 	private CoachTemplate template;
 	
 	@Getter
     @OneToMany(targetEntity=CoachCounter.class, mappedBy="counter", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<CoachCounter> counters = new ArrayList<CoachCounter>();
 	
+    @Getter
+    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<ProfileCoach> coachProfiles = new ArrayList<ProfileCoach>();
+
 	//TODO move to counter, action table
 	@Getter @Setter
 	@Column(updatable=false)

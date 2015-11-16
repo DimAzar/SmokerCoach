@@ -1,7 +1,6 @@
 package com.d.apps.scoach.ui.iframes;
 
 import java.awt.BorderLayout;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,27 +20,23 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
 import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.db.model.CoachCounter;
-import com.d.apps.scoach.db.model.CoachInstance;
-import com.d.apps.scoach.db.model.CoachTemplate;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.CoachCountersDialog;
-import com.d.apps.scoach.ui.MainFrame;
-import com.d.apps.scoach.ui.ProfileCoachesDialog;
+import com.d.apps.scoach.db.model.CounterTemplate;
 
-public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
+public class ManageCountersIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
 	
 	private JPopupMenu rmenu = new JPopupMenu();
 	
-	public ManageCoachesIFrame() {
+	public ManageCountersIFrame() {
 		super();
 		
 		initGrcs();
+		initRMenu();
+
 		setupListeners();
 		
-		setTitle("Manage System Coaches ");
-		setName("Manage Coaches IFrame");
+		setTitle("Manage System Counters");
+		setName("Manage Counters IFrame");
 		setSize(400, 200);
 		setLocation(10,10);
 		setClosable(true);
@@ -71,15 +66,15 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		});
 	}
 	
-	private void initGrcs() {
+	protected void initGrcs() {
 		JPanel parent = (JPanel) getContentPane();
 		parent.setLayout(new BorderLayout());
 		
-		AbstractTableModel dtm = new CustomCoachesTableModel();
+		AbstractTableModel dtm = new CustomCounteresTableModel();
 		entityTable = new JTable(dtm);
 		
 		parent.add(new JScrollPane(entityTable), BorderLayout.CENTER);
-		parent.add(new CreateCoachesPanel(), BorderLayout.SOUTH);
+		parent.add(new CreateCounteresPanel(), BorderLayout.SOUTH);
 		
 		entityTable.setRowSelectionAllowed(true);
 		entityTable.setDefaultRenderer(Object.class, new CustomRenderer());
@@ -88,11 +83,10 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		entityTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		dtm.fireTableDataChanged();
 
-		initRMenu();
 	}
 	
 	private void initRMenu() {
-		JMenuItem delete = new JMenuItem("Delete Coach");
+		JMenuItem delete = new JMenuItem("Delete Counter");
 		rmenu.add(delete);
 		 
 		JMenuItem counters = new JMenuItem("Counters");
@@ -101,14 +95,6 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		counters.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-/*				MainFrame controller = (MainFrame)getTopLevelAncestor();
-				CoachInstance ci = CounterApp.DBServices.get;
-				CoachCountersDialog d = new CoachCountersDialog(controller, ci.getCounters());
-				rmenu.setVisible(false);
-				Point p = getLocationOnScreen();
-				p.translate(10, 10);
-				d.setLocation(p);
-				d.setVisible(true);*/
 			}
 		});
 
@@ -116,11 +102,11 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				rmenu.setVisible(false);
-				if (JOptionPane.showConfirmDialog(null, "Delete Coach?") == JOptionPane.OK_OPTION) {
+				if (JOptionPane.showConfirmDialog(null, "Delete Counter?") == JOptionPane.OK_OPTION) {
 					int row = entityTable.getSelectedRow();
 					int cid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 					
-					CounterApp.DBServices.deleteCoachTemplate(cid);
+					CounterApp.DBServices.deleteCounterTemplate(cid);
 					updateUIProfileChanged();
 				}
 			}
@@ -128,16 +114,16 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	}
 	
 	private void updateUIProfileChanged() {
-		((CustomCoachesTableModel)entityTable.getModel()).refresh();
+		((CustomCounteresTableModel)entityTable.getModel()).refresh();
 		rmenu.setVisible(false);
 	}
 
-	class CreateCoachesPanel extends JPanel {
+	class CreateCounteresPanel extends JPanel {
 		private static final long serialVersionUID = 5244913423336516955L;
 		private JTextField name = new JTextField(20);
 		private JButton create = new JButton("Create");
 		
-		public CreateCoachesPanel() {
+		public CreateCounteresPanel() {
 			add(name);
 			add(create);
 
@@ -149,19 +135,19 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 						JOptionPane.showMessageDialog(null, "Name cannot be empty! ");
 						return;
 					}
-					if (!isCoachNameUnique(nameval)) {
+					if (!isCounterNameUnique(nameval)) {
 						JOptionPane.showMessageDialog(null, "Name must be unique! ");
 						return;
 					}
 
-					CounterApp.DBServices.createCoachTemplate(name.getText());
+					CounterApp.DBServices.createCounterTemplate(name.getText());
 					updateUIProfileChanged();
 					name.setText("");
 				}
 			});
 		}
 		
-		private boolean isCoachNameUnique(String name) {
+		private boolean isCounterNameUnique(String name) {
 			for (int i = 0; i < entityTable.getRowCount(); i++) {
 				if (entityTable.getValueAt(i, 1).toString().equals(name)) {
 					return false;
@@ -172,17 +158,17 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		}
 	}
 
-	class CustomCoachesTableModel extends AbstractTableModel {
+	class CustomCounteresTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;
-		private List<CoachTemplate> coaches = new ArrayList<CoachTemplate>();
+		private List<CounterTemplate> coaches = new ArrayList<CounterTemplate>();
 		
-		public CustomCoachesTableModel() {
+		public CustomCounteresTableModel() {
 			super();
 			refresh();
 		}
 		
 		public void refresh() {
-			this.coaches = CounterApp.DBServices.getCoachTemplates();
+			this.coaches = CounterApp.DBServices.getCounterTemplates();
 			fireTableDataChanged();
 		}
 		
@@ -205,7 +191,7 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	
 		@Override
 		public Object getValueAt(int row, int column) {
-			CoachTemplate ct = coaches.get(row);
+			CounterTemplate ct = coaches.get(row);
 			
 			switch (column) {
 				case 0:

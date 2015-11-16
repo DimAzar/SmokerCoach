@@ -1,12 +1,12 @@
 package com.d.apps.scoach.ui.iframes;
 
-import javax.swing.JInternalFrame;
-
 import java.awt.Container;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
+
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 
 public class SmokerCoachIFrame extends JInternalFrame {
 	private static final long serialVersionUID = 1L;

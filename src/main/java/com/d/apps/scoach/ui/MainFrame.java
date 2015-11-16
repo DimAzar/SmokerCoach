@@ -30,6 +30,7 @@ import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
 import com.d.apps.scoach.ui.iframes.AboutIFrame;
 import com.d.apps.scoach.ui.iframes.ManageCoachesIFrame;
+import com.d.apps.scoach.ui.iframes.ManageCountersIFrame;
 import com.d.apps.scoach.ui.iframes.ManageProfilesIFrame;
 
 public class MainFrame extends JFrame {
@@ -109,9 +110,12 @@ public class MainFrame extends JFrame {
 		JMenu file = new JMenu("File");
 		JMenuItem profiles = new JMenuItem("Manage Profiles"); 
 		JMenuItem coaches = new JMenuItem("Manage Coaches");
+		JMenuItem counters = new JMenuItem("Manage Counters");
+		
 		file.add(profiles);
 		file.add(coaches);
-
+		file.add(counters);
+		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(file);
 		menuBar.add(help);
@@ -135,6 +139,12 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showIFrame(new ManageCoachesIFrame());
+			}
+		});
+		counters.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showIFrame(new ManageCountersIFrame());
 			}
 		});
 	}

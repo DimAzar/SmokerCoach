@@ -3,6 +3,7 @@ package com.d.apps.scoach.services.interfaces;
 import java.util.List;
 
 import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.db.model.CounterTemplate;
 import com.d.apps.scoach.db.model.Profile;
 
 public interface DBServices {
@@ -26,4 +27,9 @@ public interface DBServices {
     
     public Profile enableCoach(String name, Profile p);
     public Profile disableCoach(String name, Profile p);
+    
+    public List<CounterTemplate> getCounterTemplates();
+    public CounterTemplate createCounterTemplate(String name);
+    public CounterTemplate updateCounterTemplate(int cid);
+    public void deleteCounterTemplate(int cid);
 }

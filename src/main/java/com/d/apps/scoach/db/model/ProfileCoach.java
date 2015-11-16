@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -39,7 +38,8 @@ public class ProfileCoach implements DBEntity {
 	private Profile profile;
 
     @Getter @Setter
-    @OneToOne
+	@ManyToOne(targetEntity=CoachInstance.class)
+	@JoinColumn(nullable=false)
 	private CoachInstance coach;
 	
 	@Getter @Setter
