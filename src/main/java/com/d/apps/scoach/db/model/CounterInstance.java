@@ -4,7 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -29,9 +31,12 @@ public class CounterInstance implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
+	@OneToOne(mappedBy="counter")
 	private CoachCounter coach;
 	
 	@Getter @Setter
+	@OneToOne
+	@JoinColumn(name="template_id") 
 	private CounterTemplate template;
 	
 	@Getter @Setter

@@ -3,7 +3,6 @@ package com.d.apps.scoach.db.selectors.base;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 public class BaseSelector {
@@ -33,6 +32,12 @@ public class BaseSelector {
     	entityManager.getTransaction().commit();
     	return e;
     }
-
-
+    
+    public DBEntity createEntity(DBEntity e) {
+    	entityManager.getTransaction().begin();
+    	
+    	entityManager.persist(e);
+    	entityManager.getTransaction().commit();
+    	return e;
+    }
 }

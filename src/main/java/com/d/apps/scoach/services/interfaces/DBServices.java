@@ -20,5 +20,10 @@ public interface DBServices {
     public Profile getActiveProfile();
     
     public List<CoachTemplate> getCoachTemplates();
-    public void deleteCoach(int cid);
+    public CoachTemplate createCoachTemplate(String name);
+    public CoachTemplate updateCoachTemplate(int cid);
+    public void deleteCoachTemplate(int cid);
+    
+    public Profile enableCoach(String name, Profile p);
+    public Profile disableCoach(String name, Profile p);
 }

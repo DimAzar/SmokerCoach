@@ -1,8 +1,6 @@
 package com.d.apps.scoach.ui.iframes;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,31 +11,22 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
 import com.d.apps.scoach.ui.ProfileCoachesDialog;
 
-public class ManageProfilesIFrame extends JInternalFrame {
+public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
-	
-	private JTable profilesTable = null;
-	private JPopupMenu rmenu = new JPopupMenu();
 	
 	public ManageProfilesIFrame() {
 		super();
@@ -54,7 +43,7 @@ public class ManageProfilesIFrame extends JInternalFrame {
 	}
 	
 	private void setupListeners() {
-		profilesTable.addMouseListener(new MouseAdapter() {
+		entityTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3) {
@@ -62,7 +51,7 @@ public class ManageProfilesIFrame extends JInternalFrame {
 						return;
 					} 
 					
-					if (profilesTable.getSelectedRow() < 0) {
+					if (entityTable.getSelectedRow() < 0) {
 						return;
 					}
 					rmenu.setLocation(e.getLocationOnScreen());
@@ -80,16 +69,16 @@ public class ManageProfilesIFrame extends JInternalFrame {
 		JPanel parent = (JPanel) getContentPane();
 		parent.setLayout(new BorderLayout());
 		
-		AbstractTableModel dtm = new CustomTableModel();
-		profilesTable = new JTable(dtm);
-		parent.add(new JScrollPane(profilesTable), BorderLayout.CENTER);
+		AbstractTableModel dtm = new CustomProfilesTableModel();
+		entityTable = new JTable(dtm);
+		parent.add(new JScrollPane(entityTable), BorderLayout.CENTER);
 		parent.add(new CreateProfilePanel(), BorderLayout.SOUTH);
-		profilesTable.setRowSelectionAllowed(true);
-		profilesTable.setDefaultRenderer(Object.class, new CustomRenderer());
-		profilesTable.getColumnModel().getColumn(0).setMaxWidth(25);
-		profilesTable.getColumnModel().getColumn(2).setMaxWidth(50);
-		profilesTable.setRowSelectionAllowed(true);
-		profilesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		entityTable.setRowSelectionAllowed(true);
+		entityTable.setDefaultRenderer(Object.class, new CustomRenderer());
+		entityTable.getColumnModel().getColumn(0).setMaxWidth(25);
+		entityTable.getColumnModel().getColumn(2).setMaxWidth(50);
+		entityTable.setRowSelectionAllowed(true);
+		entityTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		dtm.fireTableDataChanged();
 
 		initRMenu();
@@ -108,11 +97,11 @@ public class ManageProfilesIFrame extends JInternalFrame {
 		setActive.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int row = profilesTable.getSelectedRow();
-				if (profilesTable.getValueAt(row, 2).equals("true")) {
+				int row = entityTable.getSelectedRow();
+				if (entityTable.getValueAt(row, 2).equals("true")) {
 					return;
 				}
-				int pid = Integer.parseInt(profilesTable.getValueAt(row, 0).toString());
+				int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 				CounterApp.DBServices.setActiveProfile(pid);
 				updateUIProfileChanged();
 			}
@@ -136,10 +125,10 @@ public class ManageProfilesIFrame extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				rmenu.setVisible(false);
 				if (JOptionPane.showConfirmDialog(null, "Delete Profile ?") == JOptionPane.OK_OPTION) {
-					int row = profilesTable.getSelectedRow();
-					int pid = Integer.parseInt(profilesTable.getValueAt(row, 0).toString());
+					int row = entityTable.getSelectedRow();
+					int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 					
-					boolean isActive = Boolean.parseBoolean(profilesTable.getValueAt(row, 2).toString());
+					boolean isActive = Boolean.parseBoolean(entityTable.getValueAt(row, 2).toString());
 					if (isActive) {
 						if (JOptionPane.showConfirmDialog(null, "Profile is the active profile\nDelete Profile ?") == JOptionPane.OK_OPTION) {
 							CounterApp.DBServices.deleteProfile(pid);
@@ -153,10 +142,10 @@ public class ManageProfilesIFrame extends JInternalFrame {
 			}
 		});
 	}
-	
+
 	private void updateUIProfileChanged() {
 		((MainFrame)getTopLevelAncestor()).activeProfileChanged();
-		((CustomTableModel)profilesTable.getModel()).refresh();
+		((CustomProfilesTableModel)entityTable.getModel()).refresh();
 		rmenu.setVisible(false);
 	}
 
@@ -195,17 +184,16 @@ public class ManageProfilesIFrame extends JInternalFrame {
 						JOptionPane.showMessageDialog(null, "No other profiles, setting as active profile!");
 						activeval = true;
 					}
-					CounterApp.DBServices.createProfile(nameval , activeval);
-//					Profile p = CounterApp.DBServices.createProfile(nameval , activeval);
-//					CounterApp.DBServices.enableCoach("Smoker Coach", p);
+					Profile p = CounterApp.DBServices.createProfile(nameval , activeval);
+					name.setText("");
 					updateUIProfileChanged();
 				}
 			});
 		}
 		
 		private boolean isProfileNameUnique(String name) {
-			for (int i = 0; i < profilesTable.getRowCount(); i++) {
-				if (profilesTable.getValueAt(i, 1).toString().equals(name)) {
+			for (int i = 0; i < entityTable.getRowCount(); i++) {
+				if (entityTable.getValueAt(i, 1).toString().equals(name)) {
 					return false;
 				}
 			}
@@ -215,45 +203,11 @@ public class ManageProfilesIFrame extends JInternalFrame {
 	}
 }
 
-class CustomRenderer implements TableCellRenderer {
-	public static final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
-		JComponent renderer = null;
-		if (column == 0 || column == 1) {
-			if (column == 0) {
-				renderer = new JLabel(""+(row+1));
-			} else {
-				renderer = new JLabel(value.toString());
-			}
-		} else {
-			renderer = new JCheckBox("", Boolean.parseBoolean(value.toString()));
-		}
-		
-		if ((row % 2) > 0) {
-			renderer.setBackground(Color.white);
-		} else {
-			renderer.setBackground(new Color(240,240,240));
-		}
-
-		if (isSelected) {
-			renderer.setBackground(Color.yellow);
-		} else {
-			renderer.setBackground(Color.white);
-			renderer.setForeground(Color.black);
-		}
-		
-		renderer.setOpaque(true);
-		return renderer;
-	}
-}
-
-class CustomTableModel extends AbstractTableModel {
+class CustomProfilesTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	private List<Profile> profiles = new ArrayList<Profile>();
 	
-	public CustomTableModel() {
+	public CustomProfilesTableModel() {
 		super();
 		refresh();
 	}

@@ -1,7 +1,6 @@
 package com.d.apps.scoach.db.model;
 
 import java.sql.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -30,7 +30,8 @@ public class CoachCounter implements DBEntity {
     Integer id;
 
 	@Getter @Setter
-	@JoinColumn(nullable= false)
+	@OneToOne
+	@JoinColumn(name="counter_id") 
 	private CounterInstance counter;
 
     @Getter @Setter

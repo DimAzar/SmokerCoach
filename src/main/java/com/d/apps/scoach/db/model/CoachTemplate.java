@@ -17,6 +17,8 @@ import com.d.apps.scoach.db.model.base.DBEntity;
 @Table (name="CoachTemplate")
 @NamedQueries({
 	@NamedQuery(name="coachTemplate.getAllCoaches", query = "SELECT ct FROM CoachTemplate ct "),
+	@NamedQuery(name="coachTemplate.getCoachByName", query = "SELECT ct FROM CoachTemplate ct where ct.name = :name"),
+	@NamedQuery(name="coachTemplate.getCoachIDByName", query = "SELECT ct.id FROM CoachTemplate ct where ct.name = :name"),
 })
 public class CoachTemplate implements DBEntity {
 	private static final long serialVersionUID = 1L;

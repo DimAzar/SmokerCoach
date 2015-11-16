@@ -1,8 +1,6 @@
 package com.d.apps.scoach.ui.iframes;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -10,28 +8,23 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.CoachTemplate;
 
-public class ManageCoachesIFrame extends JInternalFrame {
+public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
 	
-	private JTable coachesTable = null;
 	private JPopupMenu rmenu = new JPopupMenu();
 	
 	public ManageCoachesIFrame() {
@@ -49,7 +42,7 @@ public class ManageCoachesIFrame extends JInternalFrame {
 	}
 	
 	private void setupListeners() {
-		coachesTable.addMouseListener(new MouseAdapter() {
+		entityTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3) {
@@ -57,7 +50,7 @@ public class ManageCoachesIFrame extends JInternalFrame {
 						return;
 					} 
 					
-					if (coachesTable.getSelectedRow() < 0) {
+					if (entityTable.getSelectedRow() < 0) {
 						return;
 					}
 					rmenu.setLocation(e.getLocationOnScreen());
@@ -75,17 +68,17 @@ public class ManageCoachesIFrame extends JInternalFrame {
 		JPanel parent = (JPanel) getContentPane();
 		parent.setLayout(new BorderLayout());
 		
-		AbstractTableModel dtm = new CustomTableModel();
-		coachesTable = new JTable(dtm);
+		AbstractTableModel dtm = new CustomCoachesTableModel();
+		entityTable = new JTable(dtm);
 		
-		parent.add(new JScrollPane(coachesTable), BorderLayout.CENTER);
-		parent.add(new CreateProfilePanel(), BorderLayout.SOUTH);
+		parent.add(new JScrollPane(entityTable), BorderLayout.CENTER);
+		parent.add(new CreateCoachesPanel(), BorderLayout.SOUTH);
 		
-		coachesTable.setRowSelectionAllowed(true);
-		coachesTable.setDefaultRenderer(Object.class, new CustomRenderer());
-		coachesTable.getColumnModel().getColumn(0).setMaxWidth(25);
-		coachesTable.setRowSelectionAllowed(true);
-		coachesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		entityTable.setRowSelectionAllowed(true);
+		entityTable.setDefaultRenderer(Object.class, new CustomRenderer());
+		entityTable.getColumnModel().getColumn(0).setMaxWidth(25);
+		entityTable.setRowSelectionAllowed(true);
+		entityTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		dtm.fireTableDataChanged();
 
 		initRMenu();
@@ -109,10 +102,10 @@ public class ManageCoachesIFrame extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				rmenu.setVisible(false);
 				if (JOptionPane.showConfirmDialog(null, "Delete Coach?") == JOptionPane.OK_OPTION) {
-					int row = coachesTable.getSelectedRow();
-					int cid = Integer.parseInt(coachesTable.getValueAt(row, 0).toString());
+					int row = entityTable.getSelectedRow();
+					int cid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 					
-					CounterApp.DBServices.deleteCoach(cid);
+					CounterApp.DBServices.deleteCoachTemplate(cid);
 					updateUIProfileChanged();
 				}
 			}
@@ -120,56 +113,55 @@ public class ManageCoachesIFrame extends JInternalFrame {
 	}
 	
 	private void updateUIProfileChanged() {
-		((CustomTableModel)coachesTable.getModel()).refresh();
+		((CustomCoachesTableModel)entityTable.getModel()).refresh();
 		rmenu.setVisible(false);
 	}
 
-	class CreateProfilePanel extends JPanel {
+	class CreateCoachesPanel extends JPanel {
 		private static final long serialVersionUID = 5244913423336516955L;
+		private JTextField name = new JTextField(20);
+		private JButton create = new JButton("Create");
 		
-		public CreateProfilePanel() {
+		public CreateCoachesPanel() {
+			add(name);
+			add(create);
+
+			create.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String nameval = name.getText();
+					if (nameval.length() <= 0) {
+						JOptionPane.showMessageDialog(null, "Name cannot be empty! ");
+						return;
+					}
+					if (!isCoachNameUnique(nameval)) {
+						JOptionPane.showMessageDialog(null, "Name must be unique! ");
+						return;
+					}
+
+					CounterApp.DBServices.createCoachTemplate(name.getText());
+					updateUIProfileChanged();
+					name.setText("");
+				}
+			});
+		}
+		
+		private boolean isCoachNameUnique(String name) {
+			for (int i = 0; i < entityTable.getRowCount(); i++) {
+				if (entityTable.getValueAt(i, 1).toString().equals(name)) {
+					return false;
+				}
+			}
+			
+			return true;
 		}
 	}
 
-	class CustomRenderer implements TableCellRenderer {
-		public final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
-			JComponent renderer = null;
-			if (column == 0 || column == 1) {
-				if (column == 0) {
-					renderer = new JLabel(""+(row+1));
-				} else {
-					renderer = new JLabel(value.toString());
-				}
-			} else {
-				renderer = new JCheckBox("", Boolean.parseBoolean(value.toString()));
-			}
-			
-			if ((row % 2) > 0) {
-				renderer.setBackground(Color.white);
-			} else {
-				renderer.setBackground(new Color(240,240,240));
-			}
-	
-			if (isSelected) {
-				renderer.setBackground(Color.yellow);
-			} else {
-				renderer.setBackground(Color.white);
-				renderer.setForeground(Color.black);
-			}
-			
-			renderer.setOpaque(true);
-			return renderer;
-		}
-	}
-	
-	class CustomTableModel extends AbstractTableModel {
+	class CustomCoachesTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;
 		private List<CoachTemplate> coaches = new ArrayList<CoachTemplate>();
 		
-		public CustomTableModel() {
+		public CustomCoachesTableModel() {
 			super();
 			refresh();
 		}

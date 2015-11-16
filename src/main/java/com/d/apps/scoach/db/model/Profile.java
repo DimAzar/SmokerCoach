@@ -59,7 +59,7 @@ public class Profile implements DBEntity {
     
     public int removeCoach(String name) {
     	for (ProfileCoach profileCoach : profileCoaches) {
-			if (profileCoach.getCoach().getName().equals(name)) {
+			if (profileCoach.getCoach().getTemplate().getName().equals(name)) {
 				profileCoaches.remove(profileCoach);
 				return profileCoach.getId();
 			}

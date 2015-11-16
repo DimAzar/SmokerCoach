@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.model.ProfileCoach;
@@ -51,14 +50,14 @@ public class ProfileCoachesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				for (JCheckBox box : options) {
 					if (box.isSelected() && !isCoachEnabledInProfile(box.getName())) {
-//						Profile p = CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
-//						currentProfileCoaches = p.getProfileCoaches();
-//						controller.activeProfileChanged();
+						Profile p = CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
+						currentProfileCoaches = p.getProfileCoaches();
+						controller.activeProfileChanged();
 					} else
 					if (!box.isSelected() && isCoachEnabledInProfile(box.getName())) {
-//						Profile p = CounterApp.DBServices.disableCoachFromProfile(box.getName(), controller.getActiveProfile());
-//						currentProfileCoaches = p.getProfileCoaches();
-//						controller.activeProfileChanged();
+						Profile p = CounterApp.DBServices.disableCoach(box.getName(), controller.getActiveProfile());
+						currentProfileCoaches = p.getProfileCoaches();
+						controller.activeProfileChanged();
 					}
 				}
 			}
@@ -114,7 +113,7 @@ public class ProfileCoachesDialog extends JDialog {
 
 	private boolean isCoachEnabledInProfile(String name) {
 		for (ProfileCoach profileCoach : currentProfileCoaches) {
-			if (profileCoach.getCoach().getName().equals(name)) {
+			if (profileCoach.getCoach().getTemplate().getName().equals(name)) {
 				return true;
 			}
 		}

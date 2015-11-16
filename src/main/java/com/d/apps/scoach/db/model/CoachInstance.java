@@ -9,9 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -22,8 +23,6 @@ import com.d.apps.scoach.db.model.base.DBEntity;
 @Entity 
 @Table (name="CoachInstance")
 @NamedQueries({
-	@NamedQuery(name="coachInstance.getCoachIDByName", query = "SELECT pc.id FROM CoachInstance pc where pc.name = :name"),
-	@NamedQuery(name="coachInstance.getCoachByName", query = "SELECT pc FROM CoachInstance pc where pc.name = :name"),
 })
 public class CoachInstance implements DBEntity {
 	private static final long serialVersionUID = 1L;
@@ -38,13 +37,12 @@ public class CoachInstance implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
+	@OneToOne
+	@JoinColumn(name="template_id") 
 	private CoachTemplate template;
 	
-	@Getter @Setter
-	private ProfileCoach profile; 
-
 	@Getter
-    @OneToMany(targetEntity=CoachCounter.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity=CoachCounter.class, fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<CoachCounter> counters = new ArrayList<CoachCounter>();
 	
 	//TODO move to counter, action table

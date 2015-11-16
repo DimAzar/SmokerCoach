@@ -1,5 +1,7 @@
 package com.d.apps.scoach.services;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -8,9 +10,11 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.selectors.CoachesSelector;
+import com.d.apps.scoach.db.model.ProfileCoach;
+import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
 import com.d.apps.scoach.db.selectors.ProfileCoachSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 import com.d.apps.scoach.services.interfaces.DBServices;
@@ -22,7 +26,7 @@ public class DBServicesImpl implements DBServices {
 	private EntityManagerFactory factory ;
 
 	private ProfileSelector pselector = new ProfileSelector();
-	private CoachesSelector coachesSelector = new CoachesSelector();
+	private CoachTemplateSelector coachesSelector = new CoachTemplateSelector();
 	private ProfileCoachSelector profileCoachSelector = new ProfileCoachSelector();
 	
 	public DBServicesImpl() {
@@ -90,7 +94,43 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public void deleteCoach(int cid) {
+	public void deleteCoachTemplate(int cid) {
 		coachesSelector.deleteEntity(cid, CoachTemplate.class);
+	}
+
+	@Override
+	public CoachTemplate createCoachTemplate(String name) {
+		coachesSelector.createCoach(name);
+		return null;
+	}
+
+	@Override
+	public CoachTemplate updateCoachTemplate(int cid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Profile enableCoach(String name, Profile p) {
+		CoachTemplate template = coachesSelector.getCoachByName(name);
+		
+		CoachInstance instance = new CoachInstance();
+		instance.setTemplate(template);
+		instance = (CoachInstance) coachesSelector.createEntity(instance);
+		
+		ProfileCoach xpc = new ProfileCoach();
+		xpc.setDateActivated(new Date(Calendar.getInstance().getTimeInMillis()));
+		xpc.setCoach(instance);
+
+		p.addCoach(xpc);
+		
+		profileCoachSelector.createEntity(xpc);
+		pselector.updateEntity(p);
+		return p;
+	}
+
+	@Override
+	public Profile disableCoach(String name, Profile p) {
+		return null;
 	}
 }
