@@ -1,7 +1,6 @@
 package com.d.apps.scoach.ui.iframes;
 
 import java.awt.BorderLayout;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,13 +20,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
 import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.db.model.CoachCounter;
-import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.CoachCountersDialog;
-import com.d.apps.scoach.ui.MainFrame;
-import com.d.apps.scoach.ui.ProfileCoachesDialog;
 
 public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;

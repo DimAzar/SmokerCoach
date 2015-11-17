@@ -1,7 +1,5 @@
 package com.d.apps.scoach.services;
 
-import java.sql.Date;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -10,11 +8,9 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.CounterTemplate;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.model.ProfileCoach;
 import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
 import com.d.apps.scoach.db.selectors.CounterTemplateSelector;
 import com.d.apps.scoach.db.selectors.ProfileCoachSelector;
@@ -116,20 +112,6 @@ public class DBServicesImpl implements DBServices {
 
 	@Override
 	public Profile enableCoach(String name, Profile p) {
-		CoachTemplate template = coachesSelector.getCoachByName(name);
-		
-		CoachInstance instance = new CoachInstance();
-		instance.setTemplate(template);
-		instance = (CoachInstance) coachesSelector.createEntity(instance);
-		
-		ProfileCoach xpc = new ProfileCoach();
-		xpc.setDateActivated(new Date(Calendar.getInstance().getTimeInMillis()));
-		xpc.setCoach(instance);
-
-		p.addCoach(xpc);
-		
-		profileCoachSelector.createEntity(xpc);
-		pselector.updateEntity(p);
 		return p;
 	}
 
