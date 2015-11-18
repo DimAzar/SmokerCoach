@@ -8,12 +8,12 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.CounterTemplate;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
 import com.d.apps.scoach.db.selectors.CounterTemplateSelector;
-import com.d.apps.scoach.db.selectors.ProfileCoachSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 import com.d.apps.scoach.services.interfaces.DBServices;
 
@@ -25,7 +25,6 @@ public class DBServicesImpl implements DBServices {
 
 	private ProfileSelector pselector = new ProfileSelector();
 	private CoachTemplateSelector coachesSelector = new CoachTemplateSelector();
-	private ProfileCoachSelector profileCoachSelector = new ProfileCoachSelector();
 	private CounterTemplateSelector counterTemplateSelector = new CounterTemplateSelector();
 	
 	public DBServicesImpl() {
@@ -33,7 +32,6 @@ public class DBServicesImpl implements DBServices {
 		
 		pselector.setEntityManager(factory.createEntityManager());
 		coachesSelector.setEntityManager(factory.createEntityManager());
-		profileCoachSelector.setEntityManager(factory.createEntityManager());
 		counterTemplateSelector.setEntityManager(factory.createEntityManager());
 		LOG.debug("DBServices started");
 	}
@@ -112,6 +110,12 @@ public class DBServicesImpl implements DBServices {
 
 	@Override
 	public Profile enableCoach(String name, Profile p) {
+		CoachTemplate template = coachesSelector.getCoachByName(name);
+		
+		CoachInstance ci = new CoachInstance();
+		ci.setTemplate(template);
+		p.addCoach(ci);
+		pselector.updateEntity(p);
 		return p;
 	}
 

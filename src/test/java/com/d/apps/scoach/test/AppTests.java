@@ -1,12 +1,12 @@
 package com.d.apps.scoach.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import com.d.apps.scoach.db.model.Profile;
 

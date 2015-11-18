@@ -18,18 +18,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.db.model.CoachCounter;
 import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.db.model.CounterInstance;
 
 public class CoachCountersDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	private JButton saveButt = new JButton("Save");
-	private List<CoachCounter> currentCoachCounters = null;
+	private List<CounterInstance> currentCoachCounters = null;
 	private MainFrame controller = null;
 	private List<JCheckBox> options = new ArrayList<JCheckBox>();
 	
-	public CoachCountersDialog(MainFrame controller, List<CoachCounter> currentCoachCounters) {
+	public CoachCountersDialog(MainFrame controller, List<CounterInstance> currentCoachCounters) {
 		this.controller = controller;
 		this.currentCoachCounters = currentCoachCounters;
 		
@@ -96,8 +96,8 @@ public class CoachCountersDialog extends JDialog {
 	}
 	
 	private boolean isCounterSetInCoach(int id) {
-		for (CoachCounter coachCounter : currentCoachCounters) {
-			if (coachCounter.getCounter().getId() == id) {
+		for (CounterInstance coachCounter : currentCoachCounters) {
+			if (coachCounter.getId() == id) {
 				return true;
 			}
 		}
@@ -105,8 +105,8 @@ public class CoachCountersDialog extends JDialog {
 	}
 
 	private boolean isCounterSetInCoach(String name) {
-		for (CoachCounter coachCounter : currentCoachCounters) {
-			if (coachCounter.getCounter().getTemplate().getName().equals(name)) {
+		for (CounterInstance coachCounter : currentCoachCounters) {
+			if (coachCounter.getTemplate().getName().equals(name)) {
 				return true;
 			}
 		}

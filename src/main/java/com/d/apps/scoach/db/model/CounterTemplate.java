@@ -38,6 +38,6 @@ public class CounterTemplate implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
-    @OneToMany(targetEntity=CounterInstance.class, mappedBy="template", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity=CounterInstance.class, mappedBy="template", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, orphanRemoval=true)
 	private List<CounterInstance> instances;
 }

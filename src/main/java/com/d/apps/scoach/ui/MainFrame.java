@@ -26,8 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
+import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.model.ProfileCoach;
 import com.d.apps.scoach.ui.iframes.AboutIFrame;
 import com.d.apps.scoach.ui.iframes.ManageCoachesIFrame;
 import com.d.apps.scoach.ui.iframes.ManageCountersIFrame;
@@ -66,11 +66,19 @@ public class MainFrame extends JFrame {
 	public void actionInvoked(String actionName) {
 	}
 	
+	public void activeProfileChanged(Profile p) {
+		activeProfile = p;
+		setTitle("Counter Application - Active Profile : "+activeProfile.getFirstName());
+		updateProfileRelatedUI(activeProfile.getCoaches());
+		actionPanel.toggleActionBar(activeProfile != null);
+		
+	}
+
 	public void activeProfileChanged() {
 		activeProfile = CounterApp.DBServices.getActiveProfile();
 		if (activeProfile != null) {
 			setTitle("Counter Application - Active Profile : "+activeProfile.getFirstName());
-			updateProfileRelatedUI(activeProfile.getProfileCoaches());
+			updateProfileRelatedUI(activeProfile.getCoaches());
 		} else {
 			setTitle("Counter Application - Active Profile : N/A");
 			showIFrame(new ManageProfilesIFrame());
@@ -78,13 +86,13 @@ public class MainFrame extends JFrame {
 		actionPanel.toggleActionBar(activeProfile != null);
 		
 	}
-
 	//PRIVATE
-	private void updateProfileRelatedUI(List<ProfileCoach> activeCoaches) {
+	private void updateProfileRelatedUI(List<CoachInstance> activeCoaches) {
 		createBasicMenu();
 		actionPanel.cleanBar();
 		
-		for (ProfileCoach profileCoach : activeCoaches) {
+		for (CoachInstance profileCoach : activeCoaches) {
+			//SETUP MENU ETC
 		}
 	}
 	

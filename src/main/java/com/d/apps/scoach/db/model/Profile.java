@@ -9,9 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -33,34 +33,35 @@ public class Profile implements DBEntity {
     @Getter @Setter
     private Integer id;
 	
-	@Column(nullable=false)
 	@Getter @Setter	
+	@Column(nullable=false)
 	private String firstName;
     
-	@Column(nullable=false)
 	@Getter @Setter
+	@Column(nullable=false)
 	private boolean isActive = false;
 
     @Getter
-    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="profile", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<ProfileCoach> profileCoaches = new ArrayList<ProfileCoach>();
+    @ManyToMany(targetEntity=CoachInstance.class, mappedBy="profiles", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+    private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
 
-    public void addCoach(ProfileCoach profileCoach) {
-    	profileCoach.setProfile(this);
-    	profileCoaches.add(profileCoach);
+    public void addCoach(CoachInstance profileCoach) {
+    	profileCoach.addProfile(this);
+    	coaches.add(profileCoach);
     }
     
-    public void removeCoach(ProfileCoach profileCoach) {
-    	if (profileCoaches.contains(profileCoach)) {
-    		profileCoaches.remove(profileCoach);
-    		profileCoach.setProfile(null);
+    public int removeCoach(CoachInstance profileCoach) {
+    	if (coaches.contains(profileCoach)) {
+    		coaches.remove(profileCoach);
+    		profileCoach.removeProfile(this);
     	}
+    	return profileCoach.getId();
     }
     
     public int removeCoach(String name) {
-    	for (ProfileCoach profileCoach : profileCoaches) {
-			if (profileCoach.getCoach().getTemplate().getName().equals(name)) {
-				profileCoaches.remove(profileCoach);
+    	for (CoachInstance profileCoach : coaches) {
+			if (profileCoach.getTemplate().getName().equals(name)) {
+				coaches.remove(profileCoach);
 				return profileCoach.getId();
 			}
 		}

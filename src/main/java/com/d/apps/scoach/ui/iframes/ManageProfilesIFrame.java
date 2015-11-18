@@ -111,7 +111,7 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Profile activeProfile = ((MainFrame)getTopLevelAncestor()).getActiveProfile();
-				ProfileCoachesDialog d = new ProfileCoachesDialog((MainFrame)getTopLevelAncestor(), activeProfile.getProfileCoaches());
+				ProfileCoachesDialog d = new ProfileCoachesDialog((MainFrame)getTopLevelAncestor(), activeProfile.getCoaches());
 				rmenu.setVisible(false);
 				Point p = getLocationOnScreen();
 				p.translate(10, 10);

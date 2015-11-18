@@ -88,23 +88,6 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		JMenuItem delete = new JMenuItem("Delete Coach");
 		rmenu.add(delete);
 		 
-		JMenuItem counters = new JMenuItem("Counters");
-		rmenu.add(counters);
-
-		counters.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-/*				MainFrame controller = (MainFrame)getTopLevelAncestor();
-				CoachInstance ci = CounterApp.DBServices.get;
-				CoachCountersDialog d = new CoachCountersDialog(controller, ci.getCounters());
-				rmenu.setVisible(false);
-				Point p = getLocationOnScreen();
-				p.translate(10, 10);
-				d.setLocation(p);
-				d.setVisible(true);*/
-			}
-		});
-
 		delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -18,19 +18,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.d.apps.scoach.CounterApp;
+import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.model.ProfileCoach;
 
 public class ProfileCoachesDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	private JButton saveButt = new JButton("Save");
-	private List<ProfileCoach> currentProfileCoaches = null;
+	private List<CoachInstance> currentProfileCoaches = null;
 	private MainFrame controller = null;
 	private List<JCheckBox> options = new ArrayList<JCheckBox>();
 	
-	public ProfileCoachesDialog(MainFrame controller, List<ProfileCoach> currentProfileCoaches) {
+	public ProfileCoachesDialog(MainFrame controller, List<CoachInstance> currentProfileCoaches) {
 		this.controller = controller;
 		this.currentProfileCoaches = currentProfileCoaches;
 		
@@ -51,13 +51,13 @@ public class ProfileCoachesDialog extends JDialog {
 				for (JCheckBox box : options) {
 					if (box.isSelected() && !isCoachEnabledInProfile(box.getName())) {
 						Profile p = CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
-						currentProfileCoaches = p.getProfileCoaches();
-						controller.activeProfileChanged();
+						currentProfileCoaches = p.getCoaches();
+						controller.activeProfileChanged(p);
 					} else
 					if (!box.isSelected() && isCoachEnabledInProfile(box.getName())) {
 						Profile p = CounterApp.DBServices.disableCoach(box.getName(), controller.getActiveProfile());
-						currentProfileCoaches = p.getProfileCoaches();
-						controller.activeProfileChanged();
+						currentProfileCoaches = p.getCoaches();
+						controller.activeProfileChanged(p);
 					}
 				}
 			}
@@ -103,8 +103,8 @@ public class ProfileCoachesDialog extends JDialog {
 	}
 	
 	private boolean isCoachEnabledInProfile(int id) {
-		for (ProfileCoach profileCoach : currentProfileCoaches) {
-			if (profileCoach.getCoach().getId() == id) {
+		for (CoachInstance profileCoach : currentProfileCoaches) {
+			if (profileCoach.getTemplate().getId() == id) {
 				return true;
 			}
 		}
@@ -112,8 +112,8 @@ public class ProfileCoachesDialog extends JDialog {
 	}
 
 	private boolean isCoachEnabledInProfile(String name) {
-		for (ProfileCoach profileCoach : currentProfileCoaches) {
-			if (profileCoach.getCoach().getTemplate().getName().equals(name)) {
+		for (CoachInstance profileCoach : currentProfileCoaches) {
+			if (profileCoach.getTemplate().getName().equals(name)) {
 				return true;
 			}
 		}

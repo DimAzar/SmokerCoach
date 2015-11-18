@@ -10,9 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -38,17 +37,18 @@ public class CoachInstance implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
-	@ManyToOne(targetEntity=Profile.class)
+	@OneToOne
 	@JoinColumn(nullable=false, name="template_id") 
 	private CoachTemplate template;
 	
 	@Getter
-    @OneToMany(targetEntity=CoachCounter.class, mappedBy="counter", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<CoachCounter> counters = new ArrayList<CoachCounter>();
+    @ManyToMany(targetEntity=CounterInstance.class, mappedBy="coaches", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
+    private List<CounterInstance> counters = new ArrayList<CounterInstance>();
 	
-    @Getter
-    @OneToMany(targetEntity=ProfileCoach.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<ProfileCoach> coachProfiles = new ArrayList<ProfileCoach>();
+	@Getter
+	@ManyToMany(targetEntity=Profile.class)
+	@JoinColumn(nullable=false)
+    private List<Profile> profiles = new ArrayList<Profile>();
 
 	//TODO move to counter, action table
 	@Getter @Setter
@@ -66,4 +66,20 @@ public class CoachInstance implements DBEntity {
 	@Getter @Setter
 	@Column(unique=true, updatable=false)
 	private Character accelerator;
+	
+	public void addCounter(CounterInstance instance) {
+		counters.add(instance);
+	}
+	
+	public void removeCounter(CounterInstance instance) {
+		counters.remove(instance);
+	}
+	
+	public void addProfile(Profile p) {
+		profiles.add(p);
+	}
+
+	public void removeProfile(Profile p) {
+		profiles.remove(p);
+	}
 }

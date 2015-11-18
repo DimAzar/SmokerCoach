@@ -3,15 +3,13 @@ package com.d.apps.scoach.db.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -42,8 +40,9 @@ public class CounterInstance implements DBEntity {
 	private CounterTemplate template;
 	
 	@Getter
-    @OneToMany(targetEntity=CoachCounter.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<CoachCounter> coaches = new ArrayList<CoachCounter>();
+	@ManyToMany(targetEntity=CoachInstance.class)
+	@JoinColumn(nullable=false)
+    private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
 
 	@Getter @Setter
 	@Column(updatable=false)
