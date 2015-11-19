@@ -114,8 +114,12 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 		coaches.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Profile activeProfile = ((MainFrame)getTopLevelAncestor()).getActiveProfile();
-				ProfileCoachesDialog d = new ProfileCoachesDialog((MainFrame)getTopLevelAncestor(), activeProfile.getCoaches());
+				int row = entityTable.getSelectedRow();
+				int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
+
+				Profile profile = CounterApp.DBServices.findProfile(pid);
+
+				ProfileCoachesDialog d = new ProfileCoachesDialog((MainFrame)getTopLevelAncestor(), profile);
 				rmenu.setVisible(false);
 				Point p = getLocationOnScreen();
 				p.translate(10, 10);

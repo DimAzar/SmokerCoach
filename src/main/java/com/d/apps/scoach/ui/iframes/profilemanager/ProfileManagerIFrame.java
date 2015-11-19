@@ -83,7 +83,6 @@ public class ProfileManagerIFrame extends JInternalFrame {
 
 		ans.setLayout(new BorderLayout());
 		ans.add(new JScrollPane(entityTable), BorderLayout.CENTER);
-		ans.setBorder(BorderFactory.createEtchedBorder());
 		return ans;
 	}
 	private JPanel getCoachesEditorPanel() {

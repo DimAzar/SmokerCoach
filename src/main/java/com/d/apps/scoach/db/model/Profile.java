@@ -50,14 +50,6 @@ public class Profile implements DBEntity {
     	coaches.add(profileCoach);
     }
     
-    public int removeCoach(CoachInstance profileCoach) {
-    	if (coaches.contains(profileCoach)) {
-    		coaches.remove(profileCoach);
-    		profileCoach.removeProfile(this);
-    	}
-    	return profileCoach.getId();
-    }
-    
     public int removeCoach(String name) {
     	for (CoachInstance profileCoach : coaches) {
 			if (profileCoach.getName().equals(name)) {

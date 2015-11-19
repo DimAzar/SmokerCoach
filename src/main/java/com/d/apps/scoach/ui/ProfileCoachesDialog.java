@@ -27,13 +27,15 @@ public class ProfileCoachesDialog extends JDialog {
 
 	private JButton saveButt = new JButton("Save");
 	private List<CoachInstance> currentProfileCoaches = null;
-	private MainFrame controller = null;
 	private List<JCheckBox> options = new ArrayList<JCheckBox>();
+	private Profile profile;
+	private MainFrame controller;
 	
-	public ProfileCoachesDialog(MainFrame controller, List<CoachInstance> currentProfileCoaches) {
+	public ProfileCoachesDialog(MainFrame controller, Profile profile) {
+		super();
+		this.profile = profile;
 		this.controller = controller;
-		this.currentProfileCoaches = currentProfileCoaches;
-		
+		currentProfileCoaches = profile.getCoaches();
 		initGrcs();
 		
 		setSize(350, 300);
@@ -50,12 +52,12 @@ public class ProfileCoachesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				for (JCheckBox box : options) {
 					if (box.isSelected() && !isCoachEnabledInProfile(box.getName())) {
-						Profile p = CounterApp.DBServices.enableCoach(box.getName(), controller.getActiveProfile());
+						Profile p = CounterApp.DBServices.enableCoach(box.getName(), profile);
 						currentProfileCoaches = p.getCoaches();
 						controller.activeProfileChanged(p);
 					} else
 					if (!box.isSelected() && isCoachEnabledInProfile(box.getName())) {
-						Profile p = CounterApp.DBServices.disableCoach(box.getName(), controller.getActiveProfile());
+						Profile p = CounterApp.DBServices.disableCoach(box.getName(), profile);
 						currentProfileCoaches = p.getCoaches();
 						controller.activeProfileChanged(p);
 					}

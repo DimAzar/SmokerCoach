@@ -33,7 +33,7 @@ public class CoachInstance implements DBEntity {
     private Integer id;
 
 	@Getter @Setter
-	@Column(unique=true, updatable=false)
+	@Column(updatable=false)
 	private String name;
 	
 	@Getter @Setter
