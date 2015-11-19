@@ -4,8 +4,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>com.d.apps.scoach.db.model.CoachInstance</class>
         <class>com.d.apps.scoach.db.model.CoachTemplate</class>
-        <class>com.d.apps.scoach.db.model.CounterInstance</class>
-        <class>com.d.apps.scoach.db.model.CounterTemplate</class>
+        <class>com.d.apps.scoach.db.model.Counter</class>
         <class>com.d.apps.scoach.db.model.Profile</class>
 
         <properties>

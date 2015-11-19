@@ -42,8 +42,8 @@ public class CoachInstance implements DBEntity {
 	private CoachTemplate template;
 	
 	@Getter
-    @ManyToMany(targetEntity=CounterInstance.class, mappedBy="coaches", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
-    private List<CounterInstance> counters = new ArrayList<CounterInstance>();
+    @ManyToMany(targetEntity=Counter.class, mappedBy="coaches", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
+    private List<Counter> counters = new ArrayList<Counter>();
 	
 	@Getter
 	@ManyToMany(targetEntity=Profile.class)
@@ -67,11 +67,11 @@ public class CoachInstance implements DBEntity {
 	@Column(unique=true, updatable=false)
 	private Character accelerator;
 	
-	public void addCounter(CounterInstance instance) {
+	public void addCounter(Counter instance) {
 		counters.add(instance);
 	}
 	
-	public void removeCounter(CounterInstance instance) {
+	public void removeCounter(Counter instance) {
 		counters.remove(instance);
 	}
 	

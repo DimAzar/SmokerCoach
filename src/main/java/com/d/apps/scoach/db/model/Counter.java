@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -19,10 +18,10 @@ import lombok.Setter;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
-@Table (name="CounterInstance")
+@Table (name="Counter")
 @NamedQueries({
 })
-public class CounterInstance implements DBEntity {
+public class Counter implements DBEntity {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -33,11 +32,6 @@ public class CounterInstance implements DBEntity {
 	@Getter @Setter
 	@Column(unique=true, updatable=false)
 	private String name;
-	
-	@Getter @Setter
-	@OneToOne
-	@JoinColumn(nullable=false, name="template_id") 
-	private CounterTemplate template;
 	
 	@Getter
 	@ManyToMany(targetEntity=CoachInstance.class)

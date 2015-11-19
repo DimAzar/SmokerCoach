@@ -118,11 +118,9 @@ public class MainFrame extends JFrame {
 		JMenu file = new JMenu("File");
 		JMenuItem profiles = new JMenuItem("Manage Profiles"); 
 		JMenuItem coaches = new JMenuItem("Manage Coaches");
-		JMenuItem counters = new JMenuItem("Manage Counters");
 		
 		file.add(profiles);
 		file.add(coaches);
-		file.add(counters);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(file);
@@ -149,21 +147,20 @@ public class MainFrame extends JFrame {
 				showIFrame(new ManageCoachesIFrame());
 			}
 		});
-		counters.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showIFrame(new ManageCountersIFrame());
-			}
-		});
 	}
 	
 	public void showIFrame(JInternalFrame frame) {
+		double l = desktopPane.getAllFrames().length;
+		double y = l;
+		int x = (int)(l/5.0)* 10;
+		
 		desktopPane.add(frame);
 	    try {
 	        frame.setSelected(true);
+	        frame.setLocation(x, 10);
 	    	frame.setVisible(true);
-	    } catch (java.beans.PropertyVetoException x) {
-	    	LOG.error(x.getMessage());
+	    } catch (java.beans.PropertyVetoException e) {
+	    	LOG.error(e.getMessage());
 	    }
 	}
 

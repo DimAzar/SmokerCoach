@@ -94,6 +94,9 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 		JMenuItem coaches = new JMenuItem("Coaches");
 		rmenu.add(coaches);
 
+		JMenuItem manage = new JMenuItem("Manage");
+		rmenu.add(manage);
+
 		setActive.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -139,6 +142,13 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 						updateUIProfileChanged();
 					}
 				}
+			}
+		});
+		
+		manage.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((MainFrame)getTopLevelAncestor()).showIFrame(new ProfileManagerIFrame());
 			}
 		});
 	}

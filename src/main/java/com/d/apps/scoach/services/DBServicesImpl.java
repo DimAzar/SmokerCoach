@@ -10,10 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
-import com.d.apps.scoach.db.model.CounterTemplate;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
-import com.d.apps.scoach.db.selectors.CounterTemplateSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 import com.d.apps.scoach.services.interfaces.DBServices;
 
@@ -25,14 +23,12 @@ public class DBServicesImpl implements DBServices {
 
 	private ProfileSelector pselector = new ProfileSelector();
 	private CoachTemplateSelector coachesSelector = new CoachTemplateSelector();
-	private CounterTemplateSelector counterTemplateSelector = new CounterTemplateSelector();
 	
 	public DBServicesImpl() {
 		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
 		
 		pselector.setEntityManager(factory.createEntityManager());
 		coachesSelector.setEntityManager(factory.createEntityManager());
-		counterTemplateSelector.setEntityManager(factory.createEntityManager());
 		LOG.debug("DBServices started");
 	}
 
@@ -122,26 +118,5 @@ public class DBServicesImpl implements DBServices {
 	@Override
 	public Profile disableCoach(String name, Profile p) {
 		return null;
-	}
-
-	@Override
-	public List<CounterTemplate> getCounterTemplates() {
-		return counterTemplateSelector.getAllCounters();
-	}
-
-	@Override
-	public CounterTemplate createCounterTemplate(String name) {
-		return counterTemplateSelector.createCounter(name);
-	}
-
-	@Override
-	public CounterTemplate updateCounterTemplate(int cid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void deleteCounterTemplate(int cid) {
-		counterTemplateSelector.deleteEntity(cid, CounterTemplate.class);
 	}
 }
