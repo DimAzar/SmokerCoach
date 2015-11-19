@@ -24,6 +24,7 @@ import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
 import com.d.apps.scoach.ui.ProfileCoachesDialog;
+import com.d.apps.scoach.ui.iframes.profilemanager.ProfileManagerIFrame;
 
 public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -148,7 +149,12 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 		manage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((MainFrame)getTopLevelAncestor()).showIFrame(new ProfileManagerIFrame());
+				int row = entityTable.getSelectedRow();
+				int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
+
+				Profile p = CounterApp.DBServices.findProfile(pid);
+				((MainFrame)getTopLevelAncestor()).showIFrame(new ProfileManagerIFrame(p));
+				updateUIProfileChanged();
 			}
 		});
 	}

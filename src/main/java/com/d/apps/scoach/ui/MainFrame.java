@@ -30,13 +30,15 @@ import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.iframes.AboutIFrame;
 import com.d.apps.scoach.ui.iframes.ManageCoachesIFrame;
-import com.d.apps.scoach.ui.iframes.ManageCountersIFrame;
 import com.d.apps.scoach.ui.iframes.ManageProfilesIFrame;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -7859383450590563738L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MainFrame.class);
+	private static final int WINDOW_BATCH_SIZE = 3;
+	private static final int WINDOW_PADDING = 25;
+	
 	private Profile activeProfile = null;
 	
 	//SWING
@@ -150,14 +152,14 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void showIFrame(JInternalFrame frame) {
-		double l = desktopPane.getAllFrames().length;
-		double y = l;
-		int x = (int)(l/5.0)* 10;
+		int l = desktopPane.getAllFrames().length;
+		int x = (int)(l/WINDOW_BATCH_SIZE)* WINDOW_PADDING;
+		int y = (l % WINDOW_BATCH_SIZE) * WINDOW_PADDING;
 		
 		desktopPane.add(frame);
 	    try {
 	        frame.setSelected(true);
-	        frame.setLocation(x, 10);
+	        frame.setLocation(x, (int)y);
 	    	frame.setVisible(true);
 	    } catch (java.beans.PropertyVetoException e) {
 	    	LOG.error(e.getMessage());

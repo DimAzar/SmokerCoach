@@ -110,6 +110,7 @@ public class DBServicesImpl implements DBServices {
 		
 		CoachInstance ci = new CoachInstance();
 		ci.setTemplate(template);
+		ci.setName(template.getName());
 		p.addCoach(ci);
 		pselector.updateEntity(p);
 		return p;
@@ -117,6 +118,8 @@ public class DBServicesImpl implements DBServices {
 
 	@Override
 	public Profile disableCoach(String name, Profile p) {
-		return null;
+		coachesSelector.deleteEntity(p.removeCoach(name), CoachInstance.class);
+		pselector.updateEntity(p);
+		return p;
 	}
 }
