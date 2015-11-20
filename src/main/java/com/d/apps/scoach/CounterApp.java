@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.services.DBServices;
 import com.d.apps.scoach.services.DBServicesImpl;
 import com.d.apps.scoach.ui.MainFrame;
-import com.d.apps.scoach.util.Utilities;
 
 public class CounterApp {
 	private static final Logger LOG = LoggerFactory.getLogger(CounterApp.class);

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.db.selectors.CoachInstanceSelector;
 import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 
@@ -22,12 +23,14 @@ public class DBServicesImpl implements DBServices {
 
 	private ProfileSelector pselector = new ProfileSelector();
 	private CoachTemplateSelector coachesSelector = new CoachTemplateSelector();
+	private CoachInstanceSelector coachesInstSelector = new CoachInstanceSelector();
 	
 	public DBServicesImpl() {
 		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
 		
 		pselector.setEntityManager(factory.createEntityManager());
 		coachesSelector.setEntityManager(factory.createEntityManager());
+		coachesInstSelector.setEntityManager(factory.createEntityManager());
 		LOG.debug("DBServices started");
 	}
 
@@ -109,7 +112,7 @@ public class DBServicesImpl implements DBServices {
 		
 		CoachInstance ci = new CoachInstance();
 		ci.setTemplate(template);
-		ci.setName(template.getName());
+		ci.setName(String.format("%s_%s Instance", template.getName(), p.getFirstName()));
 		p.addCoach(ci);
 		pselector.updateEntity(p);
 		return p;
@@ -120,5 +123,10 @@ public class DBServicesImpl implements DBServices {
 		coachesSelector.deleteEntity(p.removeCoach(name), CoachInstance.class);
 		pselector.updateEntity(p);
 		return p;
+	}
+
+	@Override
+	public CoachInstance findCoachInstance(int cid) {
+		return coachesInstSelector.getCoachInstanceByID(cid); 
 	}
 }

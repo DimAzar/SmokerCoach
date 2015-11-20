@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -23,6 +24,8 @@ import com.d.apps.scoach.db.model.base.DBEntity;
 @Entity 
 @Table (name="CoachInstance")
 @NamedQueries({
+	@NamedQuery(name="coachInstance.getAllCoachInstances", query = "SELECT ct FROM CoachInstance ct "),
+	@NamedQuery(name="coachInstance.getCoachInstanceByID", query = "SELECT ct FROM CoachInstance ct where ct.id = :cid")
 })
 public class CoachInstance implements DBEntity {
 	private static final long serialVersionUID = 1L;

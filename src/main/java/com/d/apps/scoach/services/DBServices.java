@@ -2,6 +2,7 @@ package com.d.apps.scoach.services;
 
 import java.util.List;
 
+import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
 
@@ -27,4 +28,5 @@ public interface DBServices {
     public Profile enableCoach(String name, Profile p);
     public Profile disableCoach(String name, Profile p);
     
+    public CoachInstance findCoachInstance(int cid);
 }

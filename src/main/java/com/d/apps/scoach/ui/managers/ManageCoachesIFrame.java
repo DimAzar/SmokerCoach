@@ -1,6 +1,8 @@
 package com.d.apps.scoach.ui.managers;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -9,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,16 +23,19 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 import com.d.apps.scoach.CounterApp;
+import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.CoachTemplate;
-import com.d.apps.scoach.util.Utilities;
 
 public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
 	
 	private JPopupMenu rmenu = new JPopupMenu();
-	
+	private JTable entityTable = null;
+
 	public ManageCoachesIFrame() {
 		super();
 		setName(Utilities.NAME_COACHMANAGER);
@@ -70,7 +78,7 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		parent.add(new CreateCoachesPanel(), BorderLayout.SOUTH);
 		
 		entityTable.setRowSelectionAllowed(true);
-		entityTable.setDefaultRenderer(Object.class, new CustomRenderer());
+		entityTable.setDefaultRenderer(Object.class, new CoachesCustomRenderer());
 		entityTable.getColumnModel().getColumn(0).setMaxWidth(25);
 		entityTable.setRowSelectionAllowed(true);
 		entityTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -197,5 +205,32 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		public int getRowCount() {
 			return coaches.size();
 		}
+	}
+}
+
+final class CoachesCustomRenderer implements TableCellRenderer {
+	public final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		JComponent renderer = null;
+		if (column == 0) {
+			renderer = new JLabel(""+(row+1));
+		} else {
+			renderer = new JLabel(value.toString());
+		}
+		
+		if ((row % 2) > 0) {
+			renderer.setBackground(Color.white);
+		} else {
+			renderer.setBackground(new Color(240,240,240));
+		}
+
+		if (isSelected) {
+			renderer.setBackground(Color.yellow);
+		} 
+		
+		renderer.setOpaque(true);
+		return renderer;
 	}
 }

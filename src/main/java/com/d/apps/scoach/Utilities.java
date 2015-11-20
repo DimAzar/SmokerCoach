@@ -1,4 +1,4 @@
-package com.d.apps.scoach.util;
+package com.d.apps.scoach;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,8 +7,6 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.d.apps.scoach.CounterApp;
 
 public class Utilities {
 	private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
@@ -19,7 +17,7 @@ public class Utilities {
 	public static final String NAME_COACHMANAGER = "Manage Coaches";
 	public static final String NAME_PROFILESMANAGER= "Manage Profiles";
 	public static final String NAME_PROFILECOACHES= "Profile Coaches";
-	
+	public static final String NAME_ADDCOUNTER = "Add Counter to Coach";
 	public static Properties loadApplicationProperties(String propertiesName) {
 		Properties ans = new Properties();
 		InputStream input = null;
