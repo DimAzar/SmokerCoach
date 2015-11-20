@@ -1,4 +1,4 @@
-package com.d.apps.scoach.services.interfaces;
+package com.d.apps.scoach.services;
 
 import java.util.List;
 

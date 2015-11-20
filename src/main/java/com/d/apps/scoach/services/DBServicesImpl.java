@@ -13,7 +13,6 @@ import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
-import com.d.apps.scoach.services.interfaces.DBServices;
 
 public class DBServicesImpl implements DBServices {
 	private static final String PERSISTENCE_UNIT = "CounterApp";

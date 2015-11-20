@@ -47,5 +47,4 @@ public class Utilities {
 				Calendar.getInstance().get(Calendar.YEAR));
 		return ans;
 	}
-
 }
