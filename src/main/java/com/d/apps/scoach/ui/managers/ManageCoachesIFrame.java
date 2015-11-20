@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.iframes;
+package com.d.apps.scoach.ui.managers;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -21,6 +21,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.util.Utilities;
 
 public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -29,16 +30,10 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	
 	public ManageCoachesIFrame() {
 		super();
+		setName(Utilities.NAME_COACHMANAGER);
 		
 		initGrcs();
 		setupListeners();
-		
-		setTitle("Manage System Coaches ");
-		setName("Manage Coaches IFrame");
-		setSize(400, 200);
-		setLocation(10,10);
-		setClosable(true);
-		setResizable(true);
 	}
 	
 	private void setupListeners() {
@@ -82,6 +77,7 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		dtm.fireTableDataChanged();
 
 		initRMenu();
+		setTitle("Manage System Coaches ");
 	}
 	
 	private void initRMenu() {

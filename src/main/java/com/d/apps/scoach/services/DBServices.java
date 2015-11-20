@@ -15,7 +15,7 @@ public interface DBServices {
     
 	public int getProfilesCount();
     public Profile createProfile(String name);
-    public void setActiveProfile(int id);
+    public Profile setActiveProfile(int id);
     public void deactivateAllProfiles();
     public Profile getActiveProfile();
     

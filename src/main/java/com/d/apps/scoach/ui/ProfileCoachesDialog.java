@@ -21,6 +21,7 @@ import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.util.Utilities;
 
 public class ProfileCoachesDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -36,9 +37,9 @@ public class ProfileCoachesDialog extends JDialog {
 		this.profile = profile;
 		this.controller = controller;
 		currentProfileCoaches = profile.getCoaches();
-		initGrcs();
 		
-		setSize(350, 300);
+		initGrcs();
+		createListeners();
 		setModal(true);
 	}
 	
@@ -47,6 +48,11 @@ public class ProfileCoachesDialog extends JDialog {
 		c.setLayout(new BorderLayout());
 		c.add(createCoachesPanel(), BorderLayout.CENTER);
 		c.add(saveButt, BorderLayout.SOUTH);
+		setName(Utilities.NAME_PROFILECOACHES);
+		setSize(350, 300);
+	}
+	
+	private void createListeners() {
 		saveButt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

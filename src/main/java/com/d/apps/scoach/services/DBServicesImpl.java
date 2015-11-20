@@ -47,8 +47,8 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public void setActiveProfile(int id) {
-		pselector.setActiveProfile(id);
+	public Profile setActiveProfile(int id) {
+		return pselector.setActiveProfile(id);
 	}
 
 	@Override

@@ -39,16 +39,20 @@ public class ProfileSelector extends BaseSelector {
     				.find(Profile.class, pid);
     }
     
-    public  void setActiveProfile(int id) {
-    	List<Profile> profiles = entityManager.createNamedQuery("profile.getAllProfiles", Profile.class).getResultList(); 
+    public  Profile setActiveProfile(int id) {
+    	List<Profile> profiles = entityManager.createNamedQuery("profile.getAllProfiles", Profile.class).getResultList();
+    	Profile activeProfile = null;
+    	
     	for (Profile profile : profiles) {
 			if (profile.getId() == id) {
 				profile.setActive(true);
+				activeProfile = profile;
 			} else {
 				profile.setActive(false);
 			}
 			updateEntity(profile);
 		}    	
+    	return activeProfile;
     }
     
     public  void deactivateAllProfiles() {

@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.iframes;
+package com.d.apps.scoach.ui.managers;
 
 import java.awt.BorderLayout;
 import java.awt.Point;
@@ -24,23 +24,17 @@ import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
 import com.d.apps.scoach.ui.ProfileCoachesDialog;
-import com.d.apps.scoach.ui.iframes.profilemanager.ProfileManagerIFrame;
+import com.d.apps.scoach.util.Utilities;
 
 public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
 	
 	public ManageProfilesIFrame() {
 		super();
+		setName(Utilities.NAME_PROFILESMANAGER);
 		
 		initGrcs();
 		setupListeners();
-		
-		setTitle("Manage System Profiles ");
-		setName("Manage Profiles IFrame");
-		setSize(400, 200);
-		setLocation(10,10);
-		setClosable(true);
-		setResizable(true);
 	}
 	
 	private void setupListeners() {
@@ -83,6 +77,7 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 		dtm.fireTableDataChanged();
 
 		initRMenu();
+		setTitle("Manage System Profiles ");
 	}
 	
 	private void initRMenu() {
@@ -106,8 +101,7 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 					return;
 				}
 				int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
-				CounterApp.DBServices.setActiveProfile(pid);
-				updateUIProfileChanged();
+				updateUIProfileChanged(CounterApp.DBServices.setActiveProfile(pid));
 			}
 		});
 		
@@ -140,11 +134,11 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 					if (isActive) {
 						if (JOptionPane.showConfirmDialog(null, "Profile is the active profile\nDelete Profile ?") == JOptionPane.OK_OPTION) {
 							CounterApp.DBServices.deleteProfile(pid);
-							updateUIProfileChanged();
+							updateUIProfileChanged(null);
 						}
 					} else {
 						CounterApp.DBServices.deleteProfile(pid);
-						updateUIProfileChanged();
+						updateUIProfileChanged(null);
 					}
 				}
 			}
@@ -158,13 +152,13 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 
 				Profile p = CounterApp.DBServices.findProfile(pid);
 				((MainFrame)getTopLevelAncestor()).showIFrame(new ProfileManagerIFrame(p));
-				updateUIProfileChanged();
+				updateUIProfileChanged(p);
 			}
 		});
 	}
 
-	private void updateUIProfileChanged() {
-		((MainFrame)getTopLevelAncestor()).activeProfileChanged();
+	private void updateUIProfileChanged(Profile p) {
+		((MainFrame)getTopLevelAncestor()).activeProfileChanged(p);
 		((CustomProfilesTableModel)entityTable.getModel()).refresh();
 		rmenu.setVisible(false);
 	}
@@ -204,9 +198,8 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 						JOptionPane.showMessageDialog(null, "No other profiles, setting as active profile!");
 						activeval = true;
 					}
-					Profile p = CounterApp.DBServices.createProfile(nameval , activeval);
+					updateUIProfileChanged(CounterApp.DBServices.createProfile(nameval , activeval));
 					name.setText("");
-					updateUIProfileChanged();
 				}
 			});
 		}

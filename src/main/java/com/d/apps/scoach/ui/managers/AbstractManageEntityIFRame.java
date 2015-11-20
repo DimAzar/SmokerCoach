@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.iframes;
+package com.d.apps.scoach.ui.managers;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -18,6 +18,12 @@ public class AbstractManageEntityIFRame extends JInternalFrame {
 
 	protected JTable entityTable = null;
 	protected JPopupMenu rmenu = new JPopupMenu();
+	public AbstractManageEntityIFRame() {
+		super();
+		setSize(400, 200);
+		setClosable(true);
+		setResizable(true);
+	}
 	
 	protected class CustomRenderer implements TableCellRenderer {
 		public final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();

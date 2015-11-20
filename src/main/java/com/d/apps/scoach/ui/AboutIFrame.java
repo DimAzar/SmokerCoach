@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.iframes;
+package com.d.apps.scoach.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.d.apps.scoach.CounterApp;
+import com.d.apps.scoach.util.Utilities;
 
 public class AboutIFrame extends JInternalFrame {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -19,11 +20,6 @@ public class AboutIFrame extends JInternalFrame {
 		version = CounterApp.appProperties.getProperty("app.version");
 		
 		initGrcs();
-
-		setClosable(true);
-		setTitle("About Counter");
-		setSize(100, 100);
-		setName("About IFrame");
 	}
 	
 	
@@ -42,5 +38,10 @@ public class AboutIFrame extends JInternalFrame {
 
 		parent.add(new JLabel("Version"), new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 2, 0, 2), 0, 0));
 		parent.add(new JLabel(version), new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 2, 0, 2), 0, 0));
+
+		setName(Utilities.NAME_ABOUTDIALOG);
+		setClosable(true);
+		setTitle("About Counter");
+		setSize(100, 100);
 	}
 }

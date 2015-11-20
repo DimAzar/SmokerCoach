@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.iframes.profilemanager;
+package com.d.apps.scoach.ui.managers;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.util.Utilities;
 
 public class ProfileManagerIFrame extends JInternalFrame {
 	private static final Logger LOG = LoggerFactory.getLogger(ProfileManagerIFrame.class);
@@ -32,17 +34,10 @@ public class ProfileManagerIFrame extends JInternalFrame {
 	
 	public ProfileManagerIFrame(Profile profile) {
 		super();
-		
 		this.profile = profile;
 		
 		initGrcs();
-		
-		setTitle("Managing :"+profile.getFirstName());
-		setName("Profile Manager");
-		setSize(500, 500);
-		setLocation(10,10);
-		setClosable(true);
-		setResizable(true);
+		LOG.debug("Profile manager at " +new Date().toString());
 	}
 	
 	private void initGrcs() {
@@ -60,7 +55,13 @@ public class ProfileManagerIFrame extends JInternalFrame {
 		parent.add(getProfileEditorPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 5), 0, 0));
 		parent.add(getCoachesTablePanel() , new GridBagConstraints(0, 1, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
 		parent.add(getCoachesEditorPanel(), new GridBagConstraints(0, 2, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
-		
+	
+		setName(Utilities.NAME_PROFILEMANAGER);
+		setTitle("Managing :"+profile.getFirstName());
+		setSize(500, 500);
+		setLocation(10,10);
+		setClosable(true);
+		setResizable(true);
 	}
 	
 	private JPanel getProfileEditorPanel() {
@@ -73,7 +74,7 @@ public class ProfileManagerIFrame extends JInternalFrame {
 	
 	private JPanel getCoachesTablePanel() {
 		JPanel ans = new JPanel();
-		AbstractTableModel dtm = new CustomProfilesTableModel(profile.getCoaches());
+		AbstractTableModel dtm = new CustomTableModel(profile.getCoaches());
 		entityTable = new JTable(dtm);
 
 		entityTable.setRowSelectionAllowed(true);
@@ -92,11 +93,11 @@ public class ProfileManagerIFrame extends JInternalFrame {
 	}	
 }
 
-class CustomProfilesTableModel extends AbstractTableModel {
+class CustomTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
 	
-	public CustomProfilesTableModel(List<CoachInstance> coaches) {
+	public CustomTableModel(List<CoachInstance> coaches) {
 		super();
 		this.coaches = coaches;
 		refresh();

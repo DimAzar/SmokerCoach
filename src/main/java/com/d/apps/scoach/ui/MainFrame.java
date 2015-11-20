@@ -1,7 +1,6 @@
 package com.d.apps.scoach.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,9 +27,9 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.iframes.AboutIFrame;
-import com.d.apps.scoach.ui.iframes.ManageCoachesIFrame;
-import com.d.apps.scoach.ui.iframes.ManageProfilesIFrame;
+import com.d.apps.scoach.ui.managers.ManageCoachesIFrame;
+import com.d.apps.scoach.ui.managers.ManageProfilesIFrame;
+import com.d.apps.scoach.util.Utilities;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -7859383450590563738L;
@@ -38,7 +37,8 @@ public class MainFrame extends JFrame {
 	private static final Logger LOG = LoggerFactory.getLogger(MainFrame.class);
 	private static final int WINDOW_BATCH_SIZE = 3;
 	private static final int WINDOW_PADDING = 25;
-	
+
+	//MODEL
 	private Profile activeProfile = null;
 	
 	//SWING
@@ -46,48 +46,32 @@ public class MainFrame extends JFrame {
 	private ToolbarPanel actionPanel = null;
 	
 	public MainFrame() {
+		super();
+		
+		setName(Utilities.NAME_MAINFRAME);
 		initGrcs();
-		activeProfileChanged();
 
-		setSize(800, 600);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
-
-		try {
-			setIconImage(ImageIO.read(MainFrame.class.getClassLoader().getResourceAsStream("europa-flag.gif")));
-		} catch (IOException e) {
-			LOG.error(e.getMessage());
-		}
+		activeProfileChanged(CounterApp.DBServices.getActiveProfile());
 	}
 
 	//INTERFACE
-	public Profile getActiveProfile() {
-		return activeProfile;
-	}
-	
+	public Profile getActiveProfile() {	return activeProfile;	}
 	public void actionInvoked(String actionName) {
 	}
 	
 	public void activeProfileChanged(Profile p) {
 		activeProfile = p;
-		setTitle("Counter Application - Active Profile : "+activeProfile.getFirstName());
-		updateProfileRelatedUI(activeProfile.getCoaches());
-		actionPanel.toggleActionBar(activeProfile != null);
-		
-	}
-
-	public void activeProfileChanged() {
-		activeProfile = CounterApp.DBServices.getActiveProfile();
 		if (activeProfile != null) {
-			setTitle("Counter Application - Active Profile : "+activeProfile.getFirstName());
 			updateProfileRelatedUI(activeProfile.getCoaches());
 		} else {
-			setTitle("Counter Application - Active Profile : N/A");
-			showIFrame(new ManageProfilesIFrame());
+			if (!isIFrameVisible(Utilities.NAME_PROFILESMANAGER)) {
+				showIFrame(new ManageProfilesIFrame());
+			}
 		}
+		setTitle("Counter Application - Active Profile : "+((activeProfile == null) ? "N/A" : activeProfile.getFirstName()));
 		actionPanel.toggleActionBar(activeProfile != null);
-		
 	}
+
 	//PRIVATE
 	private void updateProfileRelatedUI(List<CoachInstance> activeCoaches) {
 		createBasicMenu();
@@ -99,9 +83,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void initGrcs() {
-		Container parent = new JPanel();
-		setContentPane(parent);
-
+		JPanel parent = (JPanel) getContentPane();
 		parent.setLayout(new BorderLayout());
 		
 		desktopPane = new JDesktopPane();
@@ -109,7 +91,17 @@ public class MainFrame extends JFrame {
 
 		parent.add(desktopPane, BorderLayout.CENTER);
 		parent.add(actionPanel, BorderLayout.SOUTH);
+		
 		createBasicMenu();
+		
+		setSize(800, 600);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
+		try {
+			setIconImage(ImageIO.read(MainFrame.class.getClassLoader().getResourceAsStream("europa-flag.gif")));
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+		}
 	}
 
 	private void createBasicMenu() {
@@ -149,6 +141,15 @@ public class MainFrame extends JFrame {
 				showIFrame(new ManageCoachesIFrame());
 			}
 		});
+	}
+	
+	public boolean isIFrameVisible(String name) {
+		for (JInternalFrame iframe : desktopPane.getAllFrames()) {
+			if (iframe.getName().equals(name) && iframe.isVisible()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void showIFrame(JInternalFrame frame) {

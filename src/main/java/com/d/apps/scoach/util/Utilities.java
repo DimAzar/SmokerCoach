@@ -13,6 +13,13 @@ import com.d.apps.scoach.CounterApp;
 public class Utilities {
 	private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
 	
+	public static final String NAME_MAINFRAME   = "Main Frame";
+	public static final String NAME_PROFILEMANAGER = "Profile Manager";
+	public static final String NAME_ABOUTDIALOG = "About Counter";
+	public static final String NAME_COACHMANAGER = "Manage Coaches";
+	public static final String NAME_PROFILESMANAGER= "Manage Profiles";
+	public static final String NAME_PROFILECOACHES= "Profile Coaches";
+	
 	public static Properties loadApplicationProperties(String propertiesName) {
 		Properties ans = new Properties();
 		InputStream input = null;
