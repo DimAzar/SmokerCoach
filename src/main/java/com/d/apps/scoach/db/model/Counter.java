@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
@@ -40,17 +41,13 @@ public class Counter implements DBEntity {
 
 	@Getter @Setter
 	@Column(updatable=false)
-	private String step;
+	private Double stepValue;
 	
 	@Getter @Setter
 	@Column(updatable=false)
-	private String type;
-
-	@Getter @Setter
-	@Column(updatable=false)
-	private String operation;
-
-	@Getter @Setter
-	@Column(updatable=false)
-	private String function;
+	private CounterFunctionType type;
+	
+	public void addCoach(CoachInstance ci) {
+		coaches.add(ci);
+	}
 }

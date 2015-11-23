@@ -71,6 +71,7 @@ public class CoachInstance implements DBEntity {
 	private Character accelerator;
 	
 	public void addCounter(Counter instance) {
+		instance.addCoach(this);
 		counters.add(instance);
 	}
 	

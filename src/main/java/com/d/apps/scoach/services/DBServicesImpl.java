@@ -8,11 +8,14 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.selectors.CoachInstanceSelector;
 import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
+import com.d.apps.scoach.db.selectors.CounterSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 
 public class DBServicesImpl implements DBServices {
@@ -24,6 +27,7 @@ public class DBServicesImpl implements DBServices {
 	private ProfileSelector pselector = new ProfileSelector();
 	private CoachTemplateSelector coachesSelector = new CoachTemplateSelector();
 	private CoachInstanceSelector coachesInstSelector = new CoachInstanceSelector();
+	private CounterSelector counterSelector = new CounterSelector();
 	
 	public DBServicesImpl() {
 		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
@@ -31,6 +35,8 @@ public class DBServicesImpl implements DBServices {
 		pselector.setEntityManager(factory.createEntityManager());
 		coachesSelector.setEntityManager(factory.createEntityManager());
 		coachesInstSelector.setEntityManager(factory.createEntityManager());
+		counterSelector.setEntityManager(factory.createEntityManager());
+		
 		LOG.debug("DBServices started");
 	}
 
@@ -128,5 +134,20 @@ public class DBServicesImpl implements DBServices {
 	@Override
 	public CoachInstance findCoachInstance(int cid) {
 		return coachesInstSelector.getCoachInstanceByID(cid); 
+	}
+
+	@Override
+	public Counter createCounter(int coachId, String name,
+			CounterFunctionType type, double stepValue) {
+		Counter instance = new Counter();
+		instance.setName(name);
+		instance.setStepValue(stepValue);
+		instance.setType(type);
+		
+		CoachInstance ci = coachesInstSelector.getCoachInstanceByID(coachId);
+		ci.addCounter(instance);
+		
+		coachesInstSelector.updateEntity(instance);
+		return null;
 	}
 }

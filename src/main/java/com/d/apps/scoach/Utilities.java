@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Properties;
 
+import lombok.Getter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,5 +53,37 @@ public class Utilities {
 				Calendar.getInstance().get(Calendar.MONTH)+1,
 				Calendar.getInstance().get(Calendar.YEAR));
 		return ans;
+	}
+	
+	public enum CounterFunctionType {
+	    STEP(1, "Step function"), INPUT(2, "User-Input function");
+
+	    @Getter
+	    private final int id;
+	    @Getter
+	    private final String description;
+	    
+	    private CounterFunctionType(int id, String description) {	
+	    	this.id = id;	
+	    	this.description = description;
+    	}
+	    
+	    public static CounterFunctionType forId(int id) {
+	        for (CounterFunctionType func : CounterFunctionType.values()) {
+	            if (func.getId() == id) {
+	                return func;
+	            }
+	        }
+	        return null;
+	    }
+	    
+	    public static CounterFunctionType getId(String descr) {
+	        for (CounterFunctionType func : CounterFunctionType.values()) {
+	            if (func.getDescription().equals(descr)) {
+	                return func;
+	            }
+	        }
+	        return null;
+	    }
 	}
 }

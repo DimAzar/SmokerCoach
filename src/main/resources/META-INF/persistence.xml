@@ -5,6 +5,7 @@
         <class>com.d.apps.scoach.db.model.CoachInstance</class>
         <class>com.d.apps.scoach.db.model.CoachTemplate</class>
         <class>com.d.apps.scoach.db.model.Counter</class>
+        <class>com.d.apps.scoach.db.model.CounterData</class>
         <class>com.d.apps.scoach.db.model.Profile</class>
 
         <properties>

@@ -17,9 +17,9 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -28,7 +28,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import org.slf4j.Logger;
@@ -91,7 +90,11 @@ public class ManagerProfileIFrame extends AbstractManageEntityIFRame {
 		addCounterButt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AddCounterToCoachDialog d = new AddCounterToCoachDialog();
+				if (selectedCoach == null) {
+					JOptionPane.showMessageDialog(null, "Please select a coach first!");
+					return;
+				}
+				AddCounterToCoachDialog d = new AddCounterToCoachDialog(selectedCoach.getId());
 				Point p = getLocationOnScreen();
 				p.translate(getSize().width/2-d.getSize().width/2, getSize().height/2-d.getSize().height/2);
 				d.setLocation(p);
@@ -141,7 +144,9 @@ public class ManagerProfileIFrame extends AbstractManageEntityIFRame {
 	
 	private JPanel getCountersTablePanel() {
 		JPanel ans = new JPanel();
-		AbstractTableModel dtm = new CustomCountersTableModel();
+		
+		List<Counter> counters = (selectedCoach == null) ? new ArrayList<Counter>() : selectedCoach.getCounters();
+		AbstractTableModel dtm = new CustomCountersTableModel(counters);
 		countersTable = new JTable(dtm);
 
 		countersTable.setRowSelectionAllowed(true);
@@ -156,15 +161,9 @@ public class ManagerProfileIFrame extends AbstractManageEntityIFRame {
 	}	
 	
 	public void updateCountersData() {
-		DefaultTableModel dtm = (DefaultTableModel) countersTable.getModel();
-		List<Counter> data = selectedCoach.getCounters();
+		CustomCountersTableModel dtm = (CustomCountersTableModel) countersTable.getModel();
+		dtm.setCounters(selectedCoach.getCounters());
 		
-		dtm.getDataVector().removeAllElements();
-		
-		for (int i = 0; i < data.size(); i++) {
-			Counter row = data.get(i); 
-			dtm.addRow(new Object[]{row.getId(), row.getName()});	
-		}
 		dtm.fireTableDataChanged();
 		countersTable.setModel(dtm);
 	}
@@ -232,21 +231,24 @@ class CustomCoachesTableModel extends AbstractTableModel {
 	}
 }
 
-class CustomCountersTableModel extends DefaultTableModel {
+class CustomCountersTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	private List<Counter> coaches = new ArrayList<Counter>();
+	private List<Counter> counters = new ArrayList<Counter>();
 	
-	public CustomCountersTableModel() {
+	public CustomCountersTableModel(List<Counter> coaches) {
 		super();
-		refresh();
-	}
-
-	public void refresh() {
+		this.counters = coaches;
+		
 		fireTableDataChanged();
 	}
+
+	public void setCounters(List<Counter> counters) {
+		this.counters = counters;
+	}
+	
 	@Override
 	public int getColumnCount() {
-		return 2;
+		return 4;
 	}
 	
 	@Override
@@ -256,6 +258,10 @@ class CustomCountersTableModel extends DefaultTableModel {
 			return "#";
 		case 1:
 			return "Name";
+		case 2:
+			return "Type";
+		case 3:
+			return "Step value";
 		default:
 			return "N/A";
 		}
@@ -263,13 +269,18 @@ class CustomCountersTableModel extends DefaultTableModel {
 
 	@Override
 	public Object getValueAt(int row, int column) {
-		Counter ci = coaches.get(row);
+		Counter ci = counters.get(row);
 		
 		switch (column) {
 			case 0:
 				return ci.getId();
 			case 1:
 				return ci.getName();
+			case 2:
+				return ci.getType().getDescription();
+			case 3:
+				return ci.getStepValue();
+				
 		}
 		throw new RuntimeException("Cannot get value :"+row+","+column);
 	}
@@ -281,6 +292,11 @@ class CustomCountersTableModel extends DefaultTableModel {
 		}
 		return false;
 	}
+
+	@Override
+	public int getRowCount() {
+		return counters.size();
+	}
 }
 
 final class CountersCustomRenderer implements TableCellRenderer {
@@ -289,14 +305,13 @@ final class CountersCustomRenderer implements TableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		JComponent renderer = null;
-		if (column == 0 || column == 1) {
-			if (column == 0) {
-				renderer = new JLabel(""+(row+1));
-			} else {
-				renderer = new JLabel(value.toString());
-			}
+		if (column == 0) {
+			renderer = new JLabel(""+(row+1));
+		} else 
+		if (column == 3 && value.toString().equals("0.0")) {
+			renderer = new JLabel("N/a");
 		} else {
-			renderer = new JCheckBox("", Boolean.parseBoolean(value.toString()));
+			renderer = new JLabel(value.toString());
 		}
 		
 		if ((row % 2) > 0) {

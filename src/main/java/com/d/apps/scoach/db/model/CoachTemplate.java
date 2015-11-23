@@ -34,7 +34,7 @@ public class CoachTemplate implements DBEntity {
     private Integer id;
 
 	@Getter @Setter
-	@Column(unique=true, updatable=true)
+	@Column(updatable=true)
 	private String name;
 	
 	@Getter @Setter
