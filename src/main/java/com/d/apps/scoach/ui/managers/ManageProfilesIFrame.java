@@ -166,7 +166,7 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 				int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 
 				Profile p = CounterApp.DBServices.findProfile(pid);
-				((MainFrame)getTopLevelAncestor()).showIFrame(new ManagerProfileIFrame(p));
+				((MainFrame)getTopLevelAncestor()).showIFrame(new ManageProfileIFrame(p));
 				profileActionRefreshUI();
 			}
 		});

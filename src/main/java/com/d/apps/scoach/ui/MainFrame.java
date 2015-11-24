@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,13 +17,16 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import org.slf4j.Logger;
@@ -43,6 +47,8 @@ public class MainFrame extends JFrame {
 	private static final int WINDOW_BATCH_SIZE = 3;
 	private static final int WINDOW_PADDING = 25;
 
+	private MainFrame _instance = null;
+	
 	//MODEL
 	private Profile activeProfile = null;
 	
@@ -57,9 +63,9 @@ public class MainFrame extends JFrame {
 		initGrcs();
 
 		activeProfileChanged(CounterApp.DBServices.getActiveProfile());
+		_instance = this;
 	}
 
-	//INTERFACE
 	public Profile getActiveProfile() {	return activeProfile;	}
 	public void activeProfileChanged(Profile p) {
 		activeProfile = p;
@@ -179,77 +185,114 @@ public class MainFrame extends JFrame {
 	    }
 	}
 
-	/* TOOLBAR AND TOOLBAR ACTIONS */
-}
-
-class ToolbarPanel extends JToolBar {
-	private static final long serialVersionUID = 1L;
-	private ArrayList<AbstractAction> actionButtons = new ArrayList<AbstractAction>();
-	
-	public ToolbarPanel() {
-		super();
-	}
-	
-	public void toggleActionBar(boolean enable) {
-		for (AbstractAction toolbarAction : actionButtons) {
-			if (toolbarAction != null) {
-				toolbarAction.setEnabled(enable);
+		/* TOOLBAR AND TOOLBAR ACTIONS */
+	class ToolbarPanel extends JToolBar {
+		private static final long serialVersionUID = 1L;
+		private ArrayList<AbstractAction> actionButtons = new ArrayList<AbstractAction>();
+		
+		public ToolbarPanel() {
+			super();
+		}
+		
+		public void toggleActionBar(boolean enable) {
+			for (AbstractAction toolbarAction : actionButtons) {
+				if (toolbarAction != null) {
+					toolbarAction.setEnabled(enable);
+				}
+			}
+		}
+		
+		public void addActionButton(ToolbarAction action) {
+			actionButtons.add(action);
+		}
+		
+		public void cleanBar() {
+			removeAll();
+			actionButtons.clear();
+		}
+		
+		public void recreateBar () {
+			for (AbstractAction toolbarAction : actionButtons) {
+				if (toolbarAction != null) {
+					add(toolbarAction);
+				}
 			}
 		}
 	}
 	
-	public void addActionButton(ToolbarAction action) {
-		actionButtons.add(action);
-	}
+	class ToolbarAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+		private Counter counter = null;
+		
+		public ToolbarAction(Counter counter, boolean enabled) {
+			super(counter.getName());
+			this.counter = counter;
 	
-	public void cleanBar() {
-		removeAll();
-		actionButtons.clear();
-	}
-	
-	public void recreateBar () {
-		for (AbstractAction toolbarAction : actionButtons) {
-			if (toolbarAction != null) {
-				add(toolbarAction);
+	//		super(text, icon);
+	//		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(accelerator, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+	//		putValue(SHORT_DESCRIPTION, description);
+			setEnabled(enabled);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Double value = null;
+			switch (counter.getType()) {
+			case INPUT:
+				System.out.println("Input counter clicked");
+				InputDialog d = new InputDialog();
+				Point p = _instance.getLocation();
+				p.translate((int)p.getX()/2, (int)p.getY()/2);
+				d.setLocation(p);
+				value = d.getUserValue();
+				
+				if (value == null) {
+					JOptionPane.showMessageDialog(_instance, "Counter data cannot be null or not numeric");
+					return;
+				}
+				break;
+			case STEP:
+				value = counter.getStepValue();
+				System.out.println("Step counter clicked");
+				break;
+			default:
+				throw new RuntimeException("Unkown counter type :"+counter.getType());
 			}
+			counter = CounterApp.DBServices.addCounterData(counter, new Timestamp(Calendar.getInstance().getTimeInMillis()), value);
 		}
 	}
-}
-
-class ToolbarAction extends AbstractAction {
-	private static final long serialVersionUID = 1L;
-	private Counter counter = null;
 	
-	public ToolbarAction(Counter counter, boolean enabled) {
-		super(counter.getName());
-		this.counter = counter;
-
-//		super(text, icon);
-//		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(accelerator, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-//		putValue(SHORT_DESCRIPTION, description);
-		setEnabled(enabled);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Double value = null;
-		switch (counter.getType()) {
-		case INPUT:
-			System.out.println("Input counter clicked");
-			break;
-		case STEP:
-			value = counter.getStepValue();
-			System.out.println("Step counter clicked");
-			break;
-		default:
-			throw new RuntimeException("Unkown counter type :"+counter.getType());
+	class InputDialog extends JDialog {
+		private static final long serialVersionUID = -1L;
+		
+		private JTextField valueText = new JTextField();
+		
+		public InputDialog() {
+			super();
+			setTitle("Input a value");
+			setModal(true);
+			
+			add(valueText);
+			
+			setSize(200, 70);
 		}
-		counter = CounterApp.DBServices.addCounterData(counter, new Timestamp(Calendar.getInstance().getTimeInMillis()), value);
+		
+		public Double getUserValue() {
+			setVisible(true);
+			
+			Double ans = null;
+			try {
+				ans = Double.parseDouble(valueText.getText());
+			} catch (Exception e) {
+			}
+			return ans;
+		}
 	}
 }
 
 class AboutIFrame extends JInternalFrame {
-	private static final long serialVersionUID = -892682552079556150L;
+	private static final long serialVersionUID = -1L;
+	
 	String version = null;
 	
 	public AboutIFrame() {

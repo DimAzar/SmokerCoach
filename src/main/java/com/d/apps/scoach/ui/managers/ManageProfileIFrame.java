@@ -40,8 +40,8 @@ import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
 
-public class ManagerProfileIFrame extends AbstractManageEntityIFRame {
-	private static final Logger LOG = LoggerFactory.getLogger(ManagerProfileIFrame.class);
+public class ManageProfileIFrame extends AbstractManageEntityIFRame {
+	private static final Logger LOG = LoggerFactory.getLogger(ManageProfileIFrame.class);
 	private static final long serialVersionUID = 1L;
 
 	//SWING 
@@ -52,7 +52,7 @@ public class ManagerProfileIFrame extends AbstractManageEntityIFRame {
 	private Profile profile = null;
 	private CoachInstance selectedCoach;
 	
-	public ManagerProfileIFrame(Profile profile) {
+	public ManageProfileIFrame(Profile profile) {
 		super();
 		this.profile = profile;
 		
