@@ -11,9 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -40,7 +40,7 @@ public class CoachInstance implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(nullable=false, name="template_id") 
 	private CoachTemplate template;
 	

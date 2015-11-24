@@ -1,5 +1,6 @@
 package com.d.apps.scoach.services;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -149,5 +150,10 @@ public class DBServicesImpl implements DBServices {
 		
 		coachesInstSelector.updateEntity(instance);
 		return null;
+	}
+
+	@Override
+	public Counter addCounterData(Counter owner, Timestamp created, Double value) {
+		return (Counter)counterSelector.addCounterData(owner, created, value);
 	}
 }

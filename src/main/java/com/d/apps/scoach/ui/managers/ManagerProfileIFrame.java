@@ -38,6 +38,7 @@ import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.ui.MainFrame;
 
 public class ManagerProfileIFrame extends AbstractManageEntityIFRame {
 	private static final Logger LOG = LoggerFactory.getLogger(ManagerProfileIFrame.class);
@@ -163,9 +164,14 @@ public class ManagerProfileIFrame extends AbstractManageEntityIFRame {
 	public void updateCountersData() {
 		CustomCountersTableModel dtm = (CustomCountersTableModel) countersTable.getModel();
 		dtm.setCounters(selectedCoach.getCounters());
-		
 		dtm.fireTableDataChanged();
 		countersTable.setModel(dtm);
+		
+		if (profile.updateCoach(selectedCoach)) {
+			((MainFrame)getTopLevelAncestor()).updateProfileRelatedUI(profile.getCoaches());
+		} else {
+			LOG.error(String.format("Could not update profile coaches pid:%s cid:%s", profile.getId(), selectedCoach.getId()));
+		}
 	}
 
 }

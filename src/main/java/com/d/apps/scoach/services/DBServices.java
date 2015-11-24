@@ -1,5 +1,6 @@
 package com.d.apps.scoach.services;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.d.apps.scoach.Utilities.CounterFunctionType;
@@ -33,4 +34,5 @@ public interface DBServices {
     public CoachInstance findCoachInstance(int cid);
     
     public Counter createCounter(int coachInstanceId, String name, CounterFunctionType type, double stepValue);
+    public Counter addCounterData(Counter owner, Timestamp created, Double value);
 }

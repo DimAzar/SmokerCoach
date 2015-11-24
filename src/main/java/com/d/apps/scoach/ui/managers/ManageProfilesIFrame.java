@@ -213,8 +213,8 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 						CounterApp.DBServices.deactivateAllProfiles();
 					}
 					
-					if (CounterApp.DBServices.getProfilesCount() <= 0) {
-						JOptionPane.showMessageDialog(null, "No other profiles, setting as active profile!");
+					if (CounterApp.DBServices.getProfilesCount() <= 0 && activeval != true) {
+						JOptionPane.showMessageDialog(null, "No other active profiles, setting as active profile!");
 						activeval = true;
 					}
 					Profile newProfile = CounterApp.DBServices.createProfile(nameval , activeval);

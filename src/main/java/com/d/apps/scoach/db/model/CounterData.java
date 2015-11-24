@@ -1,13 +1,13 @@
 package com.d.apps.scoach.db.model;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class CounterData implements DBEntity {
     private Integer id;
 
 	@Getter @Setter
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(nullable=false, name="counter_id") 
 	private Counter counter;
 
@@ -36,5 +36,5 @@ public class CounterData implements DBEntity {
 	private Double datum;
 	
 	@Getter @Setter
-	private Date addedDate;
+	private Timestamp addedDate;
 }

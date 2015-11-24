@@ -1,16 +1,7 @@
 package com.d.apps.scoach.ui.managers;
 
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
 
 public class AbstractManageEntityIFRame extends JInternalFrame {

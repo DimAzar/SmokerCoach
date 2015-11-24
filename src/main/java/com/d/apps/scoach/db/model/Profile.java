@@ -50,6 +50,17 @@ public class Profile implements DBEntity {
     	coaches.add(profileCoach);
     }
     
+    public boolean updateCoach(CoachInstance coach) {
+    	for (CoachInstance coachInstance : coaches) {
+			if (coachInstance.getId() == coach.getId()) {
+				coaches.remove(coachInstance);
+				coaches.add(coach);
+				return true;
+			}
+		}
+    	return false;
+    }
+    
     public int removeCoach(String name) {
     	for (CoachInstance profileCoach : coaches) {
 			if (profileCoach.getTemplate().getName().equals(name)) {
