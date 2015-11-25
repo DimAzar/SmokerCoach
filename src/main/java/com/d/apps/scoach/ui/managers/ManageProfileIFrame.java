@@ -95,6 +95,15 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 			}
 		});
 		
+		JMenuItem manage= new JMenuItem("Manage");
+		rmenuGraphs.add(manage);
+		
+		manage.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				rmenuGraphs.setVisible(false);
+			}
+		});
 	}
 	
 	private void initGrcs() {
@@ -249,7 +258,7 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	        		int selectionIndex = ((DefaultListSelectionModel)e.getSource()).getLeadSelectionIndex();
 	        		int gid = Integer.parseInt(graphsTable.getValueAt(selectionIndex, 0).toString());
 	        		selectedGraph = CounterApp.DBServices.findCoachGraph(gid);	        		
-	        		updateGraphsData();
+//	        		updateGraphsData();
 	        	}
 	        }
 	    });
