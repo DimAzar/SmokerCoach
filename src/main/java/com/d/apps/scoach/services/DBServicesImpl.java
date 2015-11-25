@@ -10,12 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.Utilities.CounterFunctionType;
+import com.d.apps.scoach.Utilities.DataSumType;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.db.selectors.CoachInstanceSelector;
 import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
+import com.d.apps.scoach.db.selectors.CounterDataSelector;
 import com.d.apps.scoach.db.selectors.CounterSelector;
 import com.d.apps.scoach.db.selectors.ProfileSelector;
 
@@ -29,6 +31,7 @@ public class DBServicesImpl implements DBServices {
 	private CoachTemplateSelector coachesSelector = new CoachTemplateSelector();
 	private CoachInstanceSelector coachesInstSelector = new CoachInstanceSelector();
 	private CounterSelector counterSelector = new CounterSelector();
+	private CounterDataSelector counterDataSelector = new CounterDataSelector();
 	
 	public DBServicesImpl() {
 		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
@@ -37,6 +40,7 @@ public class DBServicesImpl implements DBServices {
 		coachesSelector.setEntityManager(factory.createEntityManager());
 		coachesInstSelector.setEntityManager(factory.createEntityManager());
 		counterSelector.setEntityManager(factory.createEntityManager());
+		counterDataSelector.setEntityManager(factory.createEntityManager());
 		
 		LOG.debug("DBServices started");
 	}
@@ -155,5 +159,10 @@ public class DBServicesImpl implements DBServices {
 	@Override
 	public Counter addCounterData(Counter owner, Timestamp created, Double value) {
 		return (Counter)counterSelector.addCounterData(owner, created, value);
+	}
+	
+	@Override
+	public List<Object[]> getCounterDataSummed(int cid, DataSumType type) {
+		return counterDataSelector.getCounterDataSummed(cid, type);
 	}
 }

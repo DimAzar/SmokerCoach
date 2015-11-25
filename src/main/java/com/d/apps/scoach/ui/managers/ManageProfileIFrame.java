@@ -10,6 +10,8 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +21,7 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,6 +41,7 @@ import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.ui.GraphFrame;
 import com.d.apps.scoach.ui.MainFrame;
 
 public class ManageProfileIFrame extends AbstractManageEntityIFRame {
@@ -58,7 +62,20 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		
 		initGrcs();
 		addListeners();
+		initRMenu();
 		LOG.debug("Profile manager at " +new Date().toString());
+	}
+	
+	private void initRMenu() {
+		JMenuItem graph = new JMenuItem("Plot");
+		rmenu.add(graph);
+		
+		graph.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new GraphFrame(selectedCoach);
+			}
+		});
 	}
 	
 	private void initGrcs() {
@@ -103,6 +120,26 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 				updateCountersData();
 			}
 		});
+		coachesTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (e.getButton() == MouseEvent.BUTTON3) {
+					if (rmenu.isShowing()) {
+						return;
+					} 
+					
+					if (coachesTable.getSelectedRow() < 0) {
+						return;
+					}
+					rmenu.setLocation(e.getLocationOnScreen());
+					rmenu.setVisible(true);
+					return;
+				} 
+				if (rmenu.isShowing()) {
+					rmenu.setVisible(false);
+				}
+			}
+		});		
 	}
 
 	private JPanel getProfileEditorPanel() {

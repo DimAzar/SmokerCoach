@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.d.apps.scoach.Utilities.CounterFunctionType;
+import com.d.apps.scoach.Utilities.DataSumType;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Counter;
@@ -35,4 +36,6 @@ public interface DBServices {
     
     public Counter createCounter(int coachInstanceId, String name, CounterFunctionType type, double stepValue);
     public Counter addCounterData(Counter owner, Timestamp created, Double value);
+    
+    public List<Object[]> getCounterDataSummed(int cid, DataSumType type);
 }

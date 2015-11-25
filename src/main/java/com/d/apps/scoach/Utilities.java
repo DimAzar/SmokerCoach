@@ -86,4 +86,16 @@ public class Utilities {
 	        return null;
 	    }
 	}
+	
+	public enum DataSumType {
+	    DAY("per Day"), 
+	    MONTH("per Month");
+
+	    @Getter
+	    private final String description;
+	    
+	    private DataSumType(String description) {	
+	    	this.description = description;
+    	}
+	}	
 }

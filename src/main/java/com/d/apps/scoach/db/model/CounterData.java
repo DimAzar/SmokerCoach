@@ -18,6 +18,8 @@ import com.d.apps.scoach.db.model.base.DBEntity;
 @Entity 
 @Table (name="CounterData")
 @NamedQueries({
+//	@NamedQuery(name="counterData.SumByDay", query = "select DAY(addeddate), sum(datum) from counterdata where counter_id = 4 group by DAY(addeddate)"),
+//	@NamedQuery(name="counterData.SumByMonth", query = "select MONTH(addeddate), sum(datum) from counterdata where counter_id = 4 group by MONTH(addeddate)"),
 })
 public class CounterData implements DBEntity {
 	private static final long serialVersionUID = 1L;
