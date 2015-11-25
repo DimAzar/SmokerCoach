@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -41,6 +42,11 @@ public class Counter implements DBEntity {
 	@ManyToMany(targetEntity=CoachInstance.class)
 	@JoinColumn(nullable=false)
     private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
+
+	@Getter @Setter
+	@ManyToOne
+	@JoinColumn(nullable=true, name="graph_id") 
+	private CoachGraph graph;
 
 	@Getter @Setter
     @OneToMany(targetEntity=CounterData.class, mappedBy="counter", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)

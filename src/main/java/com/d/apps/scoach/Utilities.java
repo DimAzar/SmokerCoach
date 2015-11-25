@@ -56,7 +56,7 @@ public class Utilities {
 	}
 	
 	public enum CounterFunctionType {
-	    STEP(1, "Step function"), INPUT(2, "User-Input function");
+	    STEP(0, "Step function"), INPUT(1, "User-Input function");
 
 	    @Getter
 	    private final int id;

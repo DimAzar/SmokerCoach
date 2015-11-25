@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
@@ -49,12 +51,17 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = 1L;
 
 	//SWING 
-	private JTable coachesTable, countersTable;
+	private JTable coachesTable, countersTable, graphsTable;
 	private JButton addCounterButt = new JButton("Add Counter");
+	private JButton addGraphButt = new JButton("Add Graph");
+	protected JPopupMenu rmenuCoaches = new JPopupMenu(),
+						rmenuGraphs= new JPopupMenu();;
+	
 
 	//MODEL
 	private Profile profile = null;
 	private CoachInstance selectedCoach;
+	private CoachGraph    selectedGraph;
 	
 	public ManageProfileIFrame(Profile profile) {
 		super();
@@ -62,20 +69,32 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		
 		initGrcs();
 		addListeners();
-		initRMenu();
+		createRMenus();
 		LOG.debug("Profile manager at " +new Date().toString());
 	}
 	
-	private void initRMenu() {
-		JMenuItem graph = new JMenuItem("Plot");
-		rmenu.add(graph);
+	private void createRMenus() {
+		JMenuItem blah = new JMenuItem("Blah!");
+		rmenuCoaches.add(blah);
 		
-		graph.addActionListener(new ActionListener() {
+		blah.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new GraphFrame(selectedCoach);
+				rmenuCoaches.setVisible(false);
 			}
 		});
+		
+		JMenuItem plot = new JMenuItem("Plot");
+		rmenuGraphs.add(plot);
+		
+		plot.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				rmenuGraphs.setVisible(false);
+				new GraphFrame(selectedGraph);
+			}
+		});
+		
 	}
 	
 	private void initGrcs() {
@@ -84,17 +103,19 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		GridBagLayout layout = new GridBagLayout();
 		
 		layout.columnWidths = new int[] { 7 };
-		layout.rowHeights   = new int[] { 7, 7, 7,  7 };
+		layout.rowHeights   = new int[] { 7, 7, 7,  7, 7, 7 };
 		
 		layout.columnWeights = new double[] { 1.0 };
-		layout.rowWeights    = new double[] { 0.0, .33, .0, .33 };
+		layout.rowWeights    = new double[] { 0.0, .33, .0, .0, .0,  .33 };
  
 		parent.setLayout(layout);
 
 		parent.add(getProfileEditorPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 5), 0, 0));
 		parent.add(getCoachesTablePanel() , new GridBagConstraints(0, 1, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
-		parent.add(addCounterButt, new GridBagConstraints(0, 2, 1, 1, 1.0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 2, 2), 0, 0));
-		parent.add(getCountersTablePanel(), new GridBagConstraints(0, 3, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
+		parent.add(addGraphButt, new GridBagConstraints(0, 2, 1, 1, 1.0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 2, 2), 0, 0));
+		parent.add(getGraphsTablePanel() , new GridBagConstraints(0, 3, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
+		parent.add(addCounterButt, new GridBagConstraints(0, 4, 1, 1, 1.0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 2, 2), 0, 0));
+		parent.add(getCountersTablePanel(), new GridBagConstraints(0, 5, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
 	
 		setName(Utilities.NAME_PROFILEMANAGER);
 		setTitle("Managing :"+profile.getFirstName());
@@ -123,25 +144,34 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		coachesTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (rmenu.isShowing()) {
-						return;
-					} 
-					
-					if (coachesTable.getSelectedRow() < 0) {
-						return;
-					}
-					rmenu.setLocation(e.getLocationOnScreen());
-					rmenu.setVisible(true);
-					return;
-				} 
-				if (rmenu.isShowing()) {
-					rmenu.setVisible(false);
-				}
+				rmenuAction(e, rmenuCoaches, coachesTable);
+			}
+		});		
+		graphsTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				rmenuAction(e, rmenuGraphs, graphsTable);
 			}
 		});		
 	}
 
+	private void rmenuAction(MouseEvent e, JPopupMenu rmenu, JTable table) {
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			if (rmenu.isShowing()) {
+				return;
+			} 
+			
+			if (table.getSelectedRow() < 0) {
+				return;
+			}
+			rmenu.setLocation(e.getLocationOnScreen());
+			rmenu.setVisible(true);
+			return;
+		} 
+		if (rmenu.isShowing()) {
+			rmenu.setVisible(false);
+		}
+	}
 	private JPanel getProfileEditorPanel() {
 		JPanel ans = new JPanel();
 		ans.setLayout(new BorderLayout());
@@ -178,6 +208,8 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	
 	private void coachSelectionChanged() {
 		updateCountersData();
+		updateGraphsData();
+		
 	}
 	
 	private JPanel getCountersTablePanel() {
@@ -198,6 +230,43 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		return ans;
 	}	
 	
+	private JPanel getGraphsTablePanel() {
+		JPanel ans = new JPanel();
+		
+		List<CoachGraph> graphs = (selectedCoach == null) ? new ArrayList<CoachGraph>() : selectedCoach.getGraphs();
+		AbstractTableModel dtm = new CustomGraphsTableModel(graphs);
+		graphsTable = new JTable(dtm);
+
+		graphsTable.setRowSelectionAllowed(true);
+		graphsTable.setDefaultRenderer(Object.class, new GraphsCustomRenderer());
+		graphsTable.getColumnModel().getColumn(0).setMaxWidth(25);
+		graphsTable.setRowSelectionAllowed(true);
+		graphsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		graphsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+	        public void valueChanged(ListSelectionEvent e) {
+	        	if (!e.getValueIsAdjusting()) {
+	        		int selectionIndex = ((DefaultListSelectionModel)e.getSource()).getLeadSelectionIndex();
+	        		int gid = Integer.parseInt(graphsTable.getValueAt(selectionIndex, 0).toString());
+	        		selectedGraph = CounterApp.DBServices.findCoachGraph(gid);	        		
+	        		updateGraphsData();
+	        	}
+	        }
+	    });
+
+		ans.setLayout(new BorderLayout());
+		ans.add(new JScrollPane(graphsTable), BorderLayout.CENTER);
+		return ans;
+	}	
+	
+	public void updateGraphsData() {
+		CustomGraphsTableModel dtm = (CustomGraphsTableModel) graphsTable.getModel();
+		dtm.setGraphs(selectedCoach.getGraphs());
+		dtm.fireTableDataChanged();
+		graphsTable.setModel(dtm);
+		
+	}
+
 	public void updateCountersData() {
 		CustomCountersTableModel dtm = (CustomCountersTableModel) countersTable.getModel();
 		dtm.setCounters(selectedCoach.getCounters());
@@ -209,6 +278,7 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		} else {
 			LOG.error(String.format("Could not update profile coaches pid:%s cid:%s", profile.getId(), selectedCoach.getId()));
 		}
+
 	}
 
 }
@@ -271,6 +341,65 @@ class CustomCoachesTableModel extends AbstractTableModel {
 	@Override
 	public int getRowCount() {
 		return coaches.size();
+	}
+}
+
+class CustomGraphsTableModel extends AbstractTableModel {
+	private static final long serialVersionUID = 1L;
+	private List<CoachGraph> graphs = new ArrayList<CoachGraph>();
+	
+	public CustomGraphsTableModel(List<CoachGraph> graphs) {
+		super();
+		this.graphs = graphs;
+		fireTableDataChanged();
+	}
+	
+	public void setGraphs(List<CoachGraph> graphs) {
+		this.graphs = graphs;
+	}
+
+	@Override
+	public int getColumnCount() {
+		return 2;
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		switch (column) {
+		case 0:
+			return "#";
+		case 1:
+			return "Name";
+		default:
+			return "N/A";
+		}
+	}
+
+	@Override
+	public Object getValueAt(int row, int column) {
+		CoachGraph cg = graphs.get(row);
+		
+		switch (column) {
+			case 0:
+				return cg.getId();
+			case 1:
+				return cg.getName();
+		
+		}
+		throw new RuntimeException("Cannot get value :"+row+","+column);
+	}
+	
+	@Override
+	public boolean isCellEditable(int row, int column) {
+		if (column == 2) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int getRowCount() {
+		return graphs.size();
 	}
 }
 
@@ -343,6 +472,36 @@ class CustomCountersTableModel extends AbstractTableModel {
 }
 
 final class CountersCustomRenderer implements TableCellRenderer {
+	public final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		JComponent renderer = null;
+		if (column == 0) {
+			renderer = new JLabel(""+(row+1));
+		} else 
+		if (column == 3 && value.toString().equals("0.0")) {
+			renderer = new JLabel("N/a");
+		} else {
+			renderer = new JLabel(value.toString());
+		}
+		
+		if ((row % 2) > 0) {
+			renderer.setBackground(Color.white);
+		} else {
+			renderer.setBackground(new Color(240,240,240));
+		}
+
+		if (isSelected) {
+			renderer.setBackground(Color.yellow);
+		} 
+		
+		renderer.setOpaque(true);
+		return renderer;
+	}
+}
+
+final class GraphsCustomRenderer implements TableCellRenderer {
 	public final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.CoachTemplate;
 import com.d.apps.scoach.db.model.Counter;
@@ -164,5 +165,10 @@ public class DBServicesImpl implements DBServices {
 	@Override
 	public List<Object[]> getCounterDataSummed(int cid, DataSumType type) {
 		return counterDataSelector.getCounterDataSummed(cid, type);
+	}
+
+	@Override
+	public CoachGraph findCoachGraph(int gid) {
+		return counterDataSelector.getEntityManager().find(CoachGraph.class, gid);
 	}
 }

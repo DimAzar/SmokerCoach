@@ -21,23 +21,24 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Counter;
 
 public class GraphFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
-	private CoachInstance coachInstance;
+	private CoachGraph graph;
 	private DataSumType sumType =  DataSumType.DAY;
 	
 	private JFreeChart chart;
 	
-	public GraphFrame(CoachInstance instance) {
+	public GraphFrame(CoachGraph graph) {
 		super();
 		
-		this.coachInstance = instance;
+		this.graph = graph;
 		chart = ChartFactory.createXYLineChart(
-                coachInstance.getName(),
+				graph.getName(),
                 "Time - "+sumType.name(),
                 "Counter",
                 createDataset(),
@@ -62,7 +63,7 @@ public class GraphFrame extends JFrame {
 	private XYDataset createDataset() {
 		XYSeriesCollection dataset = new XYSeriesCollection();
 
-	    for (Counter counter : coachInstance.getCounters()) {
+	    for (Counter counter : graph.getCounters()) {
 	    	XYSeries series = new XYSeries(counter.getName());
 	    	List<Object[]> moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataSummed(counter.getId(), sumType);
 	    	for (Object[] objects : moredata) {

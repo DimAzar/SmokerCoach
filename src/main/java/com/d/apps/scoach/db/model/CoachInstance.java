@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -49,9 +50,13 @@ public class CoachInstance implements DBEntity {
     private List<Counter> counters = new ArrayList<Counter>();
 	
 	@Getter
-	@ManyToMany(targetEntity=Profile.class)
+    @OneToMany(targetEntity=CoachGraph.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    private List<CoachGraph> graphs = new ArrayList<CoachGraph>();
+
+	@Getter @Setter
+	@ManyToOne(targetEntity=Profile.class)
 	@JoinColumn(nullable=false)
-    private List<Profile> profiles = new ArrayList<Profile>();
+    private Profile profile;
 
 	//TODO move to counter, action table
 	@Getter @Setter
@@ -77,13 +82,5 @@ public class CoachInstance implements DBEntity {
 	
 	public void removeCounter(Counter instance) {
 		counters.remove(instance);
-	}
-	
-	public void addProfile(Profile p) {
-		profiles.add(p);
-	}
-
-	public void removeProfile(Profile p) {
-		profiles.remove(p);
 	}
 }

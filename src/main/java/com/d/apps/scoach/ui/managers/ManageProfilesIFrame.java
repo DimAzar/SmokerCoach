@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -43,6 +44,7 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
 	
 	private JTable entityTable = null;
+	protected JPopupMenu rmenu = new JPopupMenu();
 	
 	public ManageProfilesIFrame() {
 		super();

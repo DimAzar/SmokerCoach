@@ -7,8 +7,6 @@ import javax.swing.JPopupMenu;
 public class AbstractManageEntityIFRame extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
 
-	protected JPopupMenu rmenu = new JPopupMenu();
-	
 	public AbstractManageEntityIFRame() {
 		super();
 		setSize(400, 200);

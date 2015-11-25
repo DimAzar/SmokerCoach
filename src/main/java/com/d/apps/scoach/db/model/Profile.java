@@ -9,9 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -42,11 +42,11 @@ public class Profile implements DBEntity {
 	private boolean isActive = false;
 
     @Getter
-    @ManyToMany(targetEntity=CoachInstance.class, mappedBy="profiles", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+    @OneToMany(targetEntity=CoachInstance.class, mappedBy="profile", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
     private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
 
     public void addCoach(CoachInstance profileCoach) {
-    	profileCoach.addProfile(this);
+    	profileCoach.setProfile(this);
     	coaches.add(profileCoach);
     }
     
@@ -65,7 +65,7 @@ public class Profile implements DBEntity {
     	for (CoachInstance profileCoach : coaches) {
 			if (profileCoach.getTemplate().getName().equals(name)) {
 				coaches.remove(profileCoach);
-				profileCoach.removeProfile(this);
+				profileCoach.setProfile(null);
 				return profileCoach.getId();
 			}
 		}
