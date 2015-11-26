@@ -1,6 +1,7 @@
 package com.d.apps.scoach.services;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.d.apps.scoach.Utilities.CounterFunctionType;
@@ -40,4 +41,6 @@ public interface DBServices {
     public Counter addCounterData(Counter owner, Timestamp created, Double value);
     
     public List<Object[]> getCounterDataSummed(int cid, DataSumType type);
+    
+    public CoachInstance addGraph (int coachId, String graphName, ArrayList<Integer> counterIds);
 }

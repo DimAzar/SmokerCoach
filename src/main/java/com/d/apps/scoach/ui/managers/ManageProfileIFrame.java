@@ -150,6 +150,23 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 				updateCountersData();
 			}
 		});
+		
+		addGraphButt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (selectedCoach == null) {
+					JOptionPane.showMessageDialog(null, "Please select a coach first!");
+					return;
+				}
+				AddGraphToCoachDialog d = new AddGraphToCoachDialog(selectedCoach);
+				Point p = getLocationOnScreen();
+				p.translate(getSize().width/2-d.getSize().width/2, getSize().height/2-d.getSize().height/2);
+				d.setLocation(p);
+				d.setVisible(true);
+				updateGraphsData();
+			}
+		});
+		
 		coachesTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {

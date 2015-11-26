@@ -80,6 +80,11 @@ public class CoachInstance implements DBEntity {
 		counters.add(instance);
 	}
 	
+	public void addGraph(CoachGraph graph) {
+		graphs.add(graph);
+		graph.setCoach(this);
+	}
+	
 	public void removeCounter(Counter instance) {
 		counters.remove(instance);
 	}

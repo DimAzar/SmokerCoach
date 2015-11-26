@@ -1,6 +1,7 @@
 package com.d.apps.scoach.services;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -169,6 +170,23 @@ public class DBServicesImpl implements DBServices {
 
 	@Override
 	public CoachGraph findCoachGraph(int gid) {
-		return counterDataSelector.getEntityManager().find(CoachGraph.class, gid);
+		return pselector.getEntityManager().find(CoachGraph.class, gid);
+	}
+	
+	@Override
+	public CoachInstance addGraph (int coachId, String graphName, ArrayList<Integer> counterIds){
+		CoachGraph graph = new CoachGraph();
+		graph.setName(graphName);
+		
+		for (Integer cid : counterIds) {
+			Counter cnt = pselector.getEntityManager().find(Counter.class, cid);
+			graph.addGraphCounter(cnt);
+		}
+		
+		CoachInstance coach = findCoachInstance(coachId);
+		coach.addGraph(graph);
+		
+		coachesInstSelector.updateEntity(coach);
+		return null;
 	}
 }
