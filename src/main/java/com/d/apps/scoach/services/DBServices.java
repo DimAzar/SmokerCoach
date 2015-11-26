@@ -41,6 +41,7 @@ public interface DBServices {
     public Counter addCounterData(Counter owner, Timestamp created, Double value);
     
     public List<Object[]> getCounterDataSummed(int cid, DataSumType type);
+    public List<Object[]> getCounterDataFlat(int cid);
     
     public CoachInstance addGraph (int coachId, String graphName, ArrayList<Integer> counterIds);
 }

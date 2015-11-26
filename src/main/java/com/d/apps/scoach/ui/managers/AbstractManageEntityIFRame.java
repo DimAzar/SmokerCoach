@@ -1,7 +1,6 @@
 package com.d.apps.scoach.ui.managers;
 
 import javax.swing.JInternalFrame;
-import javax.swing.JPopupMenu;
 
 
 public class AbstractManageEntityIFRame extends JInternalFrame {

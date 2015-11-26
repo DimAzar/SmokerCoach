@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.d.apps.scoach.Utilities.ChartType;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
@@ -44,7 +45,31 @@ public class CoachGraph implements DBEntity {
     @ManyToMany(targetEntity=Counter.class, fetch=FetchType.EAGER)
     private List<Counter> counters= new ArrayList<Counter>();
     
-    public void addGraphCounter(Counter counter) {
+	@Getter @Setter
+	@Column(updatable=true)
+	private String title = "";
+	
+	@Getter @Setter
+	@Column(updatable=true)
+	private String xAxisTitle = "";
+
+	@Getter @Setter
+	@Column(updatable=true)
+	private String yAxisTitle = "";
+
+	@Getter @Setter
+	@Column(updatable=true)
+	private boolean showLegend = false;
+	
+	@Getter @Setter
+	@Column(updatable=true)
+	private boolean showTooltips = false;
+
+	@Getter @Setter
+	@Column(updatable=true)
+	private ChartType type = ChartType.LINE;
+
+	public void addGraphCounter(Counter counter) {
     	counter.addGraph(this);
     	counters.add(counter);
     }

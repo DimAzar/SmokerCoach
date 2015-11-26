@@ -169,6 +169,11 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
+	public List<Object[]> getCounterDataFlat(int cid) {
+		return counterDataSelector.getCounterDataFlat(cid);
+	}
+
+	@Override
 	public CoachGraph findCoachGraph(int gid) {
 		return pselector.getEntityManager().find(CoachGraph.class, gid);
 	}

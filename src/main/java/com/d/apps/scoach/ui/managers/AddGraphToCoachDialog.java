@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -130,6 +129,7 @@ public class AddGraphToCoachDialog extends JDialog {
 				while (vals.hasMoreElements()) {
 					String value = (String) vals.nextElement();
 					for (Counter c : coach.getCounters()) {
+						System.out.println();
 						if (c.getName().equals(value)) {
 							counterIds.add(c.getId());
 						}

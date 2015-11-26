@@ -98,4 +98,16 @@ public class Utilities {
 	    	this.description = description;
     	}
 	}	
+
+	public enum ChartType {
+	    SCATTER("JFreechart Scatter Chart"), 
+	    LINE("JFreechart Line Chart");
+
+	    @Getter
+	    private final String description;
+	    
+	    private ChartType(String description) {	
+	    	this.description = description;
+    	}
+	}	
 }
