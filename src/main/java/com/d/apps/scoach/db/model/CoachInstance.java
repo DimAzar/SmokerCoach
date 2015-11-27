@@ -50,7 +50,7 @@ public class CoachInstance implements DBEntity {
     private List<Counter> counters = new ArrayList<Counter>();
 	
 	@Getter
-    @OneToMany(targetEntity=CoachGraph.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(targetEntity=CoachGraph.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<CoachGraph> graphs = new ArrayList<CoachGraph>();
 
 	@Getter @Setter
@@ -87,5 +87,18 @@ public class CoachInstance implements DBEntity {
 	
 	public void removeCounter(Counter instance) {
 		counters.remove(instance);
+	}
+
+	public void removeGraph(CoachGraph graph) {
+		graphs.remove(graph);
+	}
+	
+	public CoachGraph getGraphById(int id) {
+		for (CoachGraph graph : getGraphs()) {
+			if (graph.getId() == id) {
+				return graph;
+			}
+		}
+		return null;
 	}
 }

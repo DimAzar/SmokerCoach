@@ -29,6 +29,7 @@ public interface DBServices {
     public List<CoachTemplate> getCoachTemplates();
     public CoachTemplate createCoachTemplate(String name);
     public CoachTemplate updateCoachTemplate(int cid);
+    public CoachInstance updateCoach(CoachInstance instance);
     public void deleteCoachTemplate(int cid);
     
     public Profile enableCoach(String name, Profile p);
@@ -43,5 +44,7 @@ public interface DBServices {
     public List<Object[]> getCounterDataSummed(int cid, DataSumType type);
     public List<Object[]> getCounterDataFlat(int cid);
     
+    public void deleteGraph(int id);
     public CoachInstance addGraph (int coachId, String graphName, ArrayList<Integer> counterIds);
+    public CoachGraph updateGraph (CoachGraph graph);
 }

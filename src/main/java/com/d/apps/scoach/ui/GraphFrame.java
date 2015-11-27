@@ -1,9 +1,8 @@
 package com.d.apps.scoach.ui;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -19,7 +18,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +71,17 @@ public class GraphFrame extends JFrame {
 	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataFlat(counter.getId());
 	    	}
 	    	
+	    	//INITIAL ZERO VALUE
+	    	if (moredata.size() == 1) {
+	    		Calendar cldr = Calendar.getInstance();
+	    		cldr.set(Calendar.HOUR_OF_DAY, 0);
+	    		cldr.set(Calendar.MINUTE, 0);
+	    		cldr.set(Calendar.SECOND, 0);
+	    		cldr.add(Calendar.DAY_OF_MONTH, -1);
+			    series.add(
+			    		cldr.getTime().getTime(),
+			    		0.0);
+	    	}
 	    	for (Object[] objects : moredata) {
 				try {
 				    series.add(

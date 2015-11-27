@@ -74,16 +74,6 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	}
 	
 	private void createRMenus() {
-		JMenuItem blah = new JMenuItem("Blah!");
-		rmenuCoaches.add(blah);
-		
-		blah.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				rmenuCoaches.setVisible(false);
-			}
-		});
-		
 		JMenuItem plot = new JMenuItem("Plot");
 		rmenuGraphs.add(plot);
 		
@@ -102,6 +92,25 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				rmenuGraphs.setVisible(false);
+				manageGraphs(selectedGraph);
+			}
+		});
+
+		JMenuItem delete = new JMenuItem("Delete");
+		rmenuGraphs.add(delete);
+		
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				rmenuGraphs.setVisible(false);
+				selectedGraph.removeCounters();
+				CounterApp.DBServices.updateGraph(selectedGraph);
+				
+				selectedCoach.removeGraph(selectedGraph);
+				selectedCoach = CounterApp.DBServices.updateCoach(selectedCoach);
+				
+				selectedGraph = null;
+				updateGraphsData();
 			}
 		});
 	}
@@ -158,12 +167,8 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 					JOptionPane.showMessageDialog(null, "Please select a coach first!");
 					return;
 				}
-				AddGraphToCoachDialog d = new AddGraphToCoachDialog(selectedCoach);
-				Point p = getLocationOnScreen();
-				p.translate(getSize().width/2-d.getSize().width/2, getSize().height/2-d.getSize().height/2);
-				d.setLocation(p);
-				d.setVisible(true);
-				updateGraphsData();
+				//create graphs
+				manageGraphs(null);
 			}
 		});
 		
@@ -181,6 +186,15 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		});		
 	}
 
+	private void manageGraphs(CoachGraph editingGraph) {
+		AddGraphToCoachDialog d = new AddGraphToCoachDialog(selectedCoach, editingGraph);
+		Point p = getLocationOnScreen();
+		p.translate(getSize().width/2-d.getSize().width/2, getSize().height/2-d.getSize().height/2);
+		d.setLocation(p);
+		d.setVisible(true);
+		updateGraphsData();
+	}
+	
 	private void rmenuAction(MouseEvent e, JPopupMenu rmenu, JTable table) {
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			if (rmenu.isShowing()) {
@@ -273,8 +287,11 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	        public void valueChanged(ListSelectionEvent e) {
 	        	if (!e.getValueIsAdjusting()) {
 	        		int selectionIndex = ((DefaultListSelectionModel)e.getSource()).getLeadSelectionIndex();
+	        		if (selectionIndex < 0) {
+	        			return;
+	        		}
 	        		int gid = Integer.parseInt(graphsTable.getValueAt(selectionIndex, 0).toString());
-	        		selectedGraph = CounterApp.DBServices.findCoachGraph(gid);	        		
+	        		selectedGraph = selectedCoach.getGraphById(gid);	        		
 //	        		updateGraphsData();
 	        	}
 	        }

@@ -73,6 +73,12 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
+	public void deleteGraph(int gid) {
+		pselector.deleteEntity(gid, CoachGraph.class);
+	}
+
+
+	@Override
 	public void deactivateAllProfiles() {
 		pselector.deactivateAllProfiles();
 	}
@@ -119,6 +125,11 @@ public class DBServicesImpl implements DBServices {
 		return null;
 	}
 
+	@Override
+	public CoachInstance updateCoach(CoachInstance instance) {
+		return (CoachInstance)coachesInstSelector.updateEntity(instance);
+	}
+	
 	@Override
 	public Profile enableCoach(String name, Profile p) {
 		CoachTemplate template = coachesSelector.getCoachByName(name);
@@ -193,5 +204,10 @@ public class DBServicesImpl implements DBServices {
 		
 		coachesInstSelector.updateEntity(coach);
 		return null;
+	}
+
+	@Override
+	public CoachGraph updateGraph(CoachGraph graph) {
+		return (CoachGraph) coachesInstSelector.updateEntity(graph);
 	}
 }

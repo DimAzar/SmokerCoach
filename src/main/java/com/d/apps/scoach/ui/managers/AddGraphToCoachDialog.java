@@ -9,12 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -22,14 +24,17 @@ import javax.swing.text.Position;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.CoachInstance;
 import com.d.apps.scoach.db.model.Counter;
 
 public class AddGraphToCoachDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
+	private static final String ACMND_CREATEGRAPH = "CREATE";
+	private static final String ACMND_UPDATEGRAPH = "UPDATE";
 	
 	private final JTextField nameField = new JTextField();
-	private final JButton addButt = new JButton("Create graph");
+	private final JButton addButt = new JButton();
 	
 	private final JButton addCounterButt = new JButton(">");
 	private final JButton removeCounterButt = new JButton("<");
@@ -40,12 +45,13 @@ public class AddGraphToCoachDialog extends JDialog {
 	private final JList<String> addedCountersList = new JList<String>();
 	
 	private CoachInstance coach; 
+	private CoachGraph editingGraph;
 	
-	public AddGraphToCoachDialog(CoachInstance coach) {
+	public AddGraphToCoachDialog(CoachInstance coach, CoachGraph editingGraph) {
 		super();
 	
 		this.coach = coach;
-		
+		this.editingGraph = editingGraph;
 		initGrcs();
 		initModel();
 	}
@@ -81,6 +87,14 @@ public class AddGraphToCoachDialog extends JDialog {
 		addAllCounterButt.setPreferredSize(new Dimension(50, 20));
 		removeAllCounterButt.setPreferredSize(new Dimension(50, 20));
 		
+		if (editingGraph != null) {
+			addButt.setActionCommand(ACMND_UPDATEGRAPH);
+			addButt.setText("Update Graph");
+		} else {
+			addButt.setActionCommand(ACMND_CREATEGRAPH);
+			addButt.setText("Create graph");
+		}
+		
 		setModal(true);
 		setTitle("Add Graph to Coach");
 		setName(Utilities.NAME_ADDCOUNTER);
@@ -93,9 +107,19 @@ public class AddGraphToCoachDialog extends JDialog {
 			dlm.addElement(c.getName());
 		}
 		
+		if (editingGraph != null) {
+			DefaultListModel<String> dlm2 = new DefaultListModel<String>();
+			for (Counter  c : editingGraph.getCounters()) {
+				dlm2.addElement(c.getName());
+			}
+			addedCountersList.setModel(dlm2);
+			nameField.setText(editingGraph.getName());
+		} else {
+			addedCountersList.setModel(new DefaultListModel<String>());
+		}
+		
 		availableCountersList.setModel(dlm);
 		availableCountersList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		addedCountersList.setModel(new DefaultListModel<String>());
 		addedCountersList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		
 		addCounterButt.addActionListener(new ActionListener() {
@@ -123,24 +147,78 @@ public class AddGraphToCoachDialog extends JDialog {
 		addButt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ArrayList<Integer> counterIds = new ArrayList<Integer>();
-
-				Enumeration<String> vals = ((DefaultListModel<String>)addedCountersList.getModel()).elements();
-				while (vals.hasMoreElements()) {
-					String value = (String) vals.nextElement();
-					for (Counter c : coach.getCounters()) {
-						System.out.println();
-						if (c.getName().equals(value)) {
-							counterIds.add(c.getId());
-						}
-					}
+				String accommand = ((JButton)e.getSource()).getActionCommand();
+				
+				if (accommand.equals(ACMND_CREATEGRAPH)) {
+					createNewGraph();
+					JOptionPane.showMessageDialog(null, "Graph created");
+					dispose();
+				} else {
+					editingGraph.setName(nameField.getText());
+					updateGraphCounters();
+					CounterApp.DBServices.updateGraph (editingGraph);
+					JOptionPane.showMessageDialog(null, "Graph updated");
+					dispose();
 				}
-
-				CounterApp.DBServices.addGraph (
-						coach.getId(), 
-						nameField.getText(), 
-						counterIds);
 			}
 		});
+	}
+	
+	private void updateGraphCounters() {
+		Enumeration<String> vals = ((DefaultListModel<String>)addedCountersList.getModel()).elements();
+		while (vals.hasMoreElements()) {
+			boolean found = false;
+			String value = (String) vals.nextElement();
+			for (Counter c : editingGraph.getCounters()) {
+				if (c.getName().equals(value)) {
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found) {
+				editingGraph.addGraphCounter(Utilities.findCoachCounterFromName(coach, value));
+			}
+		}
+		
+		vals = ((DefaultListModel<String>)addedCountersList.getModel()).elements();
+		Vector<Counter> toBeRemoved = new Vector<Counter>();
+		
+		for (Counter  counter : editingGraph.getCounters()) {
+			boolean found = false;
+			while (vals.hasMoreElements()) {
+				String value = (String) vals.nextElement();
+				if (counter.getName().equals(value)) {
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found) {
+				toBeRemoved.add(counter);
+			}
+		}
+		for (Counter counter : toBeRemoved) {
+			editingGraph.removeGraphCounter(counter);
+		}
+	}
+	
+	private void createNewGraph() {
+		ArrayList<Integer> counterIds = new ArrayList<Integer>();
+
+		Enumeration<String> vals = ((DefaultListModel<String>)addedCountersList.getModel()).elements();
+		while (vals.hasMoreElements()) {
+			String value = (String) vals.nextElement();
+			for (Counter c : coach.getCounters()) {
+				if (c.getName().equals(value)) {
+					counterIds.add(c.getId());
+				}
+			}
+		}
+
+		CounterApp.DBServices.addGraph (
+								coach.getId(), 
+								nameField.getText(), 
+								counterIds);
 	}
 }

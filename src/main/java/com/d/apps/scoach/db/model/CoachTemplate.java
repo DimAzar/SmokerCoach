@@ -38,6 +38,6 @@ public class CoachTemplate implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
-    @OneToMany(targetEntity=CoachInstance.class, mappedBy="template", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, orphanRemoval=true)
+    @OneToMany(targetEntity=CoachInstance.class, mappedBy="template", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<CoachInstance> instances;
 }

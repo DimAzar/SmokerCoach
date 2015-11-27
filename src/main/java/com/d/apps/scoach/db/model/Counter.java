@@ -71,4 +71,7 @@ public class Counter implements DBEntity {
 	public void addGraph(CoachGraph graph) {
 		graphs.add(graph);
 	}
+	public void removeGraph(CoachGraph graph) {
+		graphs.remove(graph);
+	}
 }

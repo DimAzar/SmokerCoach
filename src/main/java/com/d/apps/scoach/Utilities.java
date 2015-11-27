@@ -10,6 +10,9 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.d.apps.scoach.db.model.CoachInstance;
+import com.d.apps.scoach.db.model.Counter;
+
 public class Utilities {
 	private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
 	
@@ -55,6 +58,15 @@ public class Utilities {
 		return ans;
 	}
 	
+	public static Counter findCoachCounterFromName(CoachInstance coach, String name) {
+		for (Counter c : coach.getCounters()) {
+			if (c.getName().equals(name)) {
+				return c;
+			}
+		}
+		return null;
+	}
+
 	public enum CounterFunctionType {
 	    STEP(0, "Step function"), INPUT(1, "User-Input function");
 

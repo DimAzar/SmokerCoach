@@ -73,5 +73,16 @@ public class CoachGraph implements DBEntity {
     	counter.addGraph(this);
     	counters.add(counter);
     }
-
+	
+	public void removeGraphCounter(Counter counter) {
+    	counter.removeGraph(this);
+    	counters.remove(counter);
+    }
+	
+	public void removeCounters() {
+		for (Counter counter : counters) {
+			counter.removeGraph(this);
+		}
+		counters.clear();
+	}
 }
