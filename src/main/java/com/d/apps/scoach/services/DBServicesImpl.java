@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -13,15 +14,11 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
 import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.CoachInstance;
-import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
+import com.d.apps.scoach.db.model.CounterData;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.selectors.CoachInstanceSelector;
-import com.d.apps.scoach.db.selectors.CoachTemplateSelector;
-import com.d.apps.scoach.db.selectors.CounterDataSelector;
-import com.d.apps.scoach.db.selectors.CounterSelector;
-import com.d.apps.scoach.db.selectors.ProfileSelector;
+import com.d.apps.scoach.db.model.base.DBEntity;
 
 public class DBServicesImpl implements DBServices {
 	private static final String PERSISTENCE_UNIT = "CounterApp";
@@ -29,129 +26,149 @@ public class DBServicesImpl implements DBServices {
 	
 	private EntityManagerFactory factory ;
 
-	private ProfileSelector pselector = new ProfileSelector();
-	private CoachTemplateSelector coachesSelector = new CoachTemplateSelector();
-	private CoachInstanceSelector coachesInstSelector = new CoachInstanceSelector();
-	private CounterSelector counterSelector = new CounterSelector();
-	private CounterDataSelector counterDataSelector = new CounterDataSelector();
-	
 	public DBServicesImpl() {
 		factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
-		
-		pselector.setEntityManager(factory.createEntityManager());
-		coachesSelector.setEntityManager(factory.createEntityManager());
-		coachesInstSelector.setEntityManager(factory.createEntityManager());
-		counterSelector.setEntityManager(factory.createEntityManager());
-		counterDataSelector.setEntityManager(factory.createEntityManager());
-		
 		LOG.debug("DBServices started");
 	}
 
 	@Override
-	public int getProfilesCount() {
-		return pselector.getProfilesCount();
-	}
-
-	@Override
 	public List<Profile> getProfiles() {
-		return pselector.getProfiles();
+		List<Profile> ans = null;
+		
+		EntityManager entityManager = factory.createEntityManager();
+		ans = entityManager.createNamedQuery("profile.getAllProfiles", Profile.class).getResultList();
+		entityManager.close();
+		return ans; 
 	}
 
 	@Override
 	public Profile findProfile(int pid) {
-		return pselector.findProfile(pid);
+		Profile ans = null;
+		
+		EntityManager entityManager = factory.createEntityManager();
+		ans = entityManager.find(Profile.class, pid);
+		entityManager.close();
+		return ans; 
 	}
 
 	@Override
 	public Profile setActiveProfile(int id) {
-		return pselector.setActiveProfile(id);
+		EntityManager entityManager = factory.createEntityManager();
+    	List<Profile> profiles = getProfiles();
+    	Profile activeProfile = null;
+    	
+    	for (Profile profile : profiles) {
+			if (profile.getId() == id) {
+				profile.setActive(true);
+				activeProfile = profile;
+			} else {
+				profile.setActive(false);
+			}
+			updateEntity(profile);
+		}    	
+    	entityManager.close();
+    	return activeProfile;
 	}
 
 	@Override
 	public void deleteProfile(int id) {
-		pselector.deleteEntity(id, Profile.class);
+		deleteEntity(id, Profile.class);
 	}
 
 	@Override
 	public void deleteGraph(int gid) {
-		pselector.deleteEntity(gid, CoachGraph.class);
+		deleteEntity(gid, CoachGraph.class);
 	}
-
 
 	@Override
 	public void deactivateAllProfiles() {
-		pselector.deactivateAllProfiles();
+		EntityManager entityManager = factory.createEntityManager();
+    	List<Profile> profiles = getProfiles();
+    	for (Profile profile : profiles) {
+			if (profile.isActive()) {
+				profile.setActive(false);
+				updateEntity(profile);
+			}
+		}    	
+    	entityManager.close();
 	}
 
 	@Override
 	public Profile getActiveProfile() {
-		return pselector.getActiveProfile();
-	}
-
-	@Override
-	public Profile createProfile(String name) {
-		return createProfile(name, false);
+    	Profile ans = null;
+    	List<Profile> profiles = getProfiles();
+    	for (Profile profile : profiles) {
+			if (profile.isActive()) {
+				if (ans != null) {
+					String msg = "Multiple profiles are active! "+ans.getId()+","+profile.getId();
+					LOG.error(msg);
+					throw new RuntimeException(msg);
+				}
+				ans = profile;
+			}
+		}
+    	return ans;
 	}
 
 	@Override
 	public Profile createProfile(String name, boolean active) {
-		return pselector.createProfile(name, active);
+    	Profile u = new Profile();
+    	u.setFirstName(name);
+    	u.setActive(active);
+    	
+    	return (Profile) createEntity(u);
 	}
+
+	@Override
+	public Profile createCoach(int profileId, String name) {
+		Coach coach = new Coach();
+		coach.setName(name);
+		
+		Profile p = findProfile(profileId);
+		p.addCoach(coach);
+		
+    	return (Profile) updateProfile(p);
+	}
+
 
 	@Override
 	public Profile updateProfile(Profile p) {
-		return (Profile) pselector.updateEntity(p);
+		return (Profile) updateEntity(p);
 	}
 	
 	@Override
-	public List<CoachTemplate> getCoachTemplates() {
-		return coachesSelector.getAllCoaches();
-	}
-
-	@Override
-	public void deleteCoachTemplate(int cid) {
-		coachesSelector.deleteEntity(cid, CoachTemplate.class);
-	}
-
-	@Override
-	public CoachTemplate createCoachTemplate(String name) {
-		coachesSelector.createCoach(name);
-		return null;
-	}
-
-	@Override
-	public CoachTemplate updateCoachTemplate(int cid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CoachInstance updateCoach(CoachInstance instance) {
-		return (CoachInstance)coachesInstSelector.updateEntity(instance);
+	public Coach updateCoach(Coach instance) {
+		return (Coach)updateEntity(instance);
 	}
 	
 	@Override
 	public Profile enableCoach(String name, Profile p) {
-		CoachTemplate template = coachesSelector.getCoachByName(name);
+		EntityManager entityManager = factory.createEntityManager();
+
+		Coach ci = new Coach();
+		ci.setName(p.getFirstName());
 		
-		CoachInstance ci = new CoachInstance();
-		ci.setTemplate(template);
-		ci.setName(String.format("%s_%s Instance", template.getName(), p.getFirstName()));
 		p.addCoach(ci);
-		pselector.updateEntity(p);
+		updateEntity(p);
 		return p;
 	}
 
 	@Override
 	public Profile disableCoach(String name, Profile p) {
-		coachesSelector.deleteEntity(p.removeCoach(name), CoachInstance.class);
-		pselector.updateEntity(p);
+//		deleteEntity(p.removeCoach(name), Coach.class);
+		updateEntity(p);
 		return p;
 	}
 
 	@Override
-	public CoachInstance findCoachInstance(int cid) {
-		return coachesInstSelector.getCoachInstanceByID(cid); 
+	public Coach findCoachInstance(int cid) {
+		Coach ans = null;
+		EntityManager entityManager = factory.createEntityManager();
+    	ans = entityManager.createNamedQuery("coachInstance.getCoachInstanceByID", Coach.class)
+				.setParameter("cid", cid)
+				.getSingleResult();
+    	entityManager.close();
+    	return ans; 
 	}
 
 	@Override
@@ -162,52 +179,143 @@ public class DBServicesImpl implements DBServices {
 		instance.setStepValue(stepValue);
 		instance.setType(type);
 		
-		CoachInstance ci = coachesInstSelector.getCoachInstanceByID(coachId);
+		Coach ci = findCoachInstance(coachId);
 		ci.addCounter(instance);
 		
-		coachesInstSelector.updateEntity(instance);
+		updateEntity(instance);
 		return null;
 	}
 
 	@Override
 	public Counter addCounterData(Counter owner, Timestamp created, Double value) {
-		return (Counter)counterSelector.addCounterData(owner, created, value);
+		Counter ans = null;
+		EntityManager entityManager = factory.createEntityManager();
+		CounterData datum = new CounterData();
+		datum.setAddedDate(created);
+		datum.setDatum(value);
+		owner.addDatum(datum);
+
+		createEntity(datum);
+		ans = entityManager.find(Counter.class, owner.getId());
+		entityManager.close();
+		
+		return ans;
 	}
 	
+	private static final String generalSumQuery = "select CAST(addeddate as date), sum(datum) from counterdata where counter_id = $ID group by CAST(addeddate as date)";
+	private static final String generalQuery = "select addeddate, datum from counterdata where counter_id = $ID order by addeddate ASC";
+
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Object[]> getCounterDataSummed(int cid, DataSumType type) {
-		return counterDataSelector.getCounterDataSummed(cid, type);
+		List<Object[]> ans = null;
+		EntityManager entityManager = factory.createEntityManager();
+		String query = generalSumQuery; 
+		
+		query = query.replace("$ID", ""+cid);
+		query = query.replace("$BREAK", type.name());
+
+		ans = entityManager.createNativeQuery(query).getResultList();
+		entityManager.close();
+		return ans;
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Object[]> getCounterDataFlat(int cid) {
-		return counterDataSelector.getCounterDataFlat(cid);
+		List<Object[]> ans = null;
+		EntityManager entityManager = factory.createEntityManager();
+		String query = generalQuery; 
+		
+		query = query.replace("$ID", ""+cid);
+
+		ans = entityManager.createNativeQuery(query).getResultList();
+		entityManager.close();
+		return ans;
 	}
 
 	@Override
 	public CoachGraph findCoachGraph(int gid) {
-		return pselector.getEntityManager().find(CoachGraph.class, gid);
+		CoachGraph ans = null;
+		
+		EntityManager entityManager = factory.createEntityManager();
+		ans = entityManager.find(CoachGraph.class, gid);
+		entityManager.close();
+		return ans; 
 	}
 	
 	@Override
-	public CoachInstance addGraph (int coachId, String graphName, ArrayList<Integer> counterIds){
+	public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds){
 		CoachGraph graph = new CoachGraph();
 		graph.setName(graphName);
 		
+		EntityManager entityManager = factory.createEntityManager();
 		for (Integer cid : counterIds) {
-			Counter cnt = pselector.getEntityManager().find(Counter.class, cid);
+			Counter cnt = entityManager.find(Counter.class, cid);
 			graph.addGraphCounter(cnt);
 		}
+		entityManager.close();
 		
-		CoachInstance coach = findCoachInstance(coachId);
+		Coach coach = findCoachInstance(coachId);
 		coach.addGraph(graph);
 		
-		coachesInstSelector.updateEntity(coach);
+		updateEntity(coach);
 		return null;
 	}
 
 	@Override
 	public CoachGraph updateGraph(CoachGraph graph) {
-		return (CoachGraph) coachesInstSelector.updateEntity(graph);
+		return (CoachGraph) updateEntity(graph);
 	}
+	
+	//PRIVATE
+    private  void deleteEntity(int id, Class<?> cls) {
+    	EntityManager entityManager = factory.createEntityManager();
+    	try{
+	    	entityManager.getTransaction().begin();
+	    	entityManager.remove(entityManager.find(cls, id));
+	    	entityManager.getTransaction().commit();
+	    } catch (Throwable t){
+	    	if (entityManager.getTransaction().isActive()) {
+	    		entityManager.getTransaction().rollback();
+	    	}
+	    } finally {
+    		entityManager.close();
+    	}
+    }
+    
+    private DBEntity updateEntity(DBEntity e) {
+    	EntityManager entityManager = factory.createEntityManager();
+    	try {
+    		entityManager.getTransaction().begin();
+        	e = entityManager.merge(e);
+        	entityManager.getTransaction().commit();
+    	} catch (Throwable t){
+	    	if (entityManager.getTransaction().isActive()) {
+	    		entityManager.getTransaction().rollback();
+	    	}
+	    	e = null;
+	    } finally {
+    		entityManager.close();
+    	}
+    	return e;
+    }
+    
+    private DBEntity createEntity(DBEntity e) {
+    	EntityManager entityManager = factory.createEntityManager();
+    	try{
+	    	entityManager.getTransaction().begin();
+	    	entityManager.persist(e);
+	    	entityManager.getTransaction().commit();
+	    } catch (Throwable t){
+	    	if (entityManager.getTransaction().isActive()) {
+	    		entityManager.getTransaction().rollback();
+	    	}
+	    	e = null;
+	    } finally {
+    		entityManager.close();
+    	}
+    	return e;
+    }
+
 }

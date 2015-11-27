@@ -34,7 +34,7 @@ public class Profile implements DBEntity {
     private Integer id;
 	
 	@Getter @Setter	
-	@Column(nullable=false)
+	@Column(nullable=false, unique=true)
 	private String firstName;
     
 	@Getter @Setter
@@ -42,16 +42,20 @@ public class Profile implements DBEntity {
 	private boolean isActive = false;
 
     @Getter
-    @OneToMany(targetEntity=CoachInstance.class, mappedBy="profile", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-    private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
+    @OneToMany(targetEntity=Coach.class, mappedBy="profile", fetch=FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<Coach> coaches = new ArrayList<Coach>();
 
-    public void addCoach(CoachInstance profileCoach) {
+    @Getter
+    @OneToMany(targetEntity=Counter.class, mappedBy="profile", fetch=FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<Counter> counters = new ArrayList<Counter>();
+
+    public void addCoach(Coach profileCoach) {
     	profileCoach.setProfile(this);
     	coaches.add(profileCoach);
     }
     
-    public boolean updateCoach(CoachInstance coach) {
-    	for (CoachInstance coachInstance : coaches) {
+    public boolean updateCoach(Coach coach) {
+    	for (Coach coachInstance : coaches) {
 			if (coachInstance.getId() == coach.getId()) {
 				coaches.remove(coachInstance);
 				coaches.add(coach);
@@ -61,14 +65,13 @@ public class Profile implements DBEntity {
     	return false;
     }
     
-    public int removeCoach(String name) {
-    	for (CoachInstance profileCoach : coaches) {
-			if (profileCoach.getTemplate().getName().equals(name)) {
+    public void removeCoach(int cid) {
+    	for (Coach profileCoach : coaches) {
+			if (profileCoach.getId() == cid) {
 				coaches.remove(profileCoach);
 				profileCoach.setProfile(null);
-				return profileCoach.getId();
+				return;
 			}
 		}
-    	return -1;
     }
 }

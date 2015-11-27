@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -27,7 +25,8 @@ import javax.swing.table.TableCellRenderer;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.db.model.Coach;
+import com.d.apps.scoach.db.model.Profile;
 
 public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -35,8 +34,11 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	private JPopupMenu rmenu = new JPopupMenu();
 	private JTable entityTable = null;
 
-	public ManageCoachesIFrame() {
+	private Profile profile = null;
+
+	public ManageCoachesIFrame(Profile profile) {
 		super();
+		this.profile = profile;
 		setName(Utilities.NAME_COACHMANAGER);
 		
 		initGrcs();
@@ -98,8 +100,9 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 				if (JOptionPane.showConfirmDialog(null, "Delete Coach?") == JOptionPane.OK_OPTION) {
 					int row = entityTable.getSelectedRow();
 					int cid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
-					
-					CounterApp.DBServices.deleteCoachTemplate(cid);
+
+					profile.removeCoach(cid);
+					profile = CounterApp.DBServices.updateProfile(profile);
 					updateUIProfileChanged();
 				}
 			}
@@ -133,7 +136,8 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 						return;
 					}
 
-					CounterApp.DBServices.createCoachTemplate(name.getText());
+					profile = CounterApp.DBServices.createCoach(profile.getId(), name.getText());
+					
 					updateUIProfileChanged();
 					name.setText("");
 				}
@@ -153,15 +157,12 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 
 	class CustomCoachesTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;
-		private List<CoachTemplate> coaches = new ArrayList<CoachTemplate>();
-		
 		public CustomCoachesTableModel() {
 			super();
 			refresh();
 		}
 		
 		public void refresh() {
-			this.coaches = CounterApp.DBServices.getCoachTemplates();
 			fireTableDataChanged();
 		}
 		
@@ -184,7 +185,7 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	
 		@Override
 		public Object getValueAt(int row, int column) {
-			CoachTemplate ct = coaches.get(row);
+			Coach ct = profile.getCoaches().get(row);
 			
 			switch (column) {
 				case 0:
@@ -202,7 +203,7 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 	
 		@Override
 		public int getRowCount() {
-			return coaches.size();
+			return profile.getCoaches().size();
 		}
 	}
 }

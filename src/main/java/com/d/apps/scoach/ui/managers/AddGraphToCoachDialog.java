@@ -25,7 +25,7 @@ import javax.swing.text.Position;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.CoachInstance;
+import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 
 public class AddGraphToCoachDialog extends JDialog {
@@ -44,10 +44,10 @@ public class AddGraphToCoachDialog extends JDialog {
 	private final JList<String> availableCountersList = new JList<String>();
 	private final JList<String> addedCountersList = new JList<String>();
 	
-	private CoachInstance coach; 
+	private Coach coach; 
 	private CoachGraph editingGraph;
 	
-	public AddGraphToCoachDialog(CoachInstance coach, CoachGraph editingGraph) {
+	public AddGraphToCoachDialog(Coach coach, CoachGraph editingGraph) {
 		super();
 	
 		this.coach = coach;

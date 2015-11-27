@@ -10,7 +10,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.db.model.CoachInstance;
+import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 
 public class Utilities {
@@ -58,7 +58,7 @@ public class Utilities {
 		return ans;
 	}
 	
-	public static Counter findCoachCounterFromName(CoachInstance coach, String name) {
+	public static Counter findCoachCounterFromName(Coach coach, String name) {
 		for (Counter c : coach.getCounters()) {
 			if (c.getName().equals(name)) {
 				return c;

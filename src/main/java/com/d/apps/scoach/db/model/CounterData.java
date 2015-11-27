@@ -30,13 +30,13 @@ public class CounterData implements DBEntity {
     private Integer id;
 
 	@Getter @Setter
-	@ManyToOne
-	@JoinColumn(nullable=false, name="counter_id") 
-	private Counter counter;
-
-	@Getter @Setter
 	private Double datum;
 	
 	@Getter @Setter
 	private Timestamp addedDate;
+
+	@Getter @Setter
+	@ManyToOne (targetEntity=Counter.class)
+	@JoinColumn(nullable=false, name="counter_id") 
+	private Counter counter;
 }

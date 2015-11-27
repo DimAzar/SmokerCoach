@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.CoachInstance;
+import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.managers.ManageCoachesIFrame;
@@ -80,13 +80,12 @@ public class MainFrame extends JFrame {
 		actionPanel.toggleActionBar(activeProfile != null);
 	}
 
-	//PRIVATE
-	public void updateProfileRelatedUI(List<CoachInstance> activeCoaches) {
+	public void updateProfileRelatedUI(List<Coach> activeCoaches) {
 		createBasicMenu();
 		actionPanel.cleanBar();
 		
 		JMenu coaches = new JMenu("Coaches");
-		for (CoachInstance profileCoach : activeCoaches) {
+		for (Coach profileCoach : activeCoaches) {
 			//TODO MENU ACTIONS
 			JMenuItem coachitem = new JMenuItem(profileCoach.getName());
 			coaches.add(coachitem);
@@ -100,6 +99,31 @@ public class MainFrame extends JFrame {
 		actionPanel.recreateBar();
 	}
 	
+	public boolean isIFrameVisible(String name) {
+		for (JInternalFrame iframe : desktopPane.getAllFrames()) {
+			if (iframe.getName().equals(name) && iframe.isVisible()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void showIFrame(JInternalFrame frame) {
+		int l = desktopPane.getAllFrames().length;
+		int x = (int)(l/WINDOW_BATCH_SIZE)* WINDOW_PADDING;
+		int y = (l % WINDOW_BATCH_SIZE) * WINDOW_PADDING;
+		
+		desktopPane.add(frame);
+	    try {
+	        frame.setSelected(true);
+	        frame.setLocation(x, (int)y);
+	    	frame.setVisible(true);
+	    } catch (java.beans.PropertyVetoException e) {
+	    	LOG.error(e.getMessage());
+	    }
+	}
+
+	//PRIVATE
 	private void initGrcs() {
 		JPanel parent = (JPanel) getContentPane();
 		parent.setLayout(new BorderLayout());
@@ -156,35 +180,11 @@ public class MainFrame extends JFrame {
 		coaches.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showIFrame(new ManageCoachesIFrame());
+				showIFrame(new ManageCoachesIFrame(activeProfile));
 			}
 		});
 	}
 	
-	public boolean isIFrameVisible(String name) {
-		for (JInternalFrame iframe : desktopPane.getAllFrames()) {
-			if (iframe.getName().equals(name) && iframe.isVisible()) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public void showIFrame(JInternalFrame frame) {
-		int l = desktopPane.getAllFrames().length;
-		int x = (int)(l/WINDOW_BATCH_SIZE)* WINDOW_PADDING;
-		int y = (l % WINDOW_BATCH_SIZE) * WINDOW_PADDING;
-		
-		desktopPane.add(frame);
-	    try {
-	        frame.setSelected(true);
-	        frame.setLocation(x, (int)y);
-	    	frame.setVisible(true);
-	    } catch (java.beans.PropertyVetoException e) {
-	    	LOG.error(e.getMessage());
-	    }
-	}
-
 		/* TOOLBAR AND TOOLBAR ACTIONS */
 	class ToolbarPanel extends JToolBar {
 		private static final long serialVersionUID = 1L;

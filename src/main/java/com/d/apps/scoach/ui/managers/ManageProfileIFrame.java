@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.CoachInstance;
+import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.GraphFrame;
@@ -60,7 +60,7 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 
 	//MODEL
 	private Profile profile = null;
-	private CoachInstance selectedCoach;
+	private Coach selectedCoach;
 	private CoachGraph    selectedGraph;
 	
 	public ManageProfileIFrame(Profile profile) {
@@ -328,9 +328,9 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 
 class CustomCoachesTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
+	private List<Coach> coaches = new ArrayList<Coach>();
 	
-	public CustomCoachesTableModel(List<CoachInstance> coaches) {
+	public CustomCoachesTableModel(List<Coach> coaches) {
 		super();
 		this.coaches = coaches;
 		refresh();
@@ -360,7 +360,7 @@ class CustomCoachesTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int column) {
-		CoachInstance ci = coaches.get(row);
+		Coach ci = coaches.get(row);
 		
 		switch (column) {
 			case 0:
@@ -368,7 +368,7 @@ class CustomCoachesTableModel extends AbstractTableModel {
 			case 1:
 				return ci.getName();
 			case 2:
-				return ci.getTemplate().getName();
+				return ci.getName();
 		}
 		throw new RuntimeException("Cannot get value :"+row+","+column);
 	}

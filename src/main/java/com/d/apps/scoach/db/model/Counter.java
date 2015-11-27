@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -37,20 +38,6 @@ public class Counter implements DBEntity {
 	@Column(unique=true, updatable=false)
 	private String name;
 	
-	@Getter
-	@ManyToMany(targetEntity=CoachInstance.class)
-	@JoinColumn(nullable=false)
-    private List<CoachInstance> coaches = new ArrayList<CoachInstance>();
-
-	@Getter
-	@ManyToMany
-	@JoinColumn(nullable=true, name="graph_id") 
-	private List<CoachGraph> graphs;
-
-	@Getter @Setter
-    @OneToMany(targetEntity=CounterData.class, mappedBy="counter", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
-	private List<CounterData> data;
-
 	@Getter @Setter
 	@Column(updatable=false)
 	private Double stepValue;
@@ -59,7 +46,26 @@ public class Counter implements DBEntity {
 	@Column(updatable=false)
 	private CounterFunctionType type;
 	
-	public void addCoach(CoachInstance ci) {
+	@Getter @Setter
+	@ManyToOne(targetEntity=Profile.class)
+	@JoinColumn(nullable=false)
+    private Profile profile;
+
+	@Getter @Setter
+    @OneToMany(targetEntity=CounterData.class, mappedBy="counter", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+	private List<CounterData> data;
+
+	@Getter
+	@ManyToMany(targetEntity=Coach.class, fetch=FetchType.LAZY)
+	@JoinColumn(nullable=false)
+    private List<Coach> coaches = new ArrayList<Coach>();
+
+	@Getter
+	@ManyToMany
+	@JoinColumn(nullable=true, name="graph_id") 
+	private List<CoachGraph> graphs;
+
+	public void addCoach(Coach ci) {
 		coaches.add(ci);
 	}
 	

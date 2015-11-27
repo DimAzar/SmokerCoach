@@ -37,15 +37,6 @@ public class CoachGraph implements DBEntity {
 	private String name;
 	
 	@Getter @Setter
-	@ManyToOne(targetEntity=CoachInstance.class)
-	@JoinColumn(nullable=false)
-    private CoachInstance coach;
-	
-    @Getter
-    @ManyToMany(targetEntity=Counter.class, fetch=FetchType.EAGER)
-    private List<Counter> counters= new ArrayList<Counter>();
-    
-	@Getter @Setter
 	@Column(updatable=true)
 	private String title = "";
 	
@@ -69,6 +60,15 @@ public class CoachGraph implements DBEntity {
 	@Column(updatable=true)
 	private ChartType type = ChartType.LINE;
 
+	@Getter @Setter
+	@ManyToOne(targetEntity=Coach.class)
+	@JoinColumn(nullable=false, name="coach_id")
+    private Coach coach;
+	
+    @Getter
+    @ManyToMany(targetEntity=Counter.class, fetch=FetchType.EAGER)
+    private List<Counter> counters= new ArrayList<Counter>();
+    
 	public void addGraphCounter(Counter counter) {
     	counter.addGraph(this);
     	counters.add(counter);

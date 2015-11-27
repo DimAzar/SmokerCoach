@@ -35,8 +35,7 @@ import javax.swing.table.TableCellRenderer;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.CoachInstance;
-import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
 
@@ -215,7 +214,7 @@ public class ManageProfilesIFrame extends AbstractManageEntityIFRame {
 						CounterApp.DBServices.deactivateAllProfiles();
 					}
 					
-					if (CounterApp.DBServices.getProfilesCount() <= 0 && activeval != true) {
+					if (CounterApp.DBServices.getProfiles().size() <= 0 && activeval != true) {
 						JOptionPane.showMessageDialog(null, "No other active profiles, setting as active profile!");
 						activeval = true;
 					}
@@ -357,40 +356,40 @@ class ProfileCoachesDialog extends JDialog {
 		gridBagLayout.columnWidths = new int[]	{7, 7, };
 		gridBagLayout.columnWeights = new double[]	{.5 , .5};
 
-		List<CoachTemplate> allCoaches = CounterApp.DBServices.getCoachTemplates();
-		double[] da = new double[allCoaches.size()+1];
-		int[] ia = new int[allCoaches.size()+1];
-		for (int i = 0; i < allCoaches.size()+1; i++) {
-			da[i] = Double.MIN_VALUE;
-			ia[i] = 7;
-		}
-		da[allCoaches.size()] = 1;
-		gridBagLayout.rowWeights = da;
-		gridBagLayout.rowHeights = ia;
+//		List<CoachTemplate> allCoaches = CounterApp.DBServices.getCoachTemplates();
+//		double[] da = new double[allCoaches.size()+1];
+//		int[] ia = new int[allCoaches.size()+1];
+//		for (int i = 0; i < allCoaches.size()+1; i++) {
+//			da[i] = Double.MIN_VALUE;
+//			ia[i] = 7;
+//		}
+//		da[allCoaches.size()] = 1;
+//		gridBagLayout.rowWeights = da;
+//		gridBagLayout.rowHeights = ia;
+//
+//		ans.setLayout(gridBagLayout);
+//
+//		int rowcnt = 0;
 
-		ans.setLayout(gridBagLayout);
-
-		int rowcnt = 0;
-
-		for (CoachTemplate coachEntry : allCoaches) {
-			JLabel l = new JLabel(coachEntry.getName());
-			JCheckBox chkb = new JCheckBox("enable", isCoachEnabledInProfile(coachEntry.getId(), profile));
-			chkb.setName(coachEntry.getName());
-			
-			ans.add(l, new GridBagConstraints(0,rowcnt,1,1,1.0,0.0,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 0), 0,0));
-			ans.add(chkb, new GridBagConstraints(1,rowcnt,1,1,1.0,0.0,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 10), 0,0));
-			rowcnt++;
-			
-			options.add(chkb);
-		}
+//		for (CoachTemplate coachEntry : allCoaches) {
+//			JLabel l = new JLabel(coachEntry.getName());
+//			JCheckBox chkb = new JCheckBox("enable", isCoachEnabledInProfile(coachEntry.getId(), profile));
+//			chkb.setName(coachEntry.getName());
+//			
+//			ans.add(l, new GridBagConstraints(0,rowcnt,1,1,1.0,0.0,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 0), 0,0));
+//			ans.add(chkb, new GridBagConstraints(1,rowcnt,1,1,1.0,0.0,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 10), 0,0));
+//			rowcnt++;
+//			
+//			options.add(chkb);
+//		}
 
 		ans.setBorder(BorderFactory.createEtchedBorder());
 		return ans;
 	}
 	
 	private boolean isCoachEnabledInProfile(int id, Profile p) {
-		for (CoachInstance profileCoach : p.getCoaches()) {
-			if (profileCoach.getTemplate().getId() == id) {
+		for (Coach profileCoach : p.getCoaches()) {
+			if (profileCoach.getId() == id) {
 				return true;
 			}
 		}
@@ -398,8 +397,8 @@ class ProfileCoachesDialog extends JDialog {
 	}
 
 	private boolean isCoachEnabledInProfile(String name, Profile p) {
-		for (CoachInstance profileCoach : p.getCoaches()) {
-			if (profileCoach.getTemplate().getName().equals(name)) {
+		for (Coach profileCoach : p.getCoaches()) {
+			if (profileCoach.getName().equals(name)) {
 				return true;
 			}
 		}

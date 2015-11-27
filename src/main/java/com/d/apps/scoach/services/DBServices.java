@@ -7,8 +7,7 @@ import java.util.List;
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
 import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.CoachInstance;
-import com.d.apps.scoach.db.model.CoachTemplate;
+import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 
@@ -20,22 +19,16 @@ public interface DBServices {
     public Profile updateProfile(Profile p) ;
     public void deleteProfile(int id);
     
-	public int getProfilesCount();
-    public Profile createProfile(String name);
     public Profile setActiveProfile(int id);
     public void deactivateAllProfiles();
     public Profile getActiveProfile();
     
-    public List<CoachTemplate> getCoachTemplates();
-    public CoachTemplate createCoachTemplate(String name);
-    public CoachTemplate updateCoachTemplate(int cid);
-    public CoachInstance updateCoach(CoachInstance instance);
-    public void deleteCoachTemplate(int cid);
-    
+    public Profile createCoach(int profileId, String name);
+    public Coach updateCoach(Coach instance);
     public Profile enableCoach(String name, Profile p);
     public Profile disableCoach(String name, Profile p);
     
-    public CoachInstance findCoachInstance(int cid);
+    public Coach findCoachInstance(int cid);
     public CoachGraph findCoachGraph(int gid);
     
     public Counter createCounter(int coachInstanceId, String name, CounterFunctionType type, double stepValue);
@@ -45,6 +38,6 @@ public interface DBServices {
     public List<Object[]> getCounterDataFlat(int cid);
     
     public void deleteGraph(int id);
-    public CoachInstance addGraph (int coachId, String graphName, ArrayList<Integer> counterIds);
+    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds);
     public CoachGraph updateGraph (CoachGraph graph);
 }

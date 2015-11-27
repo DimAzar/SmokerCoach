@@ -23,12 +23,12 @@ import lombok.Setter;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
-@Table (name="CoachInstance")
+@Table (name="Coach")
 @NamedQueries({
-	@NamedQuery(name="coachInstance.getAllCoachInstances", query = "SELECT ct FROM CoachInstance ct "),
-	@NamedQuery(name="coachInstance.getCoachInstanceByID", query = "SELECT ct FROM CoachInstance ct where ct.id = :cid")
+	@NamedQuery(name="coachInstance.getAllCoachInstances", query = "SELECT ct FROM Coach ct "),
+	@NamedQuery(name="coachInstance.getCoachInstanceByID", query = "SELECT ct FROM Coach ct where ct.id = :cid")
 })
-public class CoachInstance implements DBEntity {
+public class Coach implements DBEntity {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -37,27 +37,9 @@ public class CoachInstance implements DBEntity {
     private Integer id;
 
 	@Getter @Setter
-	@Column(updatable=false)
+	@Column(updatable=false, unique=true)
 	private String name;
 	
-	@Getter @Setter
-	@ManyToOne
-	@JoinColumn(nullable=false, name="template_id") 
-	private CoachTemplate template;
-	
-	@Getter
-    @ManyToMany(targetEntity=Counter.class, mappedBy="coaches", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
-    private List<Counter> counters = new ArrayList<Counter>();
-	
-	@Getter
-    @OneToMany(targetEntity=CoachGraph.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<CoachGraph> graphs = new ArrayList<CoachGraph>();
-
-	@Getter @Setter
-	@ManyToOne(targetEntity=Profile.class)
-	@JoinColumn(nullable=false)
-    private Profile profile;
-
 	//TODO move to counter, action table
 	@Getter @Setter
 	@Column(updatable=false)
@@ -74,6 +56,19 @@ public class CoachInstance implements DBEntity {
 	@Getter @Setter
 	@Column(unique=true, updatable=false)
 	private Character accelerator;
+	
+	@Getter @Setter
+	@ManyToOne(targetEntity=Profile.class)
+	@JoinColumn(nullable=false)
+    private Profile profile;
+
+	@Getter
+    @OneToMany(targetEntity=CoachGraph.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<CoachGraph> graphs = new ArrayList<CoachGraph>();
+
+	@Getter
+    @ManyToMany(targetEntity=Counter.class, mappedBy="coaches", fetch=FetchType.EAGER)
+    private List<Counter> counters = new ArrayList<Counter>();
 	
 	public void addCounter(Counter instance) {
 		instance.addCoach(this);
