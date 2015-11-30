@@ -271,7 +271,8 @@ public class MainProfileManager extends AbstractManageEntityIFRame implements Pr
 	        		}
 	        		int gid = Integer.parseInt(graphsTable.getValueAt(selectionIndex, 0).toString());
 	        		selectedGraph = selectedCoach.getGraphById(gid);	        		
-//	        		updateGraphsData();
+	        		updateGraphsData();
+	        		updateCountersData();
 	        	}
 	        }
 	    });
@@ -329,7 +330,7 @@ class CustomCoachesTableModel extends AbstractTableModel {
 		case 0:
 			return "#";
 		case 1:
-			return "Name";
+			return "Coach Name";
 		case 2:
 			return "Template";
 		default:
@@ -391,7 +392,7 @@ class CustomGraphsTableModel extends AbstractTableModel {
 		case 0:
 			return "#";
 		case 1:
-			return "Name";
+			return "Graph Name";
 		default:
 			return "N/A";
 		}
@@ -451,7 +452,7 @@ class CustomCountersTableModel extends AbstractTableModel {
 		case 0:
 			return "#";
 		case 1:
-			return "Name";
+			return "Counter Name";
 		case 2:
 			return "Type";
 		case 3:
