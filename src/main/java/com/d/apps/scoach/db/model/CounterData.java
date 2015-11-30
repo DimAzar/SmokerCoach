@@ -29,11 +29,18 @@ public class CounterData implements DBEntity {
     @GeneratedValue
     private Integer id;
 
+	//counter four dimensions 
 	@Getter @Setter
-	private Double datum;
+	private Double x;
 	
 	@Getter @Setter
-	private Timestamp addedDate;
+	private Double y;
+
+	@Getter @Setter
+	private Double z;
+
+	@Getter @Setter
+	private Timestamp t;
 
 	@Getter @Setter
 	@ManyToOne (targetEntity=Counter.class)

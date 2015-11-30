@@ -45,27 +45,24 @@ import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.GraphFrame;
 import com.d.apps.scoach.ui.MainFrame;
+import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
 
-public class ManageProfileIFrame extends AbstractManageEntityIFRame {
-	private static final Logger LOG = LoggerFactory.getLogger(ManageProfileIFrame.class);
+public class MainProfileManager extends AbstractManageEntityIFRame implements ProfileSubManager {
+	private static final Logger LOG = LoggerFactory.getLogger(MainProfileManager.class);
 	private static final long serialVersionUID = 1L;
 
 	//SWING 
 	private JTable coachesTable, countersTable, graphsTable;
-	private JButton addCounterButt = new JButton("Add Counter");
 	private JButton addGraphButt = new JButton("Add Graph");
 	protected JPopupMenu rmenuCoaches = new JPopupMenu(),
 						rmenuGraphs= new JPopupMenu();;
 	
-
 	//MODEL
-	private Profile profile = null;
-	private Coach selectedCoach;
-	private CoachGraph    selectedGraph;
+	private Coach 		selectedCoach;
+	private CoachGraph  selectedGraph;
 	
-	public ManageProfileIFrame(Profile profile) {
-		super();
-		this.profile = profile;
+	public MainProfileManager(Profile profile) {
+		super(profile);
 		
 		initGrcs();
 		addListeners();
@@ -132,7 +129,6 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 		parent.add(getCoachesTablePanel() , new GridBagConstraints(0, 1, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
 		parent.add(addGraphButt, new GridBagConstraints(0, 2, 1, 1, 1.0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 2, 2), 0, 0));
 		parent.add(getGraphsTablePanel() , new GridBagConstraints(0, 3, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
-		parent.add(addCounterButt, new GridBagConstraints(0, 4, 1, 1, 1.0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 2, 2), 0, 0));
 		parent.add(getCountersTablePanel(), new GridBagConstraints(0, 5, 1, 1, 1.0, 0.5, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 5, 2), 0, 0));
 	
 		setName(Utilities.NAME_PROFILEMANAGER);
@@ -144,22 +140,6 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	}
 	
 	private void addListeners() {
-		addCounterButt.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (selectedCoach == null) {
-					JOptionPane.showMessageDialog(null, "Please select a coach first!");
-					return;
-				}
-				AddCounterToCoachDialog d = new AddCounterToCoachDialog(selectedCoach.getId());
-				Point p = getLocationOnScreen();
-				p.translate(getSize().width/2-d.getSize().width/2, getSize().height/2-d.getSize().height/2);
-				d.setLocation(p);
-				d.setVisible(true);
-				updateCountersData();
-			}
-		});
-		
 		addGraphButt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -187,7 +167,7 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	}
 
 	private void manageGraphs(CoachGraph editingGraph) {
-		AddGraphToCoachDialog d = new AddGraphToCoachDialog(selectedCoach, editingGraph);
+		AddGraphToCoachDialog d = new AddGraphToCoachDialog(selectedCoach, editingGraph, profile.getCounters());
 		Point p = getLocationOnScreen();
 		p.translate(getSize().width/2-d.getSize().width/2, getSize().height/2-d.getSize().height/2);
 		d.setLocation(p);
@@ -247,7 +227,6 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	}
 	
 	private void coachSelectionChanged() {
-		updateCountersData();
 		updateGraphsData();
 		
 	}
@@ -255,7 +234,7 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 	private JPanel getCountersTablePanel() {
 		JPanel ans = new JPanel();
 		
-		List<Counter> counters = (selectedCoach == null) ? new ArrayList<Counter>() : selectedCoach.getCounters();
+		List<Counter> counters = (selectedCoach == null) ? new ArrayList<Counter>() : selectedGraph.getCounters();
 		AbstractTableModel dtm = new CustomCountersTableModel(counters);
 		countersTable = new JTable(dtm);
 
@@ -312,7 +291,7 @@ public class ManageProfileIFrame extends AbstractManageEntityIFRame {
 
 	public void updateCountersData() {
 		CustomCountersTableModel dtm = (CustomCountersTableModel) countersTable.getModel();
-		dtm.setCounters(selectedCoach.getCounters());
+		dtm.setCounters(selectedGraph.getCounters());
 		dtm.fireTableDataChanged();
 		countersTable.setModel(dtm);
 		

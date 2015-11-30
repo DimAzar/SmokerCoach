@@ -37,7 +37,6 @@ public class DBServicesImpl implements DBServices {
 		
 		EntityManager entityManager = factory.createEntityManager();
 		ans = entityManager.createNamedQuery("profile.getAllProfiles", Profile.class).getResultList();
-		entityManager.close();
 		return ans; 
 	}
 
@@ -47,7 +46,6 @@ public class DBServicesImpl implements DBServices {
 		
 		EntityManager entityManager = factory.createEntityManager();
 		ans = entityManager.find(Profile.class, pid);
-		entityManager.close();
 		return ans; 
 	}
 
@@ -143,8 +141,6 @@ public class DBServicesImpl implements DBServices {
 	
 	@Override
 	public Profile enableCoach(String name, Profile p) {
-		EntityManager entityManager = factory.createEntityManager();
-
 		Coach ci = new Coach();
 		ci.setName(p.getFirstName());
 		
@@ -167,23 +163,21 @@ public class DBServicesImpl implements DBServices {
     	ans = entityManager.createNamedQuery("coachInstance.getCoachInstanceByID", Coach.class)
 				.setParameter("cid", cid)
 				.getSingleResult();
-    	entityManager.close();
     	return ans; 
 	}
 
 	@Override
-	public Counter createCounter(int coachId, String name,
+	public Profile createCounter(int profileId, String name,
 			CounterFunctionType type, double stepValue) {
 		Counter instance = new Counter();
 		instance.setName(name);
 		instance.setStepValue(stepValue);
 		instance.setType(type);
 		
-		Coach ci = findCoachInstance(coachId);
-		ci.addCounter(instance);
+		Profile p = findProfile(profileId);
+		p.addCounter(instance);
 		
-		updateEntity(instance);
-		return null;
+    	return (Profile) updateProfile(p);
 	}
 
 	@Override
@@ -191,8 +185,8 @@ public class DBServicesImpl implements DBServices {
 		Counter ans = null;
 		EntityManager entityManager = factory.createEntityManager();
 		CounterData datum = new CounterData();
-		datum.setAddedDate(created);
-		datum.setDatum(value);
+		datum.setT(created);
+		datum.setX(value);
 		owner.addDatum(datum);
 
 		createEntity(datum);
@@ -202,8 +196,8 @@ public class DBServicesImpl implements DBServices {
 		return ans;
 	}
 	
-	private static final String generalSumQuery = "select CAST(addeddate as date), sum(datum) from counterdata where counter_id = $ID group by CAST(addeddate as date)";
-	private static final String generalQuery = "select addeddate, datum from counterdata where counter_id = $ID order by addeddate ASC";
+	private static final String generalSumQuery = "select CAST(t as date), sum(x) from counterdata where counter_id = $ID group by CAST(t as date)";
+	private static final String generalQuery = "select t, x from counterdata where counter_id = $ID order by t ASC";
 
 	@Override
 	@SuppressWarnings("unchecked")

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
@@ -46,12 +47,14 @@ public class AddGraphToCoachDialog extends JDialog {
 	
 	private Coach coach; 
 	private CoachGraph editingGraph;
+	private List<Counter> profileCounters;
 	
-	public AddGraphToCoachDialog(Coach coach, CoachGraph editingGraph) {
+	public AddGraphToCoachDialog(Coach coach, CoachGraph editingGraph, List<Counter> profilecounters) {
 		super();
 	
 		this.coach = coach;
 		this.editingGraph = editingGraph;
+		this.profileCounters = profilecounters;
 		initGrcs();
 		initModel();
 	}
@@ -103,7 +106,7 @@ public class AddGraphToCoachDialog extends JDialog {
 	
 	private void initModel() {
 		DefaultListModel<String> dlm = new DefaultListModel<String>();
-		for (Counter  c : coach.getCounters()) {
+		for (Counter  c : profileCounters) {
 			dlm.addElement(c.getName());
 		}
 		
@@ -209,7 +212,7 @@ public class AddGraphToCoachDialog extends JDialog {
 		Enumeration<String> vals = ((DefaultListModel<String>)addedCountersList.getModel()).elements();
 		while (vals.hasMoreElements()) {
 			String value = (String) vals.nextElement();
-			for (Counter c : coach.getCounters()) {
+			for (Counter c : profileCounters) {
 				if (c.getName().equals(value)) {
 					counterIds.add(c.getId());
 				}

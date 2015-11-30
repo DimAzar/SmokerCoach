@@ -66,24 +66,11 @@ public class Coach implements DBEntity {
     @OneToMany(targetEntity=CoachGraph.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<CoachGraph> graphs = new ArrayList<CoachGraph>();
 
-	@Getter
-    @ManyToMany(targetEntity=Counter.class, mappedBy="coaches", fetch=FetchType.EAGER)
-    private List<Counter> counters = new ArrayList<Counter>();
-	
-	public void addCounter(Counter instance) {
-		instance.addCoach(this);
-		counters.add(instance);
-	}
-	
 	public void addGraph(CoachGraph graph) {
 		graphs.add(graph);
 		graph.setCoach(this);
 	}
 	
-	public void removeCounter(Counter instance) {
-		counters.remove(instance);
-	}
-
 	public void removeGraph(CoachGraph graph) {
 		graphs.remove(graph);
 	}

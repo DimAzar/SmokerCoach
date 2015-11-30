@@ -31,7 +31,7 @@ public interface DBServices {
     public Coach findCoachInstance(int cid);
     public CoachGraph findCoachGraph(int gid);
     
-    public Counter createCounter(int coachInstanceId, String name, CounterFunctionType type, double stepValue);
+    public Profile createCounter(int profileId, String name, CounterFunctionType type, double stepValue);
     public Counter addCounterData(Counter owner, Timestamp created, Double value);
     
     public List<Object[]> getCounterDataSummed(int cid, DataSumType type);

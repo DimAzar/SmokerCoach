@@ -19,8 +19,11 @@ public class Utilities {
 	public static final String NAME_MAINFRAME   = "Main Frame";
 	public static final String NAME_PROFILEMANAGER = "Profile Manager";
 	public static final String NAME_ABOUTDIALOG = "About Counter";
-	public static final String NAME_COACHMANAGER = "Manage Coaches";
+	
+	public static final String NAME_COACHESMANAGER = "Manage Coaches";
 	public static final String NAME_PROFILESMANAGER= "Manage Profiles";
+	public static final String NAME_COUNTERSMANAGER = "Manage Counters";
+	
 	public static final String NAME_PROFILECOACHES= "Profile Coaches";
 	public static final String NAME_ADDCOUNTER = "Add Counter to Coach";
 	public static Properties loadApplicationProperties(String propertiesName) {
@@ -58,15 +61,6 @@ public class Utilities {
 		return ans;
 	}
 	
-	public static Counter findCoachCounterFromName(Coach coach, String name) {
-		for (Counter c : coach.getCounters()) {
-			if (c.getName().equals(name)) {
-				return c;
-			}
-		}
-		return null;
-	}
-
 	public enum CounterFunctionType {
 	    STEP(0, "Step function"), INPUT(1, "User-Input function");
 
@@ -107,6 +101,19 @@ public class Utilities {
 	    private final String description;
 	    
 	    private DataSumType(String description) {	
+	    	this.description = description;
+    	}
+	}	
+
+	public enum CounterDimension {
+	    D1("1 Dimension"), 
+	    D2("2 Dimensions"),
+	    D3("3 Dimensions");
+
+	    @Getter
+	    private final String description;
+	    
+	    private CounterDimension(String description) {	
 	    	this.description = description;
     	}
 	}	

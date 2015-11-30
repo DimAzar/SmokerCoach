@@ -56,19 +56,10 @@ public class Counter implements DBEntity {
 	private List<CounterData> data;
 
 	@Getter
-	@ManyToMany(targetEntity=Coach.class, fetch=FetchType.LAZY)
-	@JoinColumn(nullable=false)
-    private List<Coach> coaches = new ArrayList<Coach>();
-
-	@Getter
 	@ManyToMany
 	@JoinColumn(nullable=true, name="graph_id") 
 	private List<CoachGraph> graphs;
 
-	public void addCoach(Coach ci) {
-		coaches.add(ci);
-	}
-	
 	public void addDatum(CounterData datum) {
 		datum.setCounter(this);
 		data.add(datum);

@@ -37,8 +37,11 @@ import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.ui.managers.AbstractManageEntityIFRame;
 import com.d.apps.scoach.ui.managers.ManageCoachesIFrame;
+import com.d.apps.scoach.ui.managers.ManageCountersIFrame;
 import com.d.apps.scoach.ui.managers.ManageProfilesIFrame;
+import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -7859383450590563738L;
@@ -46,6 +49,9 @@ public class MainFrame extends JFrame {
 	private static final Logger LOG = LoggerFactory.getLogger(MainFrame.class);
 	private static final int WINDOW_BATCH_SIZE = 3;
 	private static final int WINDOW_PADDING = 25;
+	private JMenuItem coachesItem = new JMenuItem("Manage Coaches"),
+						countersItem = new JMenuItem("Manage Counters"),
+						profilesItem = new JMenuItem("Manage Profiles");
 
 	private MainFrame _instance = null;
 	
@@ -62,12 +68,16 @@ public class MainFrame extends JFrame {
 		setName(Utilities.NAME_MAINFRAME);
 		initGrcs();
 
-		activeProfileChanged(CounterApp.DBServices.getActiveProfile());
+		setActiveProfile(CounterApp.DBServices.getActiveProfile());
 		_instance = this;
 	}
 
+	public void notifyActiveProfileChanged() {
+		setActiveProfile(CounterApp.DBServices.getActiveProfile());
+	}
+	
 	public Profile getActiveProfile() {	return activeProfile;	}
-	public void activeProfileChanged(Profile p) {
+	public void setActiveProfile(Profile p) {
 		activeProfile = p;
 		if (activeProfile != null) {
 			updateProfileRelatedUI(activeProfile.getCoaches());
@@ -76,8 +86,16 @@ public class MainFrame extends JFrame {
 				showIFrame(new ManageProfilesIFrame());
 			}
 		}
+		
+		for (JInternalFrame jif : desktopPane.getAllFrames()) {
+			if (jif instanceof ProfileSubManager) {
+				((AbstractManageEntityIFRame)jif).profileChanged(activeProfile);
+			}
+		}
 		setTitle("Counter Application - Active Profile : "+((activeProfile == null) ? "N/A" : activeProfile.getFirstName()));
 		actionPanel.toggleActionBar(activeProfile != null);
+		countersItem.setEnabled(activeProfile != null);
+		coachesItem.setEnabled(activeProfile != null);
 	}
 
 	public void updateProfileRelatedUI(List<Coach> activeCoaches) {
@@ -85,16 +103,16 @@ public class MainFrame extends JFrame {
 		actionPanel.cleanBar();
 		
 		JMenu coaches = new JMenu("Coaches");
-		for (Coach profileCoach : activeCoaches) {
-			//TODO MENU ACTIONS
-			JMenuItem coachitem = new JMenuItem(profileCoach.getName());
-			coaches.add(coachitem);
-			
-			//TODO TOOLBAR OF COUNTERS
-			for (Counter counter : profileCoach.getCounters()) {
-				actionPanel.addActionButton(new ToolbarAction(counter, true));
-			}
-		}
+//		for (Coach profileCoach : activeCoaches) {
+//			//TODO MENU ACTIONS
+//			JMenuItem coachitem = new JMenuItem(profileCoach.getName());
+//			coaches.add(coachitem);
+//			
+//			//TODO TOOLBAR OF COUNTERS
+//			for (Counter counter : profileCoach.getCounters()) {
+//				actionPanel.addActionButton(new ToolbarAction(counter, true));
+//			}
+//		}
 		getJMenuBar().add(coaches);
 		actionPanel.recreateBar();
 	}
@@ -136,7 +154,7 @@ public class MainFrame extends JFrame {
 		
 		createBasicMenu();
 		
-		setSize(800, 600);
+		setSize(300, 300);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
 		try {
@@ -152,11 +170,13 @@ public class MainFrame extends JFrame {
 		help.add(about);
 		
 		JMenu file = new JMenu("File");
-		JMenuItem profiles = new JMenuItem("Manage Profiles"); 
-		JMenuItem coaches = new JMenuItem("Manage Coaches");
+		profilesItem = new JMenuItem("Manage Profiles"); 
+		coachesItem = new JMenuItem("Manage Coaches");
+		countersItem = new JMenuItem("Manage Counters");
 		
-		file.add(profiles);
-		file.add(coaches);
+		file.add(profilesItem);
+		file.add(coachesItem);
+		file.add(countersItem);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(file);
@@ -171,16 +191,22 @@ public class MainFrame extends JFrame {
 				showIFrame(new AboutIFrame());
 			}
 		});
-		profiles.addActionListener(new ActionListener() {
+		profilesItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showIFrame(new ManageProfilesIFrame());
 			}
 		});
-		coaches.addActionListener(new ActionListener() {
+		coachesItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showIFrame(new ManageCoachesIFrame(activeProfile));
+			}
+		});
+		countersItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showIFrame(new ManageCountersIFrame(activeProfile));
 			}
 		});
 	}

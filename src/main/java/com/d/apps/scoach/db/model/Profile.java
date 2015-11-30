@@ -42,16 +42,21 @@ public class Profile implements DBEntity {
 	private boolean isActive = false;
 
     @Getter
-    @OneToMany(targetEntity=Coach.class, mappedBy="profile", fetch=FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity=Coach.class, mappedBy="profile", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Coach> coaches = new ArrayList<Coach>();
 
     @Getter
-    @OneToMany(targetEntity=Counter.class, mappedBy="profile", fetch=FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(targetEntity=Counter.class, mappedBy="profile", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Counter> counters = new ArrayList<Counter>();
 
     public void addCoach(Coach profileCoach) {
     	profileCoach.setProfile(this);
     	coaches.add(profileCoach);
+    }
+    
+    public void addCounter(Counter counter) {
+    	counter.setProfile(this);
+    	counters.add(counter);
     }
     
     public boolean updateCoach(Coach coach) {
@@ -74,4 +79,12 @@ public class Profile implements DBEntity {
 			}
 		}
     }
-}
+    public void removeCounter(int cid) {
+    	for (Counter counter: counters) {
+			if (counter.getId() == cid) {
+				counters.remove(counter);
+				counter.setProfile(null);
+				return;
+			}
+		}
+    }}

@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -14,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -27,45 +24,17 @@ import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
 
-public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
+public class ManageCoachesIFrame extends AbstractManageEntityIFRame implements ProfileSubManager {
 	private static final long serialVersionUID = -892682552079556150L;
 	
-	private JPopupMenu rmenu = new JPopupMenu();
-	private JTable entityTable = null;
-
-	private Profile profile = null;
-
 	public ManageCoachesIFrame(Profile profile) {
-		super();
-		this.profile = profile;
-		setName(Utilities.NAME_COACHMANAGER);
+		super(profile);
+		setName(Utilities.NAME_COACHESMANAGER);
 		
 		initGrcs();
 		setupListeners();
-	}
-	
-	private void setupListeners() {
-		entityTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					if (rmenu.isShowing()) {
-						return;
-					} 
-					
-					if (entityTable.getSelectedRow() < 0) {
-						return;
-					}
-					rmenu.setLocation(e.getLocationOnScreen());
-					rmenu.setVisible(true);
-					return;
-				} 
-				if (rmenu.isShowing()) {
-					rmenu.setVisible(false);
-				}
-			}
-		});
 	}
 	
 	private void initGrcs() {
@@ -103,15 +72,10 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 
 					profile.removeCoach(cid);
 					profile = CounterApp.DBServices.updateProfile(profile);
-					updateUIProfileChanged();
+					notifyActiveProfileChanged();
 				}
 			}
 		});
-	}
-	
-	private void updateUIProfileChanged() {
-		((CustomCoachesTableModel)entityTable.getModel()).refresh();
-		rmenu.setVisible(false);
 	}
 
 	class CreateCoachesPanel extends JPanel {
@@ -136,9 +100,12 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 						return;
 					}
 
-					profile = CounterApp.DBServices.createCoach(profile.getId(), name.getText());
+					Coach coach = new Coach();
+					coach.setName(name.getText());
 					
-					updateUIProfileChanged();
+					profile.addCoach(coach);
+					profile = CounterApp.DBServices.updateProfile(profile);
+					notifyActiveProfileChanged();
 					name.setText("");
 				}
 			});
@@ -159,10 +126,6 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFRame {
 		private static final long serialVersionUID = 1L;
 		public CustomCoachesTableModel() {
 			super();
-			refresh();
-		}
-		
-		public void refresh() {
 			fireTableDataChanged();
 		}
 		
