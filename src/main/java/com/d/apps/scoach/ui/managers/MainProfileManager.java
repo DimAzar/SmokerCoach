@@ -272,7 +272,6 @@ public class MainProfileManager extends AbstractManageEntityIFRame implements Pr
 	        		int gid = Integer.parseInt(graphsTable.getValueAt(selectionIndex, 0).toString());
 	        		selectedGraph = selectedCoach.getGraphById(gid);	        		
 	        		updateGraphsData();
-	        		updateCountersData();
 	        	}
 	        }
 	    });
