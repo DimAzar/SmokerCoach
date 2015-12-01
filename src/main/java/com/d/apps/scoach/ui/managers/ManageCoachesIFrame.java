@@ -26,7 +26,7 @@ import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
 
-public class ManageCoachesIFrame extends AbstractManageEntityIFRame implements ProfileSubManager {
+public class ManageCoachesIFrame extends AbstractManageEntityIFrame implements ProfileSubManager {
 	private static final long serialVersionUID = -892682552079556150L;
 	
 	public ManageCoachesIFrame(Profile profile) {

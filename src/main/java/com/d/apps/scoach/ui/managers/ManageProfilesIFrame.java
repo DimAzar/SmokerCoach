@@ -3,20 +3,14 @@ package com.d.apps.scoach.ui.managers;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -31,11 +25,10 @@ import javax.swing.table.TableCellRenderer;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
 
-public class ManageProfilesIFrame  extends AbstractManageEntityIFRame  {
+public class ManageProfilesIFrame  extends AbstractManageEntityIFrame  {
 	private static final long serialVersionUID = -892682552079556150L;
 	
 	public ManageProfilesIFrame() {

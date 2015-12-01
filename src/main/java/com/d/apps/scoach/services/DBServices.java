@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
-import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Coach;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 
@@ -30,9 +30,10 @@ public interface DBServices {
     
     public Coach findCoachInstance(int cid);
     public CoachGraph findCoachGraph(int gid);
+    public Counter findCounter(int cid);
     
     public Profile createCounter(int profileId, String name, CounterFunctionType type, double stepValue);
-    public Counter addCounterData(Counter owner, Timestamp created, Double value);
+    public Counter addCounterData(int counterId, Timestamp created, Double value);
     
     public List<Object[]> getCounterDataSummed(int cid, DataSumType type);
     public List<Object[]> getCounterDataFlat(int cid);

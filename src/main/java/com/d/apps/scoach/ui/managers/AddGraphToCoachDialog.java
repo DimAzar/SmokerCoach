@@ -25,8 +25,8 @@ import javax.swing.text.Position;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Coach;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
 
 public class AddGraphToCoachDialog extends JDialog {
@@ -180,7 +180,8 @@ public class AddGraphToCoachDialog extends JDialog {
 			}
 			
 			if (!found) {
-				editingGraph.addGraphCounter(Utilities.findCoachCounterFromName(coach, value));
+				//TODO ..
+				//editingGraph.addGraphCounter(Utilities.findCoachCounterFromName(coach, value));
 			}
 		}
 		

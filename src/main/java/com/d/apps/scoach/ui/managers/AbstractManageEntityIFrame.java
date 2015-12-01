@@ -12,7 +12,7 @@ import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.MainFrame;
 
 
-public abstract class AbstractManageEntityIFRame extends JInternalFrame {
+public abstract class AbstractManageEntityIFrame extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
 
 	protected Profile profile = null;
@@ -20,7 +20,7 @@ public abstract class AbstractManageEntityIFRame extends JInternalFrame {
 	protected JTable entityTable = null;
 
 
-	protected AbstractManageEntityIFRame(Profile profile) {
+	protected AbstractManageEntityIFrame(Profile profile) {
 		super();
 		this.profile = profile;
 

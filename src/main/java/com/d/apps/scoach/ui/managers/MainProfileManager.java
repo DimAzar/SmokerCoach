@@ -39,15 +39,14 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Coach;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.GraphFrame;
-import com.d.apps.scoach.ui.MainFrame;
 import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
 
-public class MainProfileManager extends AbstractManageEntityIFRame implements ProfileSubManager {
+public class MainProfileManager extends AbstractManageEntityIFrame implements ProfileSubManager {
 	private static final Logger LOG = LoggerFactory.getLogger(MainProfileManager.class);
 	private static final long serialVersionUID = 1L;
 
@@ -270,8 +269,8 @@ public class MainProfileManager extends AbstractManageEntityIFRame implements Pr
 	        			return;
 	        		}
 	        		int gid = Integer.parseInt(graphsTable.getValueAt(selectionIndex, 0).toString());
-	        		selectedGraph = selectedCoach.getGraphById(gid);	        		
-	        		updateGraphsData();
+	        		selectedGraph = selectedCoach.getGraphById(gid);	
+	        		updateCountersData();
 	        	}
 	        }
 	    });
@@ -284,25 +283,23 @@ public class MainProfileManager extends AbstractManageEntityIFRame implements Pr
 	public void updateGraphsData() {
 		CustomGraphsTableModel dtm = (CustomGraphsTableModel) graphsTable.getModel();
 		dtm.setGraphs(selectedCoach.getGraphs());
-		dtm.fireTableDataChanged();
 		graphsTable.setModel(dtm);
-		
+		dtm.fireTableDataChanged();
 	}
 
 	public void updateCountersData() {
 		CustomCountersTableModel dtm = (CustomCountersTableModel) countersTable.getModel();
 		dtm.setCounters(selectedGraph.getCounters());
-		dtm.fireTableDataChanged();
 		countersTable.setModel(dtm);
+		dtm.fireTableDataChanged();
 		
-		if (profile.updateCoach(selectedCoach)) {
+/*		if (profile.updateCoach(selectedCoach)) {
 			((MainFrame)getTopLevelAncestor()).updateProfileRelatedUI(profile.getCoaches());
 		} else {
 			LOG.error(String.format("Could not update profile coaches pid:%s cid:%s", profile.getId(), selectedCoach.getId()));
-		}
+		}*/
 
 	}
-
 }
 
 class CustomCoachesTableModel extends AbstractTableModel {

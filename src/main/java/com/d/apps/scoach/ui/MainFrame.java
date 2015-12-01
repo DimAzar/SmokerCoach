@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -37,7 +36,7 @@ import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.managers.AbstractManageEntityIFRame;
+import com.d.apps.scoach.ui.managers.AbstractManageEntityIFrame;
 import com.d.apps.scoach.ui.managers.ManageCoachesIFrame;
 import com.d.apps.scoach.ui.managers.ManageCountersIFrame;
 import com.d.apps.scoach.ui.managers.ManageProfilesIFrame;
@@ -80,7 +79,7 @@ public class MainFrame extends JFrame {
 	public void setActiveProfile(Profile p) {
 		activeProfile = p;
 		if (activeProfile != null) {
-			updateProfileRelatedUI(activeProfile.getCoaches());
+			updateProfileRelatedUI();
 		} else {
 			if (!isIFrameVisible(Utilities.NAME_PROFILESMANAGER)) {
 				showIFrame(new ManageProfilesIFrame());
@@ -89,7 +88,7 @@ public class MainFrame extends JFrame {
 		
 		for (JInternalFrame jif : desktopPane.getAllFrames()) {
 			if (jif instanceof ProfileSubManager) {
-				((AbstractManageEntityIFRame)jif).profileChanged(activeProfile);
+				((AbstractManageEntityIFrame)jif).profileChanged(activeProfile);
 			}
 		}
 		setTitle("Counter Application - Active Profile : "+((activeProfile == null) ? "N/A" : activeProfile.getFirstName()));
@@ -98,21 +97,21 @@ public class MainFrame extends JFrame {
 		coachesItem.setEnabled(activeProfile != null);
 	}
 
-	public void updateProfileRelatedUI(List<Coach> activeCoaches) {
+	private void updateProfileRelatedUI() {
 		createBasicMenu();
 		actionPanel.cleanBar();
 		
 		JMenu coaches = new JMenu("Coaches");
-//		for (Coach profileCoach : activeCoaches) {
-//			//TODO MENU ACTIONS
-//			JMenuItem coachitem = new JMenuItem(profileCoach.getName());
-//			coaches.add(coachitem);
-//			
-//			//TODO TOOLBAR OF COUNTERS
-//			for (Counter counter : profileCoach.getCounters()) {
-//				actionPanel.addActionButton(new ToolbarAction(counter, true));
-//			}
-//		}
+		for (Coach profileCoach : activeProfile.getCoaches()) {
+			//TODO MENU ACTIONS
+			JMenuItem coachitem = new JMenuItem(profileCoach.getName());
+			coaches.add(coachitem);
+			
+		}
+		
+		for (Counter counter : activeProfile.getCounters()) {
+			actionPanel.addActionButton(new ToolbarAction(counter, true));
+		}
 		getJMenuBar().add(coaches);
 		actionPanel.recreateBar();
 	}
@@ -154,7 +153,7 @@ public class MainFrame extends JFrame {
 		
 		createBasicMenu();
 		
-		setSize(300, 300);
+		setSize(400, 600);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
 		try {
@@ -284,7 +283,7 @@ public class MainFrame extends JFrame {
 			default:
 				throw new RuntimeException("Unkown counter type :"+counter.getType());
 			}
-			counter = CounterApp.DBServices.addCounterData(counter, new Timestamp(Calendar.getInstance().getTimeInMillis()), value);
+			counter = CounterApp.DBServices.addCounterData(counter.getId(), new Timestamp(Calendar.getInstance().getTimeInMillis()), value);
 		}
 	}
 	

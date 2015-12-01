@@ -33,7 +33,7 @@ import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
 
-public class ManageCountersIFrame extends AbstractManageEntityIFRame implements ProfileSubManager {
+public class ManageCountersIFrame extends AbstractManageEntityIFrame implements ProfileSubManager {
 	private static final long serialVersionUID = -892682552079556150L;
 	
 	public ManageCountersIFrame(Profile profile) {
@@ -43,7 +43,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFRame implements 
 		initGrcs();
 		setupListeners();
 		
-		setSize(300, 500);
+		setSize(450, 450);
 	}
 	
 	private void initGrcs() {
@@ -97,9 +97,9 @@ public class ManageCountersIFrame extends AbstractManageEntityIFRame implements 
 		private JComboBox<String> typeCombo = new JComboBox<String>();
 		private JComboBox<String> dimensionsCombo = new JComboBox<String>();
 		private JTextField nameField = new JTextField();
-		private JTextField stepValue1d = new JTextField("0"),
-							stepValue2d = new JTextField("0"),
-							stepValue3d = new JTextField("0");
+		private JTextField stepValue1d = new JTextField("0",6),
+							stepValue2d = new JTextField("0", 6),
+							stepValue3d = new JTextField("0", 6);
 		private JButton addButt = new JButton("Add counter");
 		
 		public CreateCountersPanel() {
@@ -113,23 +113,26 @@ public class ManageCountersIFrame extends AbstractManageEntityIFRame implements 
 		private void initGrcs() {
 			GridBagLayout layout = new GridBagLayout();
 			
-			layout.columnWidths = new int[] { 7, 7, 7, 7, 7 };
+			layout.columnWidths = new int[] { 7, 7, 50, 50, 50 };
 			layout.rowHeights   = new int[] { 7, 7, 7, 7, 7 };
 			
-			layout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.5 };
+			layout.columnWeights = new double[] { 0.0, 0.0, 0.1, 0.1, 0.1 };
 			layout.rowWeights    = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0 };
 			setLayout(layout);
 			
-			add(new JLabel("Counter name"), new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 2, 10), 0, 0));
-			add(nameField, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 2), 0, 0));
-			add(dimensionsCombo, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 0, 10), 0, 0));
+			add(new JLabel("Counter name"), new GridBagConstraints(0, 0, 5, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 2, 10), 0, 0));
+			add(new JLabel("Counter Value"),new GridBagConstraints(3, 0, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 2, 10), 0, 0));
+			add(nameField,					new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 2), 0, 0));
+			add(dimensionsCombo, 			new GridBagConstraints(2, 1, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 0, 10), 0, 0));
 			add(new JLabel("Counter type"), new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 2, 10), 0, 0));
-			add(new JLabel("Step"), new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 2, 10), 0, 0));
-			add(typeCombo, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 2), 0, 0));
-			add(stepValue1d, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 0, 2), 0, 0));
-			add(stepValue2d, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 0, 2), 0, 0));
-			add(stepValue3d, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 0, 10), 0, 0));
-			add(addButt, new GridBagConstraints(0, 4, 4, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.NONE, new Insets(10, 10, 0, 10), 0, 0));
+			add(new JLabel("Step"), 		new GridBagConstraints(2, 2, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 10, 2, 10), 0, 0));
+			
+			add(typeCombo  , new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 2), 0, 0));
+			add(stepValue1d, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 2), 0, 0));
+			add(stepValue2d, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 2), 0, 0));
+			add(stepValue3d, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 10), 0, 0));
+			
+			add(addButt, new GridBagConstraints(0, 4, 5, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10, 10, 10, 10), 0, 0));
 			
 			toggleCounterDimensions(false);
 		}

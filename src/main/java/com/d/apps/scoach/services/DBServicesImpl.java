@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
-import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Coach;
+import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.CounterData;
 import com.d.apps.scoach.db.model.Profile;
@@ -181,9 +181,10 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public Counter addCounterData(Counter owner, Timestamp created, Double value) {
+	public Counter addCounterData(int counterId, Timestamp created, Double value) {
 		Counter ans = null;
 		EntityManager entityManager = factory.createEntityManager();
+		Counter owner = entityManager.find(Counter.class, counterId);
 		CounterData datum = new CounterData();
 		datum.setT(created);
 		datum.setX(value);
@@ -234,10 +235,18 @@ public class DBServicesImpl implements DBServices {
 		
 		EntityManager entityManager = factory.createEntityManager();
 		ans = entityManager.find(CoachGraph.class, gid);
-		entityManager.close();
 		return ans; 
 	}
 	
+	@Override
+	public Counter findCounter(int cid) {
+		Counter  ans = null;
+		
+		EntityManager entityManager = factory.createEntityManager();
+		ans = entityManager.find(Counter.class, cid);
+		return ans; 
+	}
+
 	@Override
 	public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds){
 		CoachGraph graph = new CoachGraph();

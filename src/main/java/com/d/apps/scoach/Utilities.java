@@ -10,9 +10,6 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.db.model.Coach;
-import com.d.apps.scoach.db.model.Counter;
-
 public class Utilities {
 	private static final Logger LOG = LoggerFactory.getLogger(Utilities.class);
 	
