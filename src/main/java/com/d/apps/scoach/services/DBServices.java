@@ -4,8 +4,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.d.apps.scoach.Utilities.CounterFunctionType;
+import com.d.apps.scoach.Utilities.ChartPlotType;
+import com.d.apps.scoach.Utilities.CounterDimensionCombinations;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
@@ -32,13 +34,12 @@ public interface DBServices {
     public CoachGraph findCoachGraph(int gid);
     public Counter findCounter(int cid);
     
-    public Profile createCounter(int profileId, String name, CounterFunctionType type, double stepValue);
-    public Counter addCounterData(int counterId, Timestamp created, Double value);
+    public Counter addCounterData(int counterId, Timestamp created, Double x, Double y, Double z);
     
     public List<Object[]> getCounterDataSummed(int cid, DataSumType type);
-    public List<Object[]> getCounterDataFlat(int cid);
+    public List<Object[]> getCounterData(int cid, CounterDimensionCombinations dataPart);
     
     public void deleteGraph(int id);
-    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds);
+    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, CounterDimensionCombinations xyAxisDataFetch, ChartPlotType plotType);
     public CoachGraph updateGraph (CoachGraph graph);
 }

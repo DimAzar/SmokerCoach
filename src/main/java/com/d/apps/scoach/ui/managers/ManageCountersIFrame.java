@@ -92,8 +92,6 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 		private static final long serialVersionUID = 1L;
 		
 		//SWING
-		private final String inputTypeDescr = CounterFunctionType.INPUT.getDescription();
-
 		private JComboBox<String> typeCombo = new JComboBox<String>();
 		private JComboBox<String> dimensionsCombo = new JComboBox<String>();
 		private JTextField nameField = new JTextField();
@@ -116,7 +114,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 			layout.columnWidths = new int[] { 7, 7, 50, 50, 50 };
 			layout.rowHeights   = new int[] { 7, 7, 7, 7, 7 };
 			
-			layout.columnWeights = new double[] { 0.0, 0.0, 0.1, 0.1, 0.1 };
+			layout.columnWeights = new double[] { 0.5, 0.5, 0.0, 0.0, 0.0 };
 			layout.rowWeights    = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0 };
 			setLayout(layout);
 			
@@ -144,7 +142,14 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 				dModel.addElement(type.getDescription());
 			}
 			dimensionsCombo.setModel(dModel);
-			
+			dimensionsCombo.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					toggleOnDimension();
+				}
+			});
+			dimensionsCombo.setSelectedItem(CounterDimension.D1);
+			toggleOnDimension();
 			DefaultComboBoxModel<String> aModel = new DefaultComboBoxModel<String>();
 			for (CounterFunctionType  type : CounterFunctionType.values()) {
 				aModel.addElement(type.getDescription());
@@ -154,23 +159,32 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 			typeCombo.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					String val = typeCombo.getSelectedItem().toString();
-					if (val.equals(inputTypeDescr)) {
-						toggleCounterDimensions(false);
-					} else {
-						toggleCounterDimensions(true);
+					if (typeCombo.getSelectedItem() == CounterFunctionType.INPUT) {
+						toggleOnDimension();
 					}
 				}
 			});
-			typeCombo.setSelectedItem(inputTypeDescr);
+			typeCombo.setSelectedItem(CounterFunctionType.INPUT);
 			
 			addButt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					int len = nameField.getText().length();
+					if (len == 0) {
+						JOptionPane.showMessageDialog(null, "Name cannot be empty");
+						return;
+					}
+					
 					Counter instance = new Counter();
 					instance.setName(nameField.getText());
-					instance.setStepValue(Double.parseDouble(stepValue1d.getText()));
+					
 					instance.setType(CounterFunctionType.getId(typeCombo.getSelectedItem().toString()));
+					instance.setDimension(CounterDimension.getId(dimensionsCombo.getSelectedItem().toString()));
+
+					instance.setStepValueX(Double.parseDouble(stepValue1d.getText()));
+					instance.setStepValueY(Double.parseDouble(stepValue2d.getText()));
+					instance.setStepValueZ(Double.parseDouble(stepValue3d.getText()));
+
 					
 					profile.addCounter(instance);
 			    	CounterApp.DBServices.updateProfile(profile);
@@ -184,6 +198,21 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 			stepValue2d.setEnabled(value);
 			stepValue3d.setEnabled(value);
 		}
+		
+		private void toggleOnDimension() {
+			if (dimensionsCombo.getSelectedItem() == CounterDimension.D1.getDescription()) {
+				stepValue1d.setEnabled(true);
+				stepValue2d.setEnabled(false);
+				stepValue3d.setEnabled(false);
+			} else 					
+			if (dimensionsCombo.getSelectedItem() == CounterDimension.D2.getDescription()) {
+				stepValue1d.setEnabled(true);
+				stepValue2d.setEnabled(true);
+				stepValue3d.setEnabled(false);
+			} else {
+				toggleCounterDimensions(true);
+			}
+		}
 	}
 
 	class CustomCounterTableModel extends AbstractTableModel {
@@ -195,7 +224,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 		
 		@Override
 		public int getColumnCount() {
-			return 4;
+			return 7;
 		}
 		
 		@Override
@@ -208,7 +237,13 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 			case 2:
 				return "Type";
 			case 3:
-				return "Step";
+				return "Dimension";
+			case 4:
+				return "Step X";
+			case 5:
+				return "Step Y";
+			case 6:
+				return "Step Z";
 				
 			default:
 				return "N/A";
@@ -227,7 +262,13 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 				case 2:
 					return ct.getType();
 				case 3:
-					return ct.getStepValue();
+					return ct.getDimension();					
+				case 4:
+					return ct.getStepValueX();
+				case 5:
+					return ct.getStepValueY();
+				case 6:
+					return ct.getStepValueZ();					
 			}
 			throw new RuntimeException("Cannot get value :"+row+","+column);
 		}

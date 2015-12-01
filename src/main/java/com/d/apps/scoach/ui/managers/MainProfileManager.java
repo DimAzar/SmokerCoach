@@ -448,11 +448,18 @@ class CustomCountersTableModel extends AbstractTableModel {
 		case 0:
 			return "#";
 		case 1:
-			return "Counter Name";
+			return "Name";
 		case 2:
 			return "Type";
 		case 3:
-			return "Step value";
+			return "Dimension";
+		case 4:
+			return "Step X";
+		case 5:
+			return "Step Y";
+		case 6:
+			return "Step Z";
+			
 		default:
 			return "N/A";
 		}
@@ -460,21 +467,28 @@ class CustomCountersTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int column) {
-		Counter ci = counters.get(row);
+		Counter ct = counters.get(row);
 		
 		switch (column) {
 			case 0:
-				return ci.getId();
+				return ct.getId();
 			case 1:
-				return ci.getName();
+				return ct.getName();
 			case 2:
-				return ci.getType().getDescription();
+				return ct.getType();
 			case 3:
-				return ci.getStepValue();
-				
+				return ct.getDimension();					
+			case 4:
+				return ct.getStepValueX();
+			case 5:
+				return ct.getStepValueY();
+			case 6:
+				return ct.getStepValueZ();					
 		}
 		throw new RuntimeException("Cannot get value :"+row+","+column);
 	}
+	
+
 	
 	@Override
 	public boolean isCellEditable(int row, int column) {

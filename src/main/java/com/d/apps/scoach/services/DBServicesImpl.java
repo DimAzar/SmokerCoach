@@ -11,8 +11,10 @@ import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.Utilities.CounterFunctionType;
+import com.d.apps.scoach.Utilities.ChartPlotType;
+import com.d.apps.scoach.Utilities.CounterDimensionCombinations;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
@@ -167,27 +169,15 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public Profile createCounter(int profileId, String name,
-			CounterFunctionType type, double stepValue) {
-		Counter instance = new Counter();
-		instance.setName(name);
-		instance.setStepValue(stepValue);
-		instance.setType(type);
-		
-		Profile p = findProfile(profileId);
-		p.addCounter(instance);
-		
-    	return (Profile) updateProfile(p);
-	}
-
-	@Override
-	public Counter addCounterData(int counterId, Timestamp created, Double value) {
+	public Counter addCounterData(int counterId, Timestamp created, Double x, Double y, Double z) {
 		Counter ans = null;
 		EntityManager entityManager = factory.createEntityManager();
 		Counter owner = entityManager.find(Counter.class, counterId);
 		CounterData datum = new CounterData();
 		datum.setT(created);
-		datum.setX(value);
+		datum.setX(x);
+		datum.setY(y);
+		datum.setZ(z);
 		owner.addDatum(datum);
 
 		createEntity(datum);
@@ -197,9 +187,7 @@ public class DBServicesImpl implements DBServices {
 		return ans;
 	}
 	
-	private static final String generalSumQuery = "select CAST(t as date), sum(x) from counterdata where counter_id = $ID group by CAST(t as date)";
-	private static final String generalQuery = "select t, x from counterdata where counter_id = $ID order by t ASC";
-
+	private static final String generalSumQuery = "select sum(x), CAST(t as date)  from counterdata where counter_id = $ID group by CAST(t as date)";
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getCounterDataSummed(int cid, DataSumType type) {
@@ -215,15 +203,16 @@ public class DBServicesImpl implements DBServices {
 		return ans;
 	}
 
+	private static final String generalQuery = "select $DIMENSIONS from counterdata where counter_id = $CID $ORDERBY";
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Object[]> getCounterDataFlat(int cid) {
+	public List<Object[]> getCounterData(int cid, CounterDimensionCombinations dataPart) {
 		List<Object[]> ans = null;
 		EntityManager entityManager = factory.createEntityManager();
 		String query = generalQuery; 
 		
-		query = query.replace("$ID", ""+cid);
-
+		query = query.replace("$CID", ""+cid);
+		query = createSelectAndOrderPart(query, dataPart);
 		ans = entityManager.createNativeQuery(query).getResultList();
 		entityManager.close();
 		return ans;
@@ -248,10 +237,12 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds){
+	public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, CounterDimensionCombinations xyAxisDataFetch, ChartPlotType plotType) {
 		CoachGraph graph = new CoachGraph();
 		graph.setName(graphName);
-		
+		graph.setGraphDimension(graphDimension);
+		graph.setXyAxisDataFetch(xyAxisDataFetch);
+		graph.setPlotType(plotType);
 		EntityManager entityManager = factory.createEntityManager();
 		for (Integer cid : counterIds) {
 			Counter cnt = entityManager.find(Counter.class, cid);
@@ -319,6 +310,59 @@ public class DBServicesImpl implements DBServices {
     		entityManager.close();
     	}
     	return e;
+    }
+    
+    private String createSelectAndOrderPart(String query, CounterDimensionCombinations fetchData) {
+    	String select = "";
+    	String orderby = "";
+    	switch (fetchData) {
+    		case FULL:
+    			select = " x,y,z,t ";
+    			orderby = " ORDER BY t ASC";
+    			break;
+    		case XT:
+    			select = " x,t ";
+    			orderby = " ORDER BY t ASC";
+    			break;
+    		case XY:
+    			select = " x,y ";
+    			orderby = " ORDER BY y ASC";
+    			break;
+    		case XYT:
+    			select = " x,y,t ";
+    			orderby = " ORDER BY t ASC";
+    			break;
+    		case XYZ:
+    			select = " x,y,z ";
+    			orderby = " ORDER BY z ASC";
+    			break;
+    		case XZ:
+    			select = " x,z ";
+    			orderby = " ORDER BY z ASC";
+    			break;
+    		case XZT:
+    			select = " x,z,t ";
+    			orderby = " ORDER BY t ASC";
+    			break;
+    		case YT:
+    			select = " y,t ";
+    			orderby = " ORDER BY t ASC";
+    			break;
+    		case YZ:
+    			select = " y,z ";
+    			orderby = " ORDER BY z ASC";
+    			break;
+    		case YZT:
+    			select = " y,z,t ";
+    			orderby = " ORDER BY t ASC";
+    			break;
+    		case ZT:
+    			select = " z,t ";
+    			orderby = " ORDER BY t ASC";
+    			break;	
+    	}
+    	
+    	return query.replace("$DIMENSIONS", select).replace("$ORDERBY", orderby);
     }
 
 }

@@ -15,6 +15,7 @@ import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -27,12 +28,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.WindowConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
+import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
@@ -261,53 +264,119 @@ public class MainFrame extends JFrame {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Double value = null;
+			Double[] value = new Double[3];
 			switch (counter.getType()) {
 			case INPUT:
 				System.out.println("Input counter clicked");
-				InputDialog d = new InputDialog();
+				InputDialog d = new InputDialog(counter.getDimension());
 				Point p = _instance.getLocation();
 				p.translate((int)p.getX()/2, (int)p.getY()/2);
 				d.setLocation(p);
 				value = d.getUserValue();
 				
 				if (value == null) {
-					JOptionPane.showMessageDialog(_instance, "Counter data cannot be null or not numeric");
+					JOptionPane.showMessageDialog(_instance, "Canceled , no counter data added");
 					return;
 				}
 				break;
 			case STEP:
-				value = counter.getStepValue();
+				value[0] = counter.getStepValueX();
+				value[1] = counter.getStepValueY();
+				value[2] = counter.getStepValueZ();
 				System.out.println("Step counter clicked");
 				break;
 			default:
 				throw new RuntimeException("Unkown counter type :"+counter.getType());
 			}
-			counter = CounterApp.DBServices.addCounterData(counter.getId(), new Timestamp(Calendar.getInstance().getTimeInMillis()), value);
+			counter = CounterApp.DBServices.addCounterData(counter.getId(), new Timestamp(Calendar.getInstance().getTimeInMillis()), value[0], value[1], value[2]);
 		}
 	}
 	
 	class InputDialog extends JDialog {
 		private static final long serialVersionUID = -1L;
 		
-		private JTextField valueText = new JTextField();
+		private static final int ADD = 0;
+		private static final int CANCEL= 1;
 		
-		public InputDialog() {
+		private JTextField valueTextX = new JTextField("0");
+		private JTextField valueTextY = new JTextField("0");
+		private JTextField valueTextZ = new JTextField("0");
+		
+		private int action = CANCEL;
+		
+		public InputDialog(CounterDimension dim) {
 			super();
 			setTitle("Input a value");
 			setModal(true);
+			setResizable(false);
+			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			
-			add(valueText);
+			GridBagLayout layout = new GridBagLayout();
 			
-			setSize(200, 70);
+			layout.columnWidths = new int[] { 7,7,7 };
+			layout.rowHeights   = new int[] { 7, 7 };
+			
+			layout.columnWeights = new double[] { 0.33, 0.33, 0.33};
+			layout.rowWeights    = new double[] { 0.0, 1.0 };
+			setLayout(layout);
+
+			switch (dim) {
+			case D1:
+				add(valueTextX, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 10, 5, 10), 0, 0));
+				setSize(200, 100);
+
+				break;
+			case D2:
+				layout.columnWidths = new int[] { 7,7 };
+				layout.columnWeights = new double[] { 0.5, 0.5};
+				setLayout(layout);
+				add(valueTextX, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 10, 5, 2), 0, 0));
+				add(valueTextY, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 10), 0, 0));
+				setSize(250, 100);
+				break;
+			case D3:
+				add(valueTextX, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 10, 5, 2), 0, 0));
+				add(valueTextY, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 2), 0, 0));
+				add(valueTextZ, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 10), 0, 0));
+				setSize(300, 100);
+				break;
+			case TIME:
+				break;
+			}
+			JButton b1 = new JButton("Add");
+			JButton b2 = new JButton("Cancel");
+			
+			add(b1, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 10, 5, 2), 0, 0));
+			add(b2, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 10, 5, 10), 0, 0));
+			
+			b1.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					action = ADD;
+					dispose();
+				}
+			});
+			b2.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					action = CANCEL;
+					dispose();
+				}
+			});
 		}
 		
-		public Double getUserValue() {
+		public Double[] getUserValue() {
 			setVisible(true);
 			
-			Double ans = null;
+			if (action == CANCEL) {
+				return null;
+			}
+			
+			Double[] ans = new Double[3];
 			try {
-				ans = Double.parseDouble(valueText.getText());
+				ans[0] = Double.parseDouble(valueTextX.getText());
+				ans[1] = Double.parseDouble(valueTextY.getText());
+				ans[2] = Double.parseDouble(valueTextZ.getText());
 			} catch (Exception e) {
 			}
 			return ans;

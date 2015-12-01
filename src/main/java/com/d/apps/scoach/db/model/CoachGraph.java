@@ -17,7 +17,9 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.d.apps.scoach.Utilities.ChartType;
+import com.d.apps.scoach.Utilities.ChartPlotType;
+import com.d.apps.scoach.Utilities.CounterDimensionCombinations;
+import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
@@ -33,11 +35,11 @@ public class CoachGraph implements DBEntity {
     private Integer id;
 
 	@Getter @Setter
-	@Column(updatable=false)
+	@Column(updatable=false, nullable=false)
 	private String name;
 	
 	@Getter @Setter
-	@Column(updatable=true)
+	@Column(updatable=true, nullable=false)
 	private String title = "";
 	
 	@Getter @Setter
@@ -57,8 +59,16 @@ public class CoachGraph implements DBEntity {
 	private boolean showTooltips = false;
 
 	@Getter @Setter
-	@Column(updatable=true)
-	private ChartType type = ChartType.LINE;
+	@Column(updatable=true, nullable=false)
+	private ChartPlotType plotType = ChartPlotType.LINE;
+
+	@Getter @Setter
+	@Column(updatable=true, nullable=false)
+	private CounterDimensionCombinations xyAxisDataFetch = CounterDimensionCombinations.XT;
+
+	@Getter @Setter
+	@Column(updatable=true, nullable=false)
+	private GraphDimensions graphDimension = GraphDimensions.D2GRAPH;
 
 	@Getter @Setter
 	@ManyToOne(targetEntity=Coach.class)

@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
@@ -39,12 +40,24 @@ public class Counter implements DBEntity {
 	
 	@Getter @Setter
 	@Column(updatable=false)
-	private Double stepValue;
+	private Double stepValueX;
 	
+	@Getter @Setter
+	@Column(updatable=false)
+	private Double stepValueY;
+
+	@Getter @Setter
+	@Column(updatable=false)
+	private Double stepValueZ;
+
 	@Getter @Setter
 	@Column(updatable=false)
 	private CounterFunctionType type;
 	
+	@Getter @Setter
+	@Column(updatable=false)
+	private CounterDimension dimension;
+
 	@Getter @Setter
 	@ManyToOne(targetEntity=Profile.class)
 	@JoinColumn(nullable=false)

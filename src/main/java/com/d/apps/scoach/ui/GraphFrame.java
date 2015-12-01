@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities.ChartType;
+import com.d.apps.scoach.Utilities.ChartPlotType;
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
 import com.d.apps.scoach.db.model.CoachGraph;
@@ -42,7 +42,7 @@ public class GraphFrame extends JFrame {
 		super(graph.getTitle());
 		this.graph = graph;
 		
-		chart = createGraph(graph.getType());
+		chart = createGraph(graph.getPlotType());
 
 		ChartPanel chartPanel = new ChartPanel(chart, false);
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
@@ -65,12 +65,13 @@ public class GraphFrame extends JFrame {
 	    	XYSeries series = new XYSeries(counter.getName());
 	    	
 	    	List<Object[]> moredata = null; 
+	    	String dateFormat = "yyyy-MM-dd hh:mm:ss.SSS";
 	    	if (counter.getType() == CounterFunctionType.STEP) {
 	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataSummed(counter.getId(), sumType);
+	    		dateFormat = "yyyy-MM-dd";
 	    	} else {
-	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataFlat(counter.getId());
+		    	moredata = (List<Object[]>)CounterApp.DBServices.getCounterData(counter.getId(), graph.getXyAxisDataFetch());
 	    	}
-	    	
 	    	//INITIAL ZERO VALUE
 	    	if (moredata.size() == 1) {
 	    		Calendar cldr = Calendar.getInstance();
@@ -85,8 +86,8 @@ public class GraphFrame extends JFrame {
 	    	for (Object[] objects : moredata) {
 				try {
 				    series.add(
-				    		new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString()).getTime(),
-				    		Double.parseDouble(objects[1].toString()));
+				    		new SimpleDateFormat(dateFormat).parse(objects[1].toString()).getTime(),
+				    		Double.parseDouble(objects[0].toString()));
 				} catch (ParseException e) {
 					LOG.error(e.getMessage());
 				}
@@ -97,7 +98,7 @@ public class GraphFrame extends JFrame {
  	   	return dataset;
 	}
 	
-	private JFreeChart createGraph(ChartType type) {
+	private JFreeChart createGraph(ChartPlotType type) {
 		JFreeChart ans = null;
 		String title  = (graph.getTitle().equals("")) ? graph.getName() : graph.getTitle();
 		String xtitle = (graph.getXAxisTitle().equals("")) ? "Time - "+sumType.name() : graph.getXAxisTitle();	
