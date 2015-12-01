@@ -120,18 +120,6 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public Profile createCoach(int profileId, String name) {
-		Coach coach = new Coach();
-		coach.setName(name);
-		
-		Profile p = findProfile(profileId);
-		p.addCoach(coach);
-		
-    	return (Profile) updateProfile(p);
-	}
-
-
-	@Override
 	public Profile updateProfile(Profile p) {
 		return (Profile) updateEntity(p);
 	}
@@ -141,23 +129,6 @@ public class DBServicesImpl implements DBServices {
 		return (Coach)updateEntity(instance);
 	}
 	
-	@Override
-	public Profile enableCoach(String name, Profile p) {
-		Coach ci = new Coach();
-		ci.setName(p.getFirstName());
-		
-		p.addCoach(ci);
-		updateEntity(p);
-		return p;
-	}
-
-	@Override
-	public Profile disableCoach(String name, Profile p) {
-//		deleteEntity(p.removeCoach(name), Coach.class);
-		updateEntity(p);
-		return p;
-	}
-
 	@Override
 	public Coach findCoachInstance(int cid) {
 		Coach ans = null;
@@ -216,24 +187,6 @@ public class DBServicesImpl implements DBServices {
 		ans = entityManager.createNativeQuery(query).getResultList();
 		entityManager.close();
 		return ans;
-	}
-
-	@Override
-	public CoachGraph findCoachGraph(int gid) {
-		CoachGraph ans = null;
-		
-		EntityManager entityManager = factory.createEntityManager();
-		ans = entityManager.find(CoachGraph.class, gid);
-		return ans; 
-	}
-	
-	@Override
-	public Counter findCounter(int cid) {
-		Counter  ans = null;
-		
-		EntityManager entityManager = factory.createEntityManager();
-		ans = entityManager.find(Counter.class, cid);
-		return ans; 
 	}
 
 	@Override

@@ -25,14 +25,9 @@ public interface DBServices {
     public void deactivateAllProfiles();
     public Profile getActiveProfile();
     
-    public Profile createCoach(int profileId, String name);
     public Coach updateCoach(Coach instance);
-    public Profile enableCoach(String name, Profile p);
-    public Profile disableCoach(String name, Profile p);
     
     public Coach findCoachInstance(int cid);
-    public CoachGraph findCoachGraph(int gid);
-    public Counter findCounter(int cid);
     
     public Counter addCounterData(int counterId, Timestamp created, Double x, Double y, Double z);
     
