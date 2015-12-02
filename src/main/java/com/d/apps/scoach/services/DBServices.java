@@ -7,6 +7,7 @@ import java.util.List;
 import com.d.apps.scoach.Utilities.ChartPlotType;
 import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
 import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.CoachGraph;
@@ -35,6 +36,8 @@ public interface DBServices {
     public List<Object[]> getCounterData(int cid, CounterDimension... datafetch);
     
     public void deleteGraph(int id);
-    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, ChartPlotType plotType, CounterDimension... dataFetch);
+    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, 
+    			GraphDimensions graphDimension, ChartPlotType plotType, boolean hasHigherFunctions, 
+    			CounterDimension[] dataFetch, GraphAxisHigherFunctions[] hfuncs);
     public CoachGraph updateGraph (CoachGraph graph);
 }

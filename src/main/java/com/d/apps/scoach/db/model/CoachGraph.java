@@ -64,6 +64,10 @@ public class CoachGraph implements DBEntity {
 	private ChartPlotType plotType = ChartPlotType.LINE;
 
 	@Getter @Setter
+	@Column(updatable=true)
+	private boolean higherFunctions= false;
+
+	@Getter @Setter
 	@Column(updatable=true, nullable=false)
 	private GraphAxisHigherFunctions graphXHFunc = GraphAxisHigherFunctions.NONE; 
 

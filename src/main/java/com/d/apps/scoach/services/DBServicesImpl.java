@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.Utilities.ChartPlotType;
 import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
 import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.CoachGraph;
@@ -158,7 +159,7 @@ public class DBServicesImpl implements DBServices {
 		return ans;
 	}
 	
-	private static final String generalSumQuery = "select sum(x), CAST(t as date)  from counterdata where counter_id = $ID group by CAST(t as date)";
+	private static final String generalSumQuery = "select CAST(t as date), sum(x)  from counterdata where counter_id = $ID group by CAST(t as date)";
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getCounterDataSummed(int cid, DataSumType type) {
@@ -190,12 +191,14 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, ChartPlotType plotType, CounterDimension... dataFetch) {
+    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, 
+			GraphDimensions graphDimension, ChartPlotType plotType, boolean hasHigherFunctions, 
+			CounterDimension[] dataFetch, GraphAxisHigherFunctions[] hfuncs) {
 		CoachGraph graph = new CoachGraph();
 		graph.setName(graphName);
 		graph.setGraphDimension(graphDimension);
 		graph.setPlotType(plotType);
-		
+		graph.setHigherFunctions(hasHigherFunctions);
 		switch (graphDimension) {
 			case D2GRAPH:
 				graph.setXAxisDataFetch(dataFetch[0]);
@@ -210,7 +213,9 @@ public class DBServicesImpl implements DBServices {
 			default:
 				throw new RuntimeException("Cannot create graph without a value for at least 2 axis, given :"+dataFetch.length);
 		}
-
+		graph.setGraphXHFunc(hfuncs[0]);
+		graph.setGraphYHFunc(hfuncs[1]);
+		graph.setGraphZHFunc(hfuncs[2]);
 		EntityManager entityManager = factory.createEntityManager();
 		for (Integer cid : counterIds) {
 			Counter cnt = entityManager.find(Counter.class, cid);

@@ -73,12 +73,12 @@ public class GraphFrame extends JFrame {
 	    	List<Object[]> moredata = null; 
 	    	String dateFormat = "yyyy-MM-dd hh:mm:ss.SSS";
 	    	
-//	    	if (counter.getType() == CounterFunctionType.STEP) {
-//	    		dateFormat = "yyyy-MM-dd";
-//	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataSummed(counter.getId(), sumType);
-//	    	} else {
+	    	if (graph.isHigherFunctions()) {
+	    		dateFormat = "yyyy-MM-dd";
+	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataSummed(counter.getId(), sumType);
+	    	} else {
     			moredata = (List<Object[]>)CounterApp.DBServices.getCounterData(counter.getId(), graph.getXAxisDataFetch(), graph.getYAxisDataFetch());	
-//	    	}
+	    	}
 	    	//INITIAL ZERO VALUE
 	    	if (moredata.size() == 1) {
 	    		Calendar cldr = Calendar.getInstance();
