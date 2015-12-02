@@ -24,8 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities.ChartPlotType;
+import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
 
@@ -57,21 +59,26 @@ public class GraphFrame extends JFrame {
 
 		setVisible(true);
 	}
-	
+
+	//2D GRAPH DATA
 	private XYDataset createXYDataset() {
 		XYSeriesCollection dataset = new XYSeriesCollection();
-
+		if (graph.getGraphDimension() == GraphDimensions.D3GRAPH) {
+			throw new RuntimeException("3d Graphs UNIMPLEMENTED!");
+		}
+		
 	    for (Counter counter : graph.getCounters()) {
 	    	XYSeries series = new XYSeries(counter.getName());
 	    	
 	    	List<Object[]> moredata = null; 
 	    	String dateFormat = "yyyy-MM-dd hh:mm:ss.SSS";
-	    	if (counter.getType() == CounterFunctionType.STEP) {
-	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataSummed(counter.getId(), sumType);
-	    		dateFormat = "yyyy-MM-dd";
-	    	} else {
-		    	moredata = (List<Object[]>)CounterApp.DBServices.getCounterData(counter.getId(), graph.getXyAxisDataFetch());
-	    	}
+	    	
+//	    	if (counter.getType() == CounterFunctionType.STEP) {
+//	    		dateFormat = "yyyy-MM-dd";
+//	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataSummed(counter.getId(), sumType);
+//	    	} else {
+    			moredata = (List<Object[]>)CounterApp.DBServices.getCounterData(counter.getId(), graph.getXAxisDataFetch(), graph.getYAxisDataFetch());	
+//	    	}
 	    	//INITIAL ZERO VALUE
 	    	if (moredata.size() == 1) {
 	    		Calendar cldr = Calendar.getInstance();
@@ -85,9 +92,14 @@ public class GraphFrame extends JFrame {
 	    	}
 	    	for (Object[] objects : moredata) {
 				try {
-				    series.add(
-				    		new SimpleDateFormat(dateFormat).parse(objects[1].toString()).getTime(),
-				    		Double.parseDouble(objects[0].toString()));
+					Double x = (graph.getXAxisDataFetch() == CounterDimension.T) ? 
+							new SimpleDateFormat(dateFormat).parse(objects[0].toString()).getTime() : 
+							Double.parseDouble(objects[0].toString());
+					Double y = (graph.getYAxisDataFetch() == CounterDimension.T) ? 
+							new SimpleDateFormat(dateFormat).parse(objects[1].toString()).getTime() : 
+							Double.parseDouble(objects[1].toString());
+					
+				    series.add(x,y);
 				} catch (ParseException e) {
 					LOG.error(e.getMessage());
 				}
@@ -124,10 +136,16 @@ public class GraphFrame extends JFrame {
 		}
 
 		XYPlot plot = ans.getXYPlot();
-		DateAxis axis2 = new DateAxis(xtitle);
-		axis2.setTickUnit(new DateTickUnit(DateTickUnitType.DAY, 1, new SimpleDateFormat("dd-MM-yy")));
-		axis2.setVerticalTickLabels(true);
-		plot.setDomainAxis(axis2);
+		if (graph.getXAxisDataFetch() == CounterDimension.T) {
+			DateAxis axis2 = new DateAxis(xtitle);
+			axis2.setVerticalTickLabels(true);
+			plot.setDomainAxis(axis2);
+		}
+		if (graph.getYAxisDataFetch() == CounterDimension.T) {
+			DateAxis axis2 = new DateAxis(xtitle);
+			axis2.setVerticalTickLabels(true);
+			plot.setRangeAxis(axis2);
+		}
 		plot.setDomainCrosshairVisible(true);
         plot.setRangeCrosshairVisible(true);
 		

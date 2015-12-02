@@ -18,8 +18,8 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.CounterFunctionType;
+import com.d.apps.scoach.Utilities.CounterSize;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
 @Entity 
@@ -56,7 +56,7 @@ public class Counter implements DBEntity {
 	
 	@Getter @Setter
 	@Column(updatable=false)
-	private CounterDimension dimension;
+	private CounterSize dimension;
 
 	@Getter @Setter
 	@ManyToOne(targetEntity=Profile.class)

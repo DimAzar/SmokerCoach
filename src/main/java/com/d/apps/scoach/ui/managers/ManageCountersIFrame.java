@@ -29,6 +29,7 @@ import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
 import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.CounterFunctionType;
+import com.d.apps.scoach.Utilities.CounterSize;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
 import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
@@ -138,7 +139,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 		private void initModel() {
 
 			DefaultComboBoxModel<String> dModel = new DefaultComboBoxModel<String>();
-			for (CounterDimension  type : CounterDimension.values()) {
+			for (CounterSize type : CounterSize.values()) {
 				dModel.addElement(type.getDescription());
 			}
 			dimensionsCombo.setModel(dModel);
@@ -148,7 +149,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 					toggleOnDimension();
 				}
 			});
-			dimensionsCombo.setSelectedItem(CounterDimension.D1);
+			dimensionsCombo.setSelectedItem(CounterDimension.X);
 			toggleOnDimension();
 			DefaultComboBoxModel<String> aModel = new DefaultComboBoxModel<String>();
 			for (CounterFunctionType  type : CounterFunctionType.values()) {
@@ -179,7 +180,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 					instance.setName(nameField.getText());
 					
 					instance.setType(CounterFunctionType.getId(typeCombo.getSelectedItem().toString()));
-					instance.setDimension(CounterDimension.getId(dimensionsCombo.getSelectedItem().toString()));
+					instance.setDimension(CounterSize.getId(dimensionsCombo.getSelectedItem().toString()));
 
 					instance.setStepValueX(Double.parseDouble(stepValue1d.getText()));
 					instance.setStepValueY(Double.parseDouble(stepValue2d.getText()));
@@ -200,12 +201,12 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 		}
 		
 		private void toggleOnDimension() {
-			if (dimensionsCombo.getSelectedItem() == CounterDimension.D1.getDescription()) {
+			if (dimensionsCombo.getSelectedItem() == CounterSize.D1.getDescription()) {
 				stepValue1d.setEnabled(true);
 				stepValue2d.setEnabled(false);
 				stepValue3d.setEnabled(false);
 			} else 					
-			if (dimensionsCombo.getSelectedItem() == CounterDimension.D2.getDescription()) {
+			if (dimensionsCombo.getSelectedItem() == CounterSize.D2.getDescription()) {
 				stepValue1d.setEnabled(true);
 				stepValue2d.setEnabled(true);
 				stepValue3d.setEnabled(false);

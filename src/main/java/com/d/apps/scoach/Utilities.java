@@ -90,6 +90,23 @@ public class Utilities {
 	    }
 	}
 	
+	public enum HigherFunctionTypes { DATE, NUMERIC, COMMON }
+	public enum GraphAxisHigherFunctions {
+		SUM(HigherFunctionTypes.NUMERIC), 
+		HOUR(HigherFunctionTypes.DATE), 
+		DAY(HigherFunctionTypes.DATE), 
+		MONTH(HigherFunctionTypes.DATE), 
+		YEAR(HigherFunctionTypes.DATE),
+		NONE(HigherFunctionTypes.COMMON);
+
+	    @Getter
+	    private final HigherFunctionTypes type;
+
+	    private GraphAxisHigherFunctions(HigherFunctionTypes type) {	
+	    	this.type = type;
+    	}
+	}
+
 	public enum DataSumType {
 	    DAY("per Day"), 
 	    MONTH("per Month");
@@ -102,11 +119,12 @@ public class Utilities {
     	}
 	}	
 
+	
 	public enum CounterDimension {
-	    D1("1 Dimension"), 
-	    D2("2 Dimensions"),
-	    D3("3 Dimensions"),
-	    TIME("Time dimension");
+	    X("X"), 
+	    Y("Y"),
+	    Z("Z"),
+	    T("Time");
 
 	    @Getter
 	    private final String description;
@@ -117,6 +135,28 @@ public class Utilities {
 	    
 	    public static CounterDimension getId(String descr) {
 	        for (CounterDimension func : CounterDimension.values()) {
+	            if (func.getDescription().equals(descr)) {
+	                return func;
+	            }
+	        }
+	        return null;
+	    }
+	}	
+
+	public enum CounterSize {
+	    D1("Single"), 
+	    D2("Double"),
+	    D3("Triple");
+
+	    @Getter
+	    private final String description;
+	    
+	    private CounterSize(String description) {	
+	    	this.description = description;
+    	}
+	    
+	    public static CounterSize getId(String descr) {
+	        for (CounterSize func : CounterSize.values()) {
 	            if (func.getDescription().equals(descr)) {
 	                return func;
 	            }
@@ -168,7 +208,7 @@ public class Utilities {
 
 	}	
 
-	public enum CounterDimensionCombinations {
+/*	public enum CounterDimendsionCombinations {
 	    XT("X and Time"), 
 	    XY("X and Y"),
 	    XZ("X and Z"),
@@ -198,5 +238,5 @@ public class Utilities {
 	        }
 	        return null;
 	    }
-	}	
+	}*/	
 }

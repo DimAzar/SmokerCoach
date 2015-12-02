@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimensionCombinations;
+import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.DataSumType;
 import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.Coach;
@@ -177,7 +177,7 @@ public class DBServicesImpl implements DBServices {
 	private static final String generalQuery = "select $DIMENSIONS from counterdata where counter_id = $CID $ORDERBY";
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Object[]> getCounterData(int cid, CounterDimensionCombinations dataPart) {
+	public List<Object[]> getCounterData(int cid, CounterDimension... dataPart) {
 		List<Object[]> ans = null;
 		EntityManager entityManager = factory.createEntityManager();
 		String query = generalQuery; 
@@ -190,12 +190,27 @@ public class DBServicesImpl implements DBServices {
 	}
 
 	@Override
-	public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, CounterDimensionCombinations xyAxisDataFetch, ChartPlotType plotType) {
+	public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, ChartPlotType plotType, CounterDimension... dataFetch) {
 		CoachGraph graph = new CoachGraph();
 		graph.setName(graphName);
 		graph.setGraphDimension(graphDimension);
-		graph.setXyAxisDataFetch(xyAxisDataFetch);
 		graph.setPlotType(plotType);
+		
+		switch (graphDimension) {
+			case D2GRAPH:
+				graph.setXAxisDataFetch(dataFetch[0]);
+				graph.setYAxisDataFetch(dataFetch[1]);
+				graph.setZAxisDataFetch(null);
+				break;
+			case D3GRAPH:
+				graph.setXAxisDataFetch(dataFetch[0]);
+				graph.setYAxisDataFetch(dataFetch[1]);
+				graph.setZAxisDataFetch(dataFetch[2]);
+				break;
+			default:
+				throw new RuntimeException("Cannot create graph without a value for at least 2 axis, given :"+dataFetch.length);
+		}
+
 		EntityManager entityManager = factory.createEntityManager();
 		for (Integer cid : counterIds) {
 			Counter cnt = entityManager.find(Counter.class, cid);
@@ -265,56 +280,28 @@ public class DBServicesImpl implements DBServices {
     	return e;
     }
     
-    private String createSelectAndOrderPart(String query, CounterDimensionCombinations fetchData) {
-    	String select = "";
-    	String orderby = "";
-    	switch (fetchData) {
-    		case FULL:
-    			select = " x,y,z,t ";
-    			orderby = " ORDER BY t ASC";
-    			break;
-    		case XT:
-    			select = " x,t ";
-    			orderby = " ORDER BY t ASC";
-    			break;
-    		case XY:
-    			select = " x,y ";
-    			orderby = " ORDER BY y ASC";
-    			break;
-    		case XYT:
-    			select = " x,y,t ";
-    			orderby = " ORDER BY t ASC";
-    			break;
-    		case XYZ:
-    			select = " x,y,z ";
-    			orderby = " ORDER BY z ASC";
-    			break;
-    		case XZ:
-    			select = " x,z ";
-    			orderby = " ORDER BY z ASC";
-    			break;
-    		case XZT:
-    			select = " x,z,t ";
-    			orderby = " ORDER BY t ASC";
-    			break;
-    		case YT:
-    			select = " y,t ";
-    			orderby = " ORDER BY t ASC";
-    			break;
-    		case YZ:
-    			select = " y,z ";
-    			orderby = " ORDER BY z ASC";
-    			break;
-    		case YZT:
-    			select = " y,z,t ";
-    			orderby = " ORDER BY t ASC";
-    			break;
-    		case ZT:
-    			select = " z,t ";
-    			orderby = " ORDER BY t ASC";
-    			break;	
-    	}
+    private String createSelectAndOrderPart(String query, CounterDimension... fetchData) {
+    	StringBuffer select = new StringBuffer();
+    	StringBuffer orderby = new StringBuffer();
     	
+    	if (fetchData.length > 4 || fetchData.length < 1) {
+    		throw new RuntimeException("Graph dimension wrong , cannot crete select statement :" +fetchData.length);
+    	}
+    	for (CounterDimension counterDimension : fetchData) {
+    		if (counterDimension == CounterDimension.X) {
+    			select.append("x,");
+    		} else 
+    		if (counterDimension == CounterDimension.Y) {
+    			select.append("y,");
+    		} else
+    		if (counterDimension == CounterDimension.Z) {
+    			select.append("z,");
+    		} else {
+    			select.append("t,");
+    		}
+		}
+		orderby.append("ORDER BY t ASC"); 
+		select.replace(select.length()-1, select.length(), " ");
     	return query.replace("$DIMENSIONS", select).replace("$ORDERBY", orderby);
     }
 

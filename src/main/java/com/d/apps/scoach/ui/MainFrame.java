@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.Utilities.CounterDimension;
+import com.d.apps.scoach.Utilities.CounterSize;
 import com.d.apps.scoach.db.model.Coach;
 import com.d.apps.scoach.db.model.Counter;
 import com.d.apps.scoach.db.model.Profile;
@@ -304,7 +304,7 @@ public class MainFrame extends JFrame {
 		
 		private int action = CANCEL;
 		
-		public InputDialog(CounterDimension dim) {
+		public InputDialog(CounterSize dim) {
 			super();
 			setTitle("Input a value");
 			setModal(true);
@@ -339,8 +339,6 @@ public class MainFrame extends JFrame {
 				add(valueTextY, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 2), 0, 0));
 				add(valueTextZ, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 10), 0, 0));
 				setSize(300, 100);
-				break;
-			case TIME:
 				break;
 			}
 			JButton b1 = new JButton("Add");

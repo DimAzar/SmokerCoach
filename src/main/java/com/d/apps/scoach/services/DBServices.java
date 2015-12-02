@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimensionCombinations;
+import com.d.apps.scoach.Utilities.CounterDimension;
 import com.d.apps.scoach.Utilities.DataSumType;
 import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.Coach;
@@ -32,9 +32,9 @@ public interface DBServices {
     public Counter addCounterData(int counterId, Timestamp created, Double x, Double y, Double z);
     
     public List<Object[]> getCounterDataSummed(int cid, DataSumType type);
-    public List<Object[]> getCounterData(int cid, CounterDimensionCombinations dataPart);
+    public List<Object[]> getCounterData(int cid, CounterDimension... datafetch);
     
     public void deleteGraph(int id);
-    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, CounterDimensionCombinations xyAxisDataFetch, ChartPlotType plotType);
+    public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, GraphDimensions graphDimension, ChartPlotType plotType, CounterDimension... dataFetch);
     public CoachGraph updateGraph (CoachGraph graph);
 }

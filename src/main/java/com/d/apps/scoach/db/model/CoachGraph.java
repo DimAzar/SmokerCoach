@@ -18,7 +18,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimensionCombinations;
+import com.d.apps.scoach.Utilities.CounterDimension;
+import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
 import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.base.DBEntity;
 
@@ -64,11 +65,31 @@ public class CoachGraph implements DBEntity {
 
 	@Getter @Setter
 	@Column(updatable=true, nullable=false)
-	private CounterDimensionCombinations xyAxisDataFetch = CounterDimensionCombinations.XT;
+	private GraphAxisHigherFunctions graphXHFunc = GraphAxisHigherFunctions.NONE; 
+
+	@Getter @Setter
+	@Column(updatable=true, nullable=false)
+	private GraphAxisHigherFunctions graphYHFunc = GraphAxisHigherFunctions.NONE; 
+
+	@Getter @Setter
+	@Column(updatable=true, nullable=false)
+	private GraphAxisHigherFunctions graphZHFunc = GraphAxisHigherFunctions.NONE; 
 
 	@Getter @Setter
 	@Column(updatable=true, nullable=false)
 	private GraphDimensions graphDimension = GraphDimensions.D2GRAPH;
+
+	@Getter @Setter
+	@Column(updatable=true, nullable=false)
+	private CounterDimension xAxisDataFetch = null;
+
+	@Getter @Setter
+	@Column(updatable=true, nullable=false)
+	private CounterDimension yAxisDataFetch = null;
+
+	@Getter @Setter
+	@Column(updatable=true, nullable=true)
+	private CounterDimension zAxisDataFetch = null;
 
 	@Getter @Setter
 	@ManyToOne(targetEntity=Coach.class)
