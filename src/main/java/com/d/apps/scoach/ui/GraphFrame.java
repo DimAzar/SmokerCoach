@@ -11,8 +11,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.axis.DateTickUnit;
-import org.jfree.chart.axis.DateTickUnitType;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
@@ -25,8 +23,8 @@ import org.slf4j.LoggerFactory;
 import com.d.apps.scoach.CounterApp;
 import com.d.apps.scoach.Utilities.ChartPlotType;
 import com.d.apps.scoach.Utilities.CounterDimension;
-import com.d.apps.scoach.Utilities.CounterFunctionType;
 import com.d.apps.scoach.Utilities.DataSumType;
+import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
 import com.d.apps.scoach.Utilities.GraphDimensions;
 import com.d.apps.scoach.db.model.CoachGraph;
 import com.d.apps.scoach.db.model.Counter;
@@ -34,6 +32,8 @@ import com.d.apps.scoach.db.model.Counter;
 public class GraphFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(GraphFrame.class);
+	private static final String DATEFORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+
 	
 	private CoachGraph graph;
 	private DataSumType sumType =  DataSumType.DAY;
@@ -71,14 +71,19 @@ public class GraphFrame extends JFrame {
 	    	XYSeries series = new XYSeries(counter.getName());
 	    	
 	    	List<Object[]> moredata = null; 
-	    	String dateFormat = "yyyy-MM-dd hh:mm:ss.SSS";
+
+	    	CounterDimension[] dataPart = new CounterDimension[3];
+	    	GraphAxisHigherFunctions[] hfuncs = new GraphAxisHigherFunctions[3];
 	    	
-	    	if (graph.isHigherFunctions()) {
-	    		dateFormat = "yyyy-MM-dd";
-	    		moredata = (List<Object[]>)CounterApp.DBServices.getCounterDataSummed(counter.getId(), sumType);
-	    	} else {
-    			moredata = (List<Object[]>)CounterApp.DBServices.getCounterData(counter.getId(), graph.getXAxisDataFetch(), graph.getYAxisDataFetch());	
-	    	}
+	    	dataPart[0] = graph.getXAxisDataFetch();
+	    	dataPart[1] = graph.getYAxisDataFetch();
+	    	dataPart[2] = graph.getZAxisDataFetch();
+	    	
+	    	hfuncs[0] = graph.getGraphXHFunc();
+	    	hfuncs[1] = graph.getGraphYHFunc();
+	    	hfuncs[2] = graph.getGraphZHFunc();
+	    	
+   			moredata = (List<Object[]>)CounterApp.DBServices.getCounterData(counter.getId(), dataPart, hfuncs);	
 	    	//INITIAL ZERO VALUE
 	    	if (moredata.size() == 1) {
 	    		Calendar cldr = Calendar.getInstance();
@@ -93,10 +98,10 @@ public class GraphFrame extends JFrame {
 	    	for (Object[] objects : moredata) {
 				try {
 					Double x = (graph.getXAxisDataFetch() == CounterDimension.T) ? 
-							new SimpleDateFormat(dateFormat).parse(objects[0].toString()).getTime() : 
+							new SimpleDateFormat(DATEFORMAT).parse(objects[0].toString()).getTime() : 
 							Double.parseDouble(objects[0].toString());
 					Double y = (graph.getYAxisDataFetch() == CounterDimension.T) ? 
-							new SimpleDateFormat(dateFormat).parse(objects[1].toString()).getTime() : 
+							new SimpleDateFormat(DATEFORMAT).parse(objects[1].toString()).getTime() : 
 							Double.parseDouble(objects[1].toString());
 					
 				    series.add(x,y);

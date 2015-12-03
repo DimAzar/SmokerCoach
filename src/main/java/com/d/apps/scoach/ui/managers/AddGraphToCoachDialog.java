@@ -113,9 +113,11 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 			plotTypeCombo.setSelectedItem(ChartPlotType.LINE.getDescription());
 			graphDimensionCombo.setSelectedItem(GraphDimensions.D2GRAPH.getDescription());
 		}
+		toggleHFuncBoxes(false);
 		canHaveHigherFunctions();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void actionPerformed(ActionEvent e) {
 		JComboBox<String> source = (JComboBox<String>)e.getSource();
 		CounterDimension dim = CounterDimension.getId(source.getSelectedItem().toString());
@@ -175,8 +177,6 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 			addButt.setActionCommand(ACMND_CREATEGRAPH);
 			addButt.setText("Create graph");
 		}
-		toggleHFuncBoxes(false);
-
 		setModal(true);
 		setTitle("Add Graph to Coach");
 		setName(Utilities.NAME_ADDCOUNTER);
@@ -297,6 +297,7 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 			dlm3.addElement(c.getDescription());
 		}
 		graphDimensionCombo.setModel(dlm3);
+		
 		graphDimensionCombo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -391,6 +392,11 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 					editingGraph.setXAxisDataFetch(CounterDimension.getId(counterXDimensionCombo.getSelectedItem().toString()));
 					editingGraph.setYAxisDataFetch(CounterDimension.getId(counterYDimensionCombo.getSelectedItem().toString()));
 					editingGraph.setZAxisDataFetch(CounterDimension.getId(counterZDimensionCombo.getSelectedItem().toString()));
+
+					editingGraph.setGraphXHFunc(GraphAxisHigherFunctions.valueOf(counterXHFuncCombo.getSelectedItem().toString()));
+					editingGraph.setGraphYHFunc(GraphAxisHigherFunctions.valueOf(counterYHFuncCombo.getSelectedItem().toString()));
+					editingGraph.setGraphZHFunc(GraphAxisHigherFunctions.valueOf(counterZHFuncCombo.getSelectedItem().toString()));
+					
 					updateGraphCounters();
 					CounterApp.DBServices.updateGraph (editingGraph);
 					JOptionPane.showMessageDialog(null, "Graph updated");
@@ -459,6 +465,7 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 		if (graphDimensionCombo.getSelectedItem().toString().equals(GraphDimensions.D2GRAPH.getDescription())) {
 			arr[0] = CounterDimension.getId(counterXDimensionCombo.getSelectedItem().toString());
 			arr[1] = CounterDimension.getId(counterYDimensionCombo.getSelectedItem().toString());
+			arr[2] = CounterDimension.NONE;
 		} else {
 			arr[0] = CounterDimension.getId(counterXDimensionCombo.getSelectedItem().toString());
 			arr[1] = CounterDimension.getId(counterYDimensionCombo.getSelectedItem().toString());
@@ -469,6 +476,10 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 			arr2[0] = GraphAxisHigherFunctions.valueOf(counterXHFuncCombo.getSelectedItem().toString());
 			arr2[1] = GraphAxisHigherFunctions.valueOf(counterYHFuncCombo.getSelectedItem().toString());
 			arr2[2] = GraphAxisHigherFunctions.valueOf(counterZHFuncCombo.getSelectedItem().toString());
+		} else {
+			arr2[0] = GraphAxisHigherFunctions.NONE;
+			arr2[1] = GraphAxisHigherFunctions.NONE;
+			arr2[2] = GraphAxisHigherFunctions.NONE;
 		}
 		CounterApp.DBServices.addGraph (
 								coach.getId(), 
@@ -476,7 +487,6 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 								counterIds,
 								GraphDimensions.getId(graphDimensionCombo.getSelectedItem().toString()),
 								ChartPlotType.getId(plotTypeCombo.getSelectedItem().toString()),
-								higherFuncBox.isSelected(),
 								arr,
 								arr2
 								);

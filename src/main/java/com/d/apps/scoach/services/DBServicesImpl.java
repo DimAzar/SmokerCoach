@@ -26,7 +26,14 @@ import com.d.apps.scoach.db.model.base.DBEntity;
 public class DBServicesImpl implements DBServices {
 	private static final String PERSISTENCE_UNIT = "CounterApp";
 	private static final Logger LOG = LoggerFactory.getLogger(DBServicesImpl.class);
-	
+
+	private static final String dateformatFULL = "yyyy-mm-dd hh24:MI:SS.FF";
+	private static final String dateformatMINUTE = "yyyy-mm-dd hh24:MI\":00.00\"";
+	private static final String dateformatHOUR = "yyyy-mm-dd hh24\":00:00.00\"";
+	private static final String dateformatDAY = "yyyy-mm-dd\" 00:00:00.00\"";
+	private static final String dateformatMONTH = "yyyy-mm\"-01 00:00:00.00\"";
+	private static final String dateformatYEAR = "yyyy\"-01-01 00:00:00.00\"";
+
 	private EntityManagerFactory factory ;
 
 	public DBServicesImpl() {
@@ -159,32 +166,32 @@ public class DBServicesImpl implements DBServices {
 		return ans;
 	}
 	
-	private static final String generalSumQuery = "select CAST(t as date), sum(x)  from counterdata where counter_id = $ID group by CAST(t as date)";
+	private static final String generalhfUNCQuery = "select SUM(X), to_char(t, '$DATEFORMAT') from counterdata group by to_char(t, '$DATEFORMAT')";
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getCounterDataSummed(int cid, DataSumType type) {
 		List<Object[]> ans = null;
 		EntityManager entityManager = factory.createEntityManager();
-		String query = generalSumQuery; 
+		String query = generalhfUNCQuery; 
 		
 		query = query.replace("$ID", ""+cid);
-		query = query.replace("$BREAK", type.name());
-
+//		query = query.replace("$DATEFORMAT", dateformat);
+		
 		ans = entityManager.createNativeQuery(query).getResultList();
 		entityManager.close();
 		return ans;
 	}
 
-	private static final String generalQuery = "select $DIMENSIONS from counterdata where counter_id = $CID $ORDERBY";
+	private static final String generalQuery = "select $DIMENSIONS from counterdata where counter_id = $CID $GROUPBY $ORDERBY";
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Object[]> getCounterData(int cid, CounterDimension... dataPart) {
+	public List<Object[]> getCounterData(int cid, CounterDimension[] dataPart, GraphAxisHigherFunctions[] hfuncs) {
 		List<Object[]> ans = null;
 		EntityManager entityManager = factory.createEntityManager();
 		String query = generalQuery; 
 		
 		query = query.replace("$CID", ""+cid);
-		query = createSelectAndOrderPart(query, dataPart);
+		query = createSelectAndOrderPart(query, dataPart, hfuncs);
 		ans = entityManager.createNativeQuery(query).getResultList();
 		entityManager.close();
 		return ans;
@@ -192,30 +199,18 @@ public class DBServicesImpl implements DBServices {
 
 	@Override
     public Coach addGraph (int coachId, String graphName, ArrayList<Integer> counterIds, 
-			GraphDimensions graphDimension, ChartPlotType plotType, boolean hasHigherFunctions, 
-			CounterDimension[] dataFetch, GraphAxisHigherFunctions[] hfuncs) {
+			GraphDimensions graphDimension, ChartPlotType plotType, CounterDimension[] dataFetch, GraphAxisHigherFunctions[] hfuncs) {
 		CoachGraph graph = new CoachGraph();
 		graph.setName(graphName);
 		graph.setGraphDimension(graphDimension);
 		graph.setPlotType(plotType);
-		graph.setHigherFunctions(hasHigherFunctions);
-		switch (graphDimension) {
-			case D2GRAPH:
-				graph.setXAxisDataFetch(dataFetch[0]);
-				graph.setYAxisDataFetch(dataFetch[1]);
-				graph.setZAxisDataFetch(null);
-				break;
-			case D3GRAPH:
-				graph.setXAxisDataFetch(dataFetch[0]);
-				graph.setYAxisDataFetch(dataFetch[1]);
-				graph.setZAxisDataFetch(dataFetch[2]);
-				break;
-			default:
-				throw new RuntimeException("Cannot create graph without a value for at least 2 axis, given :"+dataFetch.length);
-		}
+		graph.setXAxisDataFetch(dataFetch[0]);
+		graph.setYAxisDataFetch(dataFetch[1]);
+		graph.setZAxisDataFetch(dataFetch[2]);
 		graph.setGraphXHFunc(hfuncs[0]);
 		graph.setGraphYHFunc(hfuncs[1]);
 		graph.setGraphZHFunc(hfuncs[2]);
+		
 		EntityManager entityManager = factory.createEntityManager();
 		for (Integer cid : counterIds) {
 			Counter cnt = entityManager.find(Counter.class, cid);
@@ -285,29 +280,54 @@ public class DBServicesImpl implements DBServices {
     	return e;
     }
     
-    private String createSelectAndOrderPart(String query, CounterDimension... fetchData) {
+    private String createSelectAndOrderPart(String query, CounterDimension[] fetchData, GraphAxisHigherFunctions[] hfuncs) {
     	StringBuffer select = new StringBuffer();
-    	StringBuffer orderby = new StringBuffer();
+    	String orderby = "";
+    	String groupBy = "";
     	
-    	if (fetchData.length > 4 || fetchData.length < 1) {
-    		throw new RuntimeException("Graph dimension wrong , cannot crete select statement :" +fetchData.length);
-    	}
-    	for (CounterDimension counterDimension : fetchData) {
-    		if (counterDimension == CounterDimension.X) {
-    			select.append("x,");
-    		} else 
-    		if (counterDimension == CounterDimension.Y) {
-    			select.append("y,");
-    		} else
-    		if (counterDimension == CounterDimension.Z) {
-    			select.append("z,");
-    		} else {
-    			select.append("t,");
-    		}
-		}
-		orderby.append("ORDER BY t ASC"); 
-		select.replace(select.length()-1, select.length(), " ");
-    	return query.replace("$DIMENSIONS", select).replace("$ORDERBY", orderby);
-    }
+    	for (int i = 0; i < hfuncs.length; i++) {
+    		CounterDimension dim = fetchData[i];
+    		GraphAxisHigherFunctions hfunc = hfuncs[i];
 
+    		if (dim == CounterDimension.NONE) {
+    			continue;
+    		}
+    		
+    		if (hfunc == GraphAxisHigherFunctions.NONE) {
+        		select.append(dim.name()).append(",");
+    		} else {
+    			if (dim == CounterDimension.T) {
+    				String dateformat = "";
+    				switch (hfunc) {
+						case HOUR:
+							dateformat = dateformatHOUR;
+							break;
+						case DAY:
+							dateformat = dateformatDAY;
+							break;
+						case MONTH:
+							dateformat = dateformatMONTH;
+							break;
+						case YEAR:
+							dateformat = dateformatYEAR;
+							break;
+						default:
+							break;
+					}
+					String s = "to_char(t, \'$DATEFORMAT\'),";
+					s = s.replace("$DATEFORMAT", dateformat);
+					select.append(s);
+					
+					groupBy = "group by to_char(t, \'$DATEFORMAT\')";
+					groupBy = groupBy.replace("$DATEFORMAT", dateformat);
+					
+					orderby = groupBy.replace("group by", "order by");
+    			} else {
+        			select.append(String.format("%s(%s),", hfunc.name(), dim.name()));
+        		}
+    		} 
+    	}
+		select.replace(select.length()-1, select.length(), " ");
+    	return query.replace("$DIMENSIONS", select).replace("$GROUPBY", groupBy).replace("$ORDERBY", orderby);
+    }
 }

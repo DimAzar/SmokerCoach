@@ -64,10 +64,6 @@ public class CoachGraph implements DBEntity {
 	private ChartPlotType plotType = ChartPlotType.LINE;
 
 	@Getter @Setter
-	@Column(updatable=true)
-	private boolean higherFunctions= false;
-
-	@Getter @Setter
 	@Column(updatable=true, nullable=false)
 	private GraphAxisHigherFunctions graphXHFunc = GraphAxisHigherFunctions.NONE; 
 
@@ -85,15 +81,15 @@ public class CoachGraph implements DBEntity {
 
 	@Getter @Setter
 	@Column(updatable=true, nullable=false)
-	private CounterDimension xAxisDataFetch = null;
+	private CounterDimension xAxisDataFetch = CounterDimension.NONE;
 
 	@Getter @Setter
 	@Column(updatable=true, nullable=false)
-	private CounterDimension yAxisDataFetch = null;
+	private CounterDimension yAxisDataFetch = CounterDimension.NONE;
 
 	@Getter @Setter
 	@Column(updatable=true, nullable=true)
-	private CounterDimension zAxisDataFetch = null;
+	private CounterDimension zAxisDataFetch = CounterDimension.NONE;
 
 	@Getter @Setter
 	@ManyToOne(targetEntity=Coach.class)

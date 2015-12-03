@@ -124,7 +124,8 @@ public class Utilities {
 	    X("X"), 
 	    Y("Y"),
 	    Z("Z"),
-	    T("Time");
+	    T("Time"),
+	    NONE("Dont fetch");
 
 	    @Getter
 	    private final String description;
