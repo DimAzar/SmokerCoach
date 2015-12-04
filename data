@@ -1,16 +1,16 @@
 select DAY(addeddate), sum(datum) from counterdata where counter_id = 0 group by DAY(addeddate);
 
-insert into "PUBLIC"."PROFILE" ("ID", "FIRSTNAME", "ISACTIVE") values(0, 'test profile', true);
-insert into "PUBLIC"."COACHTEMPLATE" ("ID", "NAME") values(0, 'test coach');
-insert into "PUBLIC"."COACHINSTANCE" ("ID", "NAME", "PROFILE_ID", "TEMPLATE_ID") values(0, 'test_profile-test coach instance', 0, 0);
+insert into "PUBLIC"."PROFILE" ("ID", "FIRSTNAME", "ISACTIVE") values(0, 'Health Profile', true);
+insert into "PUBLIC"."COACHTEMPLATE" ("ID", "NAME") values(0, 'Smoker Coach Template');
+insert into "PUBLIC"."COACHINSTANCE" ("ID", "NAME", "PROFILE_ID", "TEMPLATE_ID") values(0, 'Smoker coach', 0, 0);
 
-insert into "PUBLIC"."COUNTER" ("ID", "NAME", "TYPE", "STEPVALUE") values(0, 'test counter - step', 0, 1.0);
+insert into "PUBLIC"."COUNTER" ("ID", "NAME", "TYPE", "STEPVALUE") values(0, 'cig's smoked daily', 0, 1.0);
 insert into "PUBLIC"."COUNTER" ("ID", "NAME", "TYPE", "STEPVALUE") values(1, 'test counter - input', 1, 0.0);
 
 insert into "PUBLIC"."COUNTER_COACHINSTANCE" ("COACHES_ID", "COUNTERS_ID") values(0, 1);
 insert into "PUBLIC"."COUNTER_COACHINSTANCE" ("COACHES_ID", "COUNTERS_ID") values(0, 0);
 
-insert into "PUBLIC"."COACHGRAPH" ("ID", "COACH_ID", "NAME") values(0, 0 , 'test graph');
+insert into "PUBLIC"."COACHGRAPH" ("ID", "COACH_ID", "NAME") values(0, 0 , 'smoker's graph');
 
 delete from "PUBLIC"."COUNTERDATA";
 --sTEP COUNTER
