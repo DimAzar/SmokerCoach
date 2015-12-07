@@ -27,7 +27,7 @@ import com.d.apps.scoach.server.db.model.CounterData;
 import com.d.apps.scoach.server.db.model.Profile;
 import com.d.apps.scoach.server.db.model.base.DBEntity;
 
-@Path("/icount")
+@Path("/service")
 public class DBServicesImpl implements DBServices {
 	private static final String PERSISTENCE_UNIT = "CounterApp";
 	private static final Logger LOG = LoggerFactory.getLogger(DBServicesImpl.class);
