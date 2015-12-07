@@ -1,4 +1,4 @@
-package com.d.apps.scoach.services;
+package com.d.apps.scoach.server.services;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -7,22 +7,27 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimension;
-import com.d.apps.scoach.Utilities.DataSumType;
-import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
-import com.d.apps.scoach.Utilities.GraphDimensions;
-import com.d.apps.scoach.db.model.Coach;
-import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.Counter;
-import com.d.apps.scoach.db.model.CounterData;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.db.model.base.DBEntity;
+import com.d.apps.scoach.clients.swing.Utilities.ChartPlotType;
+import com.d.apps.scoach.clients.swing.Utilities.CounterDimension;
+import com.d.apps.scoach.clients.swing.Utilities.DataSumType;
+import com.d.apps.scoach.clients.swing.Utilities.GraphAxisHigherFunctions;
+import com.d.apps.scoach.clients.swing.Utilities.GraphDimensions;
+import com.d.apps.scoach.server.db.model.Coach;
+import com.d.apps.scoach.server.db.model.CoachGraph;
+import com.d.apps.scoach.server.db.model.Counter;
+import com.d.apps.scoach.server.db.model.CounterData;
+import com.d.apps.scoach.server.db.model.Profile;
+import com.d.apps.scoach.server.db.model.base.DBEntity;
 
+@Path("/icount")
 public class DBServicesImpl implements DBServices {
 	private static final String PERSISTENCE_UNIT = "CounterApp";
 	private static final Logger LOG = LoggerFactory.getLogger(DBServicesImpl.class);
@@ -41,6 +46,9 @@ public class DBServicesImpl implements DBServices {
 		LOG.debug("DBServices started");
 	}
 
+	@GET
+	@Path("/profiles")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Override
 	public List<Profile> getProfiles() {
 		List<Profile> ans = null;

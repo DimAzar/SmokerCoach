@@ -1,8 +1,7 @@
-package com.d.apps.scoach.ui;
+package com.d.apps.scoach.clients.swing.ui;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -20,14 +19,14 @@ import org.jfree.ui.RefineryUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimension;
-import com.d.apps.scoach.Utilities.DataSumType;
-import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
-import com.d.apps.scoach.Utilities.GraphDimensions;
-import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.Counter;
+import com.d.apps.scoach.clients.swing.CounterAppClient;
+import com.d.apps.scoach.clients.swing.Utilities.ChartPlotType;
+import com.d.apps.scoach.clients.swing.Utilities.CounterDimension;
+import com.d.apps.scoach.clients.swing.Utilities.DataSumType;
+import com.d.apps.scoach.clients.swing.Utilities.GraphAxisHigherFunctions;
+import com.d.apps.scoach.clients.swing.Utilities.GraphDimensions;
+import com.d.apps.scoach.server.db.model.CoachGraph;
+import com.d.apps.scoach.server.db.model.Counter;
 
 public class GraphFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -83,18 +82,8 @@ public class GraphFrame extends JFrame {
 	    	hfuncs[1] = graph.getGraphYHFunc();
 	    	hfuncs[2] = graph.getGraphZHFunc();
 	    	
-   			moredata = (List<Object[]>)CounterApp.DBServices.getCounterData(counter.getId(), dataPart, hfuncs);	
+   			moredata = (List<Object[]>)CounterAppClient.DBServices.getCounterData(counter.getId(), dataPart, hfuncs);	
 	    	//INITIAL ZERO VALUE
-	    	if (moredata.size() == 1) {
-	    		Calendar cldr = Calendar.getInstance();
-	    		cldr.set(Calendar.HOUR_OF_DAY, 0);
-	    		cldr.set(Calendar.MINUTE, 0);
-	    		cldr.set(Calendar.SECOND, 0);
-	    		cldr.add(Calendar.DAY_OF_MONTH, -1);
-			    series.add(
-			    		cldr.getTime().getTime(),
-			    		0.0);
-	    	}
 	    	for (Object[] objects : moredata) {
 				try {
 					Double x = (graph.getXAxisDataFetch() == CounterDimension.T) ? 

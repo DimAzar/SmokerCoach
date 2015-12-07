@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.managers;
+package com.d.apps.scoach.clients.swing.ui.managers;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,14 +37,14 @@ import javax.swing.table.TableCellRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.Coach;
-import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.Counter;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.GraphFrame;
-import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.clients.swing.CounterAppClient;
+import com.d.apps.scoach.clients.swing.Utilities;
+import com.d.apps.scoach.clients.swing.ui.GraphFrame;
+import com.d.apps.scoach.clients.swing.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.server.db.model.Coach;
+import com.d.apps.scoach.server.db.model.CoachGraph;
+import com.d.apps.scoach.server.db.model.Counter;
+import com.d.apps.scoach.server.db.model.Profile;
 
 public class MainProfileManager extends AbstractManageEntityIFrame implements ProfileSubManager {
 	private static final Logger LOG = LoggerFactory.getLogger(MainProfileManager.class);
@@ -100,10 +100,10 @@ public class MainProfileManager extends AbstractManageEntityIFrame implements Pr
 			public void actionPerformed(ActionEvent e) {
 				rmenuGraphs.setVisible(false);
 				selectedGraph.removeCounters();
-				CounterApp.DBServices.updateGraph(selectedGraph);
+				CounterAppClient.DBServices.updateGraph(selectedGraph);
 				
 				selectedCoach.removeGraph(selectedGraph);
-				selectedCoach = CounterApp.DBServices.updateCoach(selectedCoach);
+				selectedCoach = CounterAppClient.DBServices.updateCoach(selectedCoach);
 				
 				selectedGraph = null;
 				updateGraphsData();
@@ -215,7 +215,7 @@ public class MainProfileManager extends AbstractManageEntityIFrame implements Pr
 	        	if (!e.getValueIsAdjusting()) {
 	        		int selectionIndex = ((DefaultListSelectionModel)e.getSource()).getLeadSelectionIndex();
 	        		int cid = Integer.parseInt(coachesTable.getValueAt(selectionIndex, 0).toString());
-	        		selectedCoach = CounterApp.DBServices.findCoachInstance(cid);	        		
+	        		selectedCoach = CounterAppClient.DBServices.findCoachInstance(cid);	        		
 	        		coachSelectionChanged();
 	        	}
 	        }

@@ -8,7 +8,7 @@ import javax.persistence.Persistence;
 
 import org.junit.Test;
 
-import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.server.db.model.Profile;
 
 public class AppTests {
 	 @Test

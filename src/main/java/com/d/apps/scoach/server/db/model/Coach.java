@@ -1,5 +1,6 @@
-package com.d.apps.scoach.db.model;
+package com.d.apps.scoach.server.db.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,24 +10,24 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import com.d.apps.scoach.Utilities.CounterFunctionType;
-import com.d.apps.scoach.Utilities.CounterSize;
-import com.d.apps.scoach.db.model.base.DBEntity;
+import com.d.apps.scoach.server.db.model.base.DBEntity;
 
 @Entity 
-@Table (name="Counter")
+@Table (name="Coach")
 @NamedQueries({
+	@NamedQuery(name="coachInstance.getAllCoachInstances", query = "SELECT ct FROM Coach ct "),
+	@NamedQuery(name="coachInstance.getCoachInstanceByID", query = "SELECT ct FROM Coach ct where ct.id = :cid")
 })
-public class Counter implements DBEntity {
+public class Coach implements DBEntity {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -35,52 +36,50 @@ public class Counter implements DBEntity {
     private Integer id;
 
 	@Getter @Setter
-	@Column(unique=true, updatable=false)
+	@Column(updatable=false, unique=true)
 	private String name;
 	
+	//TODO move to counter, action table
 	@Getter @Setter
 	@Column(updatable=false)
-	private Double stepValueX;
+	private String text;
 	
 	@Getter @Setter
 	@Column(updatable=false)
-	private Double stepValueY;
+	private String imageName;
 
 	@Getter @Setter
 	@Column(updatable=false)
-	private Double stepValueZ;
+	private String description;
 
 	@Getter @Setter
-	@Column(updatable=false)
-	private CounterFunctionType type;
+	@Column(unique=true, updatable=false)
+	private Character accelerator;
 	
-	@Getter @Setter
-	@Column(updatable=false)
-	private CounterSize dimension;
-
 	@Getter @Setter
 	@ManyToOne(targetEntity=Profile.class)
 	@JoinColumn(nullable=false)
     private Profile profile;
 
-	@Getter @Setter
-    @OneToMany(targetEntity=CounterData.class, mappedBy="counter", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
-	private List<CounterData> data;
-
 	@Getter
-	@ManyToMany
-	@JoinColumn(nullable=true, name="graph_id") 
-	private List<CoachGraph> graphs;
+    @OneToMany(targetEntity=CoachGraph.class, mappedBy="coach", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+    private List<CoachGraph> graphs = new ArrayList<CoachGraph>();
 
-	public void addDatum(CounterData datum) {
-		datum.setCounter(this);
-		data.add(datum);
-	}
-	
 	public void addGraph(CoachGraph graph) {
 		graphs.add(graph);
+		graph.setCoach(this);
 	}
+	
 	public void removeGraph(CoachGraph graph) {
 		graphs.remove(graph);
+	}
+	
+	public CoachGraph getGraphById(int id) {
+		for (CoachGraph graph : getGraphs()) {
+			if (graph.getId() == id) {
+				return graph;
+			}
+		}
+		return null;
 	}
 }

@@ -1,4 +1,4 @@
-package com.d.apps.scoach.db.model.base;
+package com.d.apps.scoach.server.db.model.base;
 
 import java.io.Serializable;
 

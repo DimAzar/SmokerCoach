@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.managers;
+package com.d.apps.scoach.clients.swing.ui.managers;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,8 +8,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.MainFrame;
+import com.d.apps.scoach.clients.swing.ui.MainFrame;
+import com.d.apps.scoach.server.db.model.Profile;
 
 
 public abstract class AbstractManageEntityIFrame extends JInternalFrame {

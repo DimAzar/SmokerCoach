@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui;
+package com.d.apps.scoach.clients.swing.ui;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -33,17 +33,17 @@ import javax.swing.WindowConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.Utilities.CounterSize;
-import com.d.apps.scoach.db.model.Coach;
-import com.d.apps.scoach.db.model.Counter;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.managers.AbstractManageEntityIFrame;
-import com.d.apps.scoach.ui.managers.ManageCoachesIFrame;
-import com.d.apps.scoach.ui.managers.ManageCountersIFrame;
-import com.d.apps.scoach.ui.managers.ManageProfilesIFrame;
-import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.clients.swing.CounterAppClient;
+import com.d.apps.scoach.clients.swing.Utilities;
+import com.d.apps.scoach.clients.swing.Utilities.CounterSize;
+import com.d.apps.scoach.clients.swing.ui.managers.AbstractManageEntityIFrame;
+import com.d.apps.scoach.clients.swing.ui.managers.ManageCoachesIFrame;
+import com.d.apps.scoach.clients.swing.ui.managers.ManageCountersIFrame;
+import com.d.apps.scoach.clients.swing.ui.managers.ManageProfilesIFrame;
+import com.d.apps.scoach.clients.swing.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.server.db.model.Coach;
+import com.d.apps.scoach.server.db.model.Counter;
+import com.d.apps.scoach.server.db.model.Profile;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -7859383450590563738L;
@@ -70,12 +70,12 @@ public class MainFrame extends JFrame {
 		setName(Utilities.NAME_MAINFRAME);
 		initGrcs();
 
-		setActiveProfile(CounterApp.DBServices.getActiveProfile());
+		setActiveProfile(CounterAppClient.DBServices.getActiveProfile());
 		_instance = this;
 	}
 
 	public void notifyActiveProfileChanged() {
-		setActiveProfile(CounterApp.DBServices.getActiveProfile());
+		setActiveProfile(CounterAppClient.DBServices.getActiveProfile());
 	}
 	
 	public Profile getActiveProfile() {	return activeProfile;	}
@@ -288,7 +288,7 @@ public class MainFrame extends JFrame {
 			default:
 				throw new RuntimeException("Unkown counter type :"+counter.getType());
 			}
-			counter = CounterApp.DBServices.addCounterData(counter.getId(), new Timestamp(Calendar.getInstance().getTimeInMillis()), value[0], value[1], value[2]);
+			counter = CounterAppClient.DBServices.addCounterData(counter.getId(), new Timestamp(Calendar.getInstance().getTimeInMillis()), value[0], value[1], value[2]);
 		}
 	}
 	
@@ -389,7 +389,7 @@ class AboutIFrame extends JInternalFrame {
 	
 	public AboutIFrame() {
 		super();
-		version = CounterApp.appProperties.getProperty("app.version");
+		version = CounterAppClient.appProperties.getProperty("app.version");
 		
 		initGrcs();
 	}

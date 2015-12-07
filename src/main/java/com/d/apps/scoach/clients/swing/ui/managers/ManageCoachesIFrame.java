@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.managers;
+package com.d.apps.scoach.clients.swing.ui.managers;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,11 +20,11 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.Coach;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.clients.swing.CounterAppClient;
+import com.d.apps.scoach.clients.swing.Utilities;
+import com.d.apps.scoach.clients.swing.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.server.db.model.Coach;
+import com.d.apps.scoach.server.db.model.Profile;
 
 public class ManageCoachesIFrame extends AbstractManageEntityIFrame implements ProfileSubManager {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -71,7 +71,7 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFrame implements P
 					int cid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 
 					profile.removeCoach(cid);
-					profile = CounterApp.DBServices.updateProfile(profile);
+					profile = CounterAppClient.DBServices.updateProfile(profile);
 					notifyActiveProfileChanged();
 				}
 			}
@@ -104,7 +104,7 @@ public class ManageCoachesIFrame extends AbstractManageEntityIFrame implements P
 					coach.setName(name.getText());
 					
 					profile.addCoach(coach);
-					profile = CounterApp.DBServices.updateProfile(profile);
+					profile = CounterAppClient.DBServices.updateProfile(profile);
 					notifyActiveProfileChanged();
 					name.setText("");
 				}

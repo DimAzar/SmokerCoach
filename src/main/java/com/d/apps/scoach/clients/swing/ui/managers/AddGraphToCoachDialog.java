@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.managers;
+package com.d.apps.scoach.clients.swing.ui.managers;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -27,16 +27,16 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.Position;
 
-import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimension;
-import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
-import com.d.apps.scoach.Utilities.GraphDimensions;
-import com.d.apps.scoach.Utilities.HigherFunctionTypes;
-import com.d.apps.scoach.db.model.Coach;
-import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.Counter;
+import com.d.apps.scoach.clients.swing.CounterAppClient;
+import com.d.apps.scoach.clients.swing.Utilities;
+import com.d.apps.scoach.clients.swing.Utilities.ChartPlotType;
+import com.d.apps.scoach.clients.swing.Utilities.CounterDimension;
+import com.d.apps.scoach.clients.swing.Utilities.GraphAxisHigherFunctions;
+import com.d.apps.scoach.clients.swing.Utilities.GraphDimensions;
+import com.d.apps.scoach.clients.swing.Utilities.HigherFunctionTypes;
+import com.d.apps.scoach.server.db.model.Coach;
+import com.d.apps.scoach.server.db.model.CoachGraph;
+import com.d.apps.scoach.server.db.model.Counter;
 
 public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -398,7 +398,7 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 					editingGraph.setGraphZHFunc(GraphAxisHigherFunctions.valueOf(counterZHFuncCombo.getSelectedItem().toString()));
 					
 					updateGraphCounters();
-					CounterApp.DBServices.updateGraph (editingGraph);
+					CounterAppClient.DBServices.updateGraph (editingGraph);
 					JOptionPane.showMessageDialog(null, "Graph updated");
 					dispose();
 				}
@@ -481,7 +481,7 @@ public class AddGraphToCoachDialog extends JDialog implements ActionListener {
 			arr2[1] = GraphAxisHigherFunctions.NONE;
 			arr2[2] = GraphAxisHigherFunctions.NONE;
 		}
-		CounterApp.DBServices.addGraph (
+		CounterAppClient.DBServices.addGraph (
 								coach.getId(), 
 								nameField.getText(), 
 								counterIds,

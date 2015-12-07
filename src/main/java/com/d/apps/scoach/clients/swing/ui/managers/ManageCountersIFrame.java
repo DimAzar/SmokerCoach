@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.managers;
+package com.d.apps.scoach.clients.swing.ui.managers;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,14 +25,14 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.Utilities.CounterDimension;
-import com.d.apps.scoach.Utilities.CounterFunctionType;
-import com.d.apps.scoach.Utilities.CounterSize;
-import com.d.apps.scoach.db.model.Counter;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.clients.swing.CounterAppClient;
+import com.d.apps.scoach.clients.swing.Utilities;
+import com.d.apps.scoach.clients.swing.Utilities.CounterDimension;
+import com.d.apps.scoach.clients.swing.Utilities.CounterFunctionType;
+import com.d.apps.scoach.clients.swing.Utilities.CounterSize;
+import com.d.apps.scoach.clients.swing.ui.managers.iface.ProfileSubManager;
+import com.d.apps.scoach.server.db.model.Counter;
+import com.d.apps.scoach.server.db.model.Profile;
 
 public class ManageCountersIFrame extends AbstractManageEntityIFrame implements ProfileSubManager {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -82,7 +82,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 					int cid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 
 					profile.removeCounter(cid);
-					profile = CounterApp.DBServices.updateProfile(profile);
+					profile = CounterAppClient.DBServices.updateProfile(profile);
 					notifyActiveProfileChanged();
 				}
 			}
@@ -188,7 +188,7 @@ public class ManageCountersIFrame extends AbstractManageEntityIFrame implements 
 
 					
 					profile.addCounter(instance);
-			    	CounterApp.DBServices.updateProfile(profile);
+			    	CounterAppClient.DBServices.updateProfile(profile);
 			    	notifyActiveProfileChanged();
 				}
 			});

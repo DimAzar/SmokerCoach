@@ -1,4 +1,4 @@
-package com.d.apps.scoach.db.model;
+package com.d.apps.scoach.server.db.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +17,11 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimension;
-import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
-import com.d.apps.scoach.Utilities.GraphDimensions;
-import com.d.apps.scoach.db.model.base.DBEntity;
+import com.d.apps.scoach.clients.swing.Utilities.ChartPlotType;
+import com.d.apps.scoach.clients.swing.Utilities.CounterDimension;
+import com.d.apps.scoach.clients.swing.Utilities.GraphAxisHigherFunctions;
+import com.d.apps.scoach.clients.swing.Utilities.GraphDimensions;
+import com.d.apps.scoach.server.db.model.base.DBEntity;
 
 @Entity 
 @Table (name="CoachGraph")

@@ -1,4 +1,4 @@
-package com.d.apps.scoach.ui.managers;
+package com.d.apps.scoach.clients.swing.ui.managers;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,10 +23,10 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import com.d.apps.scoach.CounterApp;
-import com.d.apps.scoach.Utilities;
-import com.d.apps.scoach.db.model.Profile;
-import com.d.apps.scoach.ui.MainFrame;
+import com.d.apps.scoach.clients.swing.CounterAppClient;
+import com.d.apps.scoach.clients.swing.Utilities;
+import com.d.apps.scoach.clients.swing.ui.MainFrame;
+import com.d.apps.scoach.server.db.model.Profile;
 
 public class ManageProfilesIFrame  extends AbstractManageEntityIFrame  {
 	private static final long serialVersionUID = -892682552079556150L;
@@ -77,7 +77,7 @@ public class ManageProfilesIFrame  extends AbstractManageEntityIFrame  {
 					return;
 				}
 				int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
-				updateUIActiveProfileChanged(CounterApp.DBServices.setActiveProfile(pid));
+				updateUIActiveProfileChanged(CounterAppClient.DBServices.setActiveProfile(pid));
 			}
 		});
 		
@@ -92,11 +92,11 @@ public class ManageProfilesIFrame  extends AbstractManageEntityIFrame  {
 					boolean isActive = Boolean.parseBoolean(entityTable.getValueAt(row, 2).toString());
 					if (isActive) {
 						if (JOptionPane.showConfirmDialog(null, "Profile is the active profile\nDelete Profile ?") == JOptionPane.OK_OPTION) {
-							CounterApp.DBServices.deleteProfile(pid);
+							CounterAppClient.DBServices.deleteProfile(pid);
 							updateUIActiveProfileChanged(null);
 						}
 					} else {
-						CounterApp.DBServices.deleteProfile(pid);
+						CounterAppClient.DBServices.deleteProfile(pid);
 						profileActionRefreshUI();
 					}
 				}
@@ -109,7 +109,7 @@ public class ManageProfilesIFrame  extends AbstractManageEntityIFrame  {
 				int row = entityTable.getSelectedRow();
 				int pid = Integer.parseInt(entityTable.getValueAt(row, 0).toString());
 
-				Profile p = CounterApp.DBServices.findProfile(pid);
+				Profile p = CounterAppClient.DBServices.findProfile(pid);
 				((MainFrame)getTopLevelAncestor()).showIFrame(new MainProfileManager(p));
 				profileActionRefreshUI();
 			}
@@ -155,14 +155,14 @@ public class ManageProfilesIFrame  extends AbstractManageEntityIFrame  {
 						return;
 					}
 					if (activeval) {
-						CounterApp.DBServices.deactivateAllProfiles();
+						CounterAppClient.DBServices.deactivateAllProfiles();
 					}
 					
-					if (CounterApp.DBServices.getProfiles().size() <= 0 && activeval != true) {
+					if (CounterAppClient.DBServices.getProfiles().size() <= 0 && activeval != true) {
 						JOptionPane.showMessageDialog(null, "No other active profiles, setting as active profile!");
 						activeval = true;
 					}
-					Profile newProfile = CounterApp.DBServices.createProfile(nameval , activeval);
+					Profile newProfile = CounterAppClient.DBServices.createProfile(nameval , activeval);
 					if (activeval) {
 						updateUIActiveProfileChanged(newProfile);
 					}
@@ -194,7 +194,7 @@ class CustomProfilesTableModel extends AbstractTableModel {
 	}
 	
 	public void refresh() {
-		this.profiles = CounterApp.DBServices.getProfiles();
+		this.profiles = CounterAppClient.DBServices.getProfiles();
 		fireTableDataChanged();
 	}
 	@Override

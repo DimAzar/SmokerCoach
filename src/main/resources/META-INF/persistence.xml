@@ -2,11 +2,11 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="CounterApp" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>com.d.apps.scoach.db.model.Coach</class>
-        <class>com.d.apps.scoach.db.model.Counter</class>
-        <class>com.d.apps.scoach.db.model.CounterData</class>
-        <class>com.d.apps.scoach.db.model.Profile</class>
-        <class>com.d.apps.scoach.db.model.CoachGraph</class>
+        <class>com.d.apps.scoach.server.db.model.Coach</class>
+        <class>com.d.apps.scoach.server.db.model.Counter</class>
+        <class>com.d.apps.scoach.server.db.model.CounterData</class>
+        <class>com.d.apps.scoach.server.db.model.Profile</class>
+        <class>com.d.apps.scoach.server.db.model.CoachGraph</class>
 
         <properties>
             <property name="connection.driver_class" value="org.h2.Driver"/>

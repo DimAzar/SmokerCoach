@@ -1,18 +1,18 @@
-package com.d.apps.scoach.services;
+package com.d.apps.scoach.server.services;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.d.apps.scoach.Utilities.ChartPlotType;
-import com.d.apps.scoach.Utilities.CounterDimension;
-import com.d.apps.scoach.Utilities.DataSumType;
-import com.d.apps.scoach.Utilities.GraphAxisHigherFunctions;
-import com.d.apps.scoach.Utilities.GraphDimensions;
-import com.d.apps.scoach.db.model.Coach;
-import com.d.apps.scoach.db.model.CoachGraph;
-import com.d.apps.scoach.db.model.Counter;
-import com.d.apps.scoach.db.model.Profile;
+import com.d.apps.scoach.clients.swing.Utilities.ChartPlotType;
+import com.d.apps.scoach.clients.swing.Utilities.CounterDimension;
+import com.d.apps.scoach.clients.swing.Utilities.DataSumType;
+import com.d.apps.scoach.clients.swing.Utilities.GraphAxisHigherFunctions;
+import com.d.apps.scoach.clients.swing.Utilities.GraphDimensions;
+import com.d.apps.scoach.server.db.model.Coach;
+import com.d.apps.scoach.server.db.model.CoachGraph;
+import com.d.apps.scoach.server.db.model.Counter;
+import com.d.apps.scoach.server.db.model.Profile;
 
 public interface DBServices {
 	//PROFILES

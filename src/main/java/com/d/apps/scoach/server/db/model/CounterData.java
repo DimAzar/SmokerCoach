@@ -1,4 +1,4 @@
-package com.d.apps.scoach.db.model;
+package com.d.apps.scoach.server.db.model;
 
 import java.sql.Timestamp;
 
@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.d.apps.scoach.db.model.base.DBEntity;
+import com.d.apps.scoach.server.db.model.base.DBEntity;
 
 @Entity 
 @Table (name="CounterData")

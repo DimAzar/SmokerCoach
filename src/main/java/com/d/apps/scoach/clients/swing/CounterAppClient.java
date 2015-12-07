@@ -1,4 +1,4 @@
-package com.d.apps.scoach;
+package com.d.apps.scoach.clients.swing;
 
 import java.util.Properties;
 
@@ -8,12 +8,12 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.d.apps.scoach.services.DBServices;
-import com.d.apps.scoach.services.DBServicesImpl;
-import com.d.apps.scoach.ui.MainFrame;
+import com.d.apps.scoach.clients.swing.ui.MainFrame;
+import com.d.apps.scoach.server.services.DBServices;
+import com.d.apps.scoach.server.services.DBServicesImpl;
 
-public class CounterApp {
-	private static final Logger LOG = LoggerFactory.getLogger(CounterApp.class);
+public class CounterAppClient {
+	private static final Logger LOG = LoggerFactory.getLogger(CounterAppClient.class);
 	private static final String propertiesName = "app.properties";
 	
 	private final MainFrame mainFrame; 
@@ -21,7 +21,7 @@ public class CounterApp {
 
 	public static DBServices DBServices = new DBServicesImpl();
 	
-	public CounterApp() {
+	public CounterAppClient() {
 		LOG.debug("Starting Coach ");
 		appProperties = Utilities.loadApplicationProperties(propertiesName);
 		mainFrame = new MainFrame();
@@ -41,7 +41,7 @@ public class CounterApp {
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
-		new CounterApp();
+		new CounterAppClient();
 		LOG.debug("Coach stopped");
 	}
 }

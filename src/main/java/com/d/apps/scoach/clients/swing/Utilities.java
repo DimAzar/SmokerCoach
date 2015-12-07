@@ -1,4 +1,4 @@
-package com.d.apps.scoach;
+package com.d.apps.scoach.clients.swing;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ public class Utilities {
 		InputStream input = null;
 
 		try {
-			input = CounterApp.class.getClassLoader().getResourceAsStream(propertiesName);
+			input = CounterAppClient.class.getClassLoader().getResourceAsStream(propertiesName);
     		if (input==null) {
 	            LOG.error("Sorry, unable to find " + input);
     		    return null;
